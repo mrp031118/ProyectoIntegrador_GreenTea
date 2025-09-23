@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Proveedor</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+</head>
+<body class="container mt-4">
+
+<div class="mb-3">
+    <a th:href="@{/admin/proveedores}" class="btn btn-primary">Volver a la lista</a>
+    <a th:href="@{/logout}" class="btn btn-danger">Cerrar sesión</a>
+</div>
+
+<h2 class="mb-4" th:text="${proveedor.id == null} ? 'Agregar Proveedor' : 'Editar Proveedor'">Proveedor</h2>
+
+<form th:action="@{${proveedor.id == null} ? '/admin/proveedores/agregar' : '/admin/proveedores/editar'}" method="post">
+
+    <input type="hidden" name="id" th:value="${proveedor.id}" />
+
+    <div class="mb-3">
+        <label class="form-label">Nombre:</label>
+        <input type="text" name="nombre" th:value="${proveedor.nombre}" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Categoría:</label>
+        <select name="categoria.id" class="form-select" required>
+            <option th:each="c : ${categorias}" 
+                    th:value="${c.id}" 
+                    th:text="${c.nombre}" 
+                    th:selected="${proveedor.categoria != null and proveedor.categoria.id == c.id}">
+            </option>
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Teléfono:</label>
+        <input type="text" name="telefono" th:value="${proveedor.telefono}" class="form-control" maxlength="9" pattern="\d{9}" 
+            placeholder="Ej: 987654321" required>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Dirección:</label>
+        <input type="text" name="direccion" th:value="${proveedor.direccion}" class="form-control" required>
+    </div>
+
+    <button type="submit" class="btn btn-success">Guardar</button>
+    <button type="button" class="btn btn-secondary" onclick="window.location.href='/admin/proveedores'">
+        Cancelar
+    </button>
+
+</form>
+
+</body>
+</html>

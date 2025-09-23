@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Empleado</title>
+</head>
+<body>
+    <h1>¡WELCOME EMPLEADO <span th:text="${nombreCompleto}"></span> A TU DASHBOARD!</h1>
+    <p>Esta es la página de dashboard.</p>
+    <!---Enlace para ir a la seccion perfil-->
+    <a th:href="@{/empleado/perfil}">Ir a Perfil</a><br>
+    <!-- Enlace para cerrar sesión -->
+    <a th:href="@{/logout}">Cerrar Sesión</a>
+</body>
+</html>

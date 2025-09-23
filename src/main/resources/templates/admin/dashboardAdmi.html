@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Administrador</title>
+</head>
+<body>
+    <h1>¡WELCOME ADMINISTRADOR <span th:text="${nombreCompleto}"></span> A TU DASHBOARD!</h1>
+    <p>Esta es la página de dashboard.</p>
+
+    <!---Enlace para ir a la seccion configuraciones-->
+    <a th:href="@{/admin/settings}">Ir a Configuraciones</a><br>
+    <!---Enlace para ir a la seccion gestion de usuarios-->
+    <a th:href="@{/admin/usuarios}">Ir a Gestion de Usuarios</a><br>
+    <!---Enlace para ir a la seccion gestion de insumos-->
+    <a th:href="@{/admin/insumos}">Ir a Gestion de Insumos</a><br>
+    <!---Enlace para ir a la seccion gestion de insumos-->
+    <a th:href="@{/admin/lotes}">Ir a Gestion de Lotes</a><br>
+    <!---Enlace para ir a la seccion gestion de usuarios-->
+    <a th:href="@{/admin/proveedores}">Ir a Gestion de Proveedores</a><br>
+
+    
+    <!-- Enlace para cerrar sesión -->
+    <a th:href="@{/logout}">Cerrar Sesión</a>
+</body>
+</html>
