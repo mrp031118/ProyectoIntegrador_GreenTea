@@ -8,7 +8,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.example.demo.entity.Insumo;
-import com.example.demo.entity.Proveedor;
 import com.example.demo.entity.UnidadMedida;
 import com.example.demo.service.InsumoService;
 import com.example.demo.service.ProveedorService;
@@ -34,20 +33,18 @@ public class InsumoController {
     @Autowired
     private UnidadMedidaService unidadMedidaService;
 
-    //listar todos los insumos
+    // listar todos los insumos
     @GetMapping
     public String listar(Model model,
             @RequestParam(required = false) String nombre,
-            @RequestParam(required = false) Long proveedorId,
             @RequestParam(required = false) Long unidadMedidaId) {
 
-        Proveedor proveedor = proveedorId != null ? proveedorService.obtenerPorId(proveedorId) : null;
         UnidadMedida unidadMedida = unidadMedidaId != null ? unidadMedidaService.obtenerPorId(unidadMedidaId) : null;
 
-        List<Insumo> insumos = insumoService.buscarInsumos(nombre != null ? nombre : "", proveedor, unidadMedida);
+        // Solo filtra por nombre y unidad de medida
+        List<Insumo> insumos = insumoService.buscarInsumos(nombre != null ? nombre : "", unidadMedida);
 
         model.addAttribute("insumos", insumos);
-        model.addAttribute("proveedores", proveedorService.listarProveedores());
         model.addAttribute("unidades", unidadMedidaService.listarUnidades());
 
         return "/admin/insumosLista";

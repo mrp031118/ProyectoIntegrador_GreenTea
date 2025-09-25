@@ -14,9 +14,49 @@
         <a th:href="@{/logout}" class="btn btn-danger">Cerrar sesión</a>
     </div>
     
-    <!-- Botón nuevo -->
-    <a th:href="@{/admin/lotes/nuevo}" class="btn btn-primary mb-3">➕ Nuevo Lote</a>
-    <a th:href="@{/admin/lotes/kardex}" class="btn btn-success mb-3">📊 Ver Kardex</a>
+    <!-- Botones de acción -->
+    <div class="mb-3">
+        <a th:href="@{/admin/lotes/nuevo}" class="btn btn-primary">Nuevo Lote</a>
+        <a th:href="@{/admin/lotes/kardex}" class="btn btn-success">Ver Kardex</a>
+    </div>
+
+    <!-- Filtros de búsqueda -->
+    <form method="get" th:action="@{/admin/lotes}" class="row g-3 mb-3">
+        <div class="col-md-4">
+            <label class="form-label">Proveedor</label>
+            <select name="proveedorId" class="form-select">
+                <option value="">-- Todos --</option>
+                <option th:each="prov : ${proveedores}" 
+                        th:value="${prov.id}" 
+                        th:text="${prov.nombre}"
+                        th:selected="${prov.id == proveedorId}">
+                </option>
+            </select>
+        </div>
+
+        <div class="col-md-4">
+            <label class="form-label">Insumo</label>
+            <select name="insumoId" class="form-select">
+                <option value="">-- Todos --</option>
+                <option th:each="insumo : ${insumos}" 
+                        th:value="${insumo.insumoId}" 
+                        th:text="${insumo.nombre}"
+                        th:selected="${insumo.insumoId == insumoId}">
+                </option>
+            </select>
+        </div>
+
+        <div class="col-md-4">
+            <label class="form-label">Nombre de Insumo</label>
+            <input type="text" name="nombreInsumo" class="form-control"
+                   th:value="${nombreInsumo}" placeholder="Buscar por nombre..." />
+        </div>
+
+        <div class="col-12">
+            <button type="submit" class="btn btn-info">Buscar</button>
+            <a th:href="@{/admin/lotes}" class="btn btn-secondary">Limpiar</a>
+        </div>
+    </form>
 
     <!-- Tabla -->
     <div class="table-responsive">
@@ -27,6 +67,7 @@
                     <th>Insumo</th>
                     <th>Proveedor</th>
                     <th>Fecha Entrada</th>
+                    <th>Fecha Vencimiento </th>
                     <th>Cantidad</th>
                     <th>Costo Unitario</th>
                     <th>Observaciones</th>
@@ -39,21 +80,22 @@
                     <td th:text="${lote.insumo.nombre}"></td>
                     <td th:text="${lote.proveedor.nombre}"></td>
                     <td th:text="${#temporals.format(lote.fechaEntrada, 'dd/MM/yyyy HH:mm')}"></td>
+                    <td th:text="${#temporals.format(lote.fechaVencimiento, 'dd/MM/yyyy')}"></td>
                     <td th:text="${lote.cantidad}"></td>
                     <td th:text="${lote.costoUnitario}"></td>
                     <td th:text="${lote.observaciones}"></td>
                     <td>
                         <a th:href="@{/admin/lotes/editar/{id}(id=${lote.loteId})}" 
-                           class="btn btn-warning btn-sm">✏ Editar</a>
+                           class="btn btn-warning btn-sm">Editar</a>
                         <a th:href="@{/admin/lotes/eliminar/{id}(id=${lote.loteId})}" 
                            class="btn btn-danger btn-sm"
                            onclick="return confirm('¿Seguro que deseas eliminar este lote?');">
-                           🗑 Eliminar
+                           Eliminar
                         </a>
                     </td>
                 </tr>
                 <tr th:if="${#lists.isEmpty(lotes)}">
-                    <td colspan="5" class="text-center text-muted">No hay lotes registrados</td>
+                    <td colspan="8" class="text-center text-muted">No hay lotes registrados</td>
                 </tr>
             </tbody>
         </table>

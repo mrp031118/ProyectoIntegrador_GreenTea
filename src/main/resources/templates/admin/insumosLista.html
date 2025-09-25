@@ -20,17 +20,10 @@
 
     <!-- Filtros -->
     <form th:action="@{/admin/insumos}" method="get" class="row g-3 mb-3">
-        <div class="col-md-4">
+        <div class="col-md-6">
             <input type="text" name="nombre" th:value="${param.nombre}" placeholder="Buscar por nombre" class="form-control">
         </div>
-        <div class="col-md-3">
-            <select name="proveedorId" class="form-select">
-                <option value="">Todos los proveedores</option>
-                <option th:each="prov : ${proveedores}" th:value="${prov.id}" th:text="${prov.nombre}" 
-                        th:selected="${prov.id} == ${param.proveedorId}"></option>
-            </select>
-        </div>
-        <div class="col-md-3">
+        <div class="col-md-4">
             <select name="unidadMedidaId" class="form-select">
                 <option value="">Todas las unidades</option>
                 <option th:each="u : ${unidades}" th:value="${u.id}" th:text="${u.nombre}" 
@@ -50,7 +43,6 @@
             <tr>
                 <th>Nombre</th>
                 <th>Unidad de Medida</th>
-                <th>Proveedor</th>
                 <th>Stock Mínimo</th>
                 <th>Acciones</th>
             </tr>
@@ -59,7 +51,6 @@
             <tr th:each="insumo : ${insumos}">
                 <td th:text="${insumo.nombre}"></td>
                 <td th:text="${insumo.unidadMedida.nombre}"></td>
-                <td th:text="${insumo.proveedor.nombre}"></td>
                 <td th:text="${insumo.stockMinimo}"></td>
                 <td>
                     <a th:href="@{'/admin/insumos/editar/' + ${insumo.insumoId}}" class="btn btn-warning btn-sm">Editar</a>

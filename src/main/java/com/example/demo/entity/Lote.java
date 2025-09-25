@@ -1,9 +1,12 @@
 package com.example.demo.entity;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -41,13 +44,17 @@ public class Lote {
     private Proveedor proveedor;
 
     // Se inserta la fecha automáticamente
+    @Column(nullable = false, updatable = false)
     private LocalDateTime fechaEntrada = LocalDateTime.now();
 
-    private Double cantidad;
+    @Column(nullable = false)
+    private LocalDate fechaVencimiento;
 
-    private Double cantidadDisponible;
+    @Column(nullable = false)
+    private Integer cantidad;
 
-    private Double costoUnitario;
+    @Column(precision = 10, scale = 2, nullable = false)
+    private BigDecimal costoUnitario;
 
     private String observaciones;
 

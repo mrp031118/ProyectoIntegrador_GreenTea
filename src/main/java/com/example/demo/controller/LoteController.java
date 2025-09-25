@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.demo.dto.KardexLoteProjection;
@@ -38,8 +39,21 @@ public class LoteController {
 
     // Listar lotes
     @GetMapping
-    public String listar(Model model) {
-        model.addAttribute("lotes", loteService.listarLotes());
+    public String listar(Model model,
+            @RequestParam(required = false) Long proveedorId,
+            @RequestParam(required = false) Long insumoId,
+            @RequestParam(required = false) String nombreInsumo) {
+
+        Proveedor proveedor = proveedorId != null ? proveedorService.obtenerPorId(proveedorId) : null;
+        Insumo insumo = insumoId != null ? insumoService.obtenerInsumosPorId(insumoId) : null;
+
+        List<Lote> lotes = loteService.buscarLotes(proveedor, insumo, nombreInsumo);
+
+        model.addAttribute("lotes", lotes);
+        model.addAttribute("proveedores", proveedorService.listarProveedores()); 
+        model.addAttribute("insumos", insumoService.listarInsumos()); 
+        model.addAttribute("nombreInsumo", nombreInsumo); 
+
         return "/admin/lotesLista";
     }
 
@@ -71,11 +85,6 @@ public class LoteController {
         } else {
             ra.addFlashAttribute("error", "Selecciona un proveedor válido.");
             return "redirect:/admin/lote/nuevo";
-        }
-
-        // Inicializar cantidad disponible al crear
-        if (lote.getLoteId() == null && lote.getCantidadDisponible() == null) {
-            lote.setCantidadDisponible(lote.getCantidad());
         }
 
         // Guardar

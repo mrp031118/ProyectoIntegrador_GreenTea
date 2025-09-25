@@ -17,21 +17,14 @@
             <input type="text" th:field="*{nombre}" class="form-control" required />
         </div>
 
-        <div class="col-md-3">
+        <div class="col-md-6">
             <label for="unidadMedida" class="form-label">Unidad de Medida</label>
             <select th:field="*{unidadMedida.id}" class="form-select" required>
                 <option th:each="u : ${unidades}" th:value="${u.id}" th:text="${u.nombre}"></option>
             </select>
         </div>
 
-        <div class="col-md-3">
-            <label for="proveedor" class="form-label">Proveedor</label>
-            <select th:field="*{proveedor.id}" class="form-select" required>
-                <option th:each="p : ${proveedores}" th:value="${p.id}" th:text="${p.nombre}"></option>
-            </select>
-        </div>
-
-        <div class="col-md-3">
+        <div class="col-md-6">
             <label for="stockMinimo" class="form-label">Stock Mínimo</label>
             <input type="number" th:field="*{stockMinimo}" class="form-control" min="0" required />
         </div>

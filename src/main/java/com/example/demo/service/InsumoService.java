@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.entity.Insumo;
-import com.example.demo.entity.Proveedor;
 import com.example.demo.entity.UnidadMedida;
 import com.example.demo.repository.InsumoRepository;
 
@@ -15,17 +14,13 @@ public class InsumoService {
     @Autowired
     private InsumoRepository insumoRepository;
 
-    // Buscar insumos por filtros: nombre, proveedor, unidad de medida
-    public List<Insumo> buscarInsumos(String nombre, Proveedor proveedor, UnidadMedida unidadMedida) {
-        if (nombre == null)
+    // Buscar insumos por filtros: nombre y unidad de medida
+    public List<Insumo> buscarInsumos(String nombre, UnidadMedida unidadMedida) {
+        if (nombre == null) {
             nombre = "";
+        }
 
-        if (proveedor != null && unidadMedida != null) {
-            return insumoRepository.findByProveedorAndUnidadMedidaAndNombreContainingIgnoreCase(proveedor, unidadMedida,
-                    nombre);
-        } else if (proveedor != null) {
-            return insumoRepository.findByProveedorAndNombreContainingIgnoreCase(proveedor, nombre);
-        } else if (unidadMedida != null) {
+        if (unidadMedida != null) {
             return insumoRepository.findByUnidadMedidaAndNombreContainingIgnoreCase(unidadMedida, nombre);
         } else {
             return insumoRepository.findByNombreContainingIgnoreCase(nombre);
@@ -44,7 +39,7 @@ public class InsumoService {
     }
 
     public void eliminarInsumo(Long id) throws Exception {
-       Insumo insumo = obtenerInsumosPorId(id);
+        Insumo insumo = obtenerInsumosPorId(id);
 
         if (insumo == null) {
             throw new Exception("El insumo no existe");

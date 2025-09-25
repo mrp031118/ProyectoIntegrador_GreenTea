@@ -6,8 +6,8 @@
 </head>
 <body class="container mt-4">
 
-    <h2 class="mb-3">📊 Kardex de Lotes (PEPS)</h2>
-    <a th:href="@{/admin/lotes}" class="btn btn-secondary mb-3">🔙 Volver</a>
+    <h2 class="mb-3">Kardex de Lotes (PEPS)</h2>
+    <a th:href="@{/admin/lotes}" class="btn btn-secondary mb-3">Volver</a>
 
     <div class="table-responsive">
         <table class="table table-bordered table-hover align-middle">
@@ -17,6 +17,8 @@
                     <th>Insumo</th>
                     <th>Unidad Medida</th>
                     <th>Proveedor</th>
+                    <th>Fecha Entrada</th>
+                    <th>Fecha Vencimiento</th>
                     <th>Costo Unitario</th>
                     <th>Cantidad Inicial</th>
                     <th>Cantidad Usada</th>
@@ -29,13 +31,15 @@
                     <td th:text="${k.insumo}"></td>
                     <td th:text="${k.unidadMedida}"></td>
                     <td th:text="${k.proveedor}"></td>
+                    <td th:text="${k.fechaEntrada != null ? #temporals.format(k.fechaEntrada, 'dd/MM/yyyy') : '—'}"></td>
+                    <td th:text="${k.fechaVencimiento != null ? #temporals.format(k.fechaVencimiento, 'dd/MM/yyyy') : '—'}"></td>
                     <td th:text="${k.costoUnitario}"></td>
                     <td th:text="${k.cantidadInicial}"></td>
                     <td th:text="${k.cantidadUsada}"></td>
                     <td th:text="${k.cantidadDisponible}"></td>
                 </tr>
                 <tr th:if="${#lists.isEmpty(kardex)}">
-                    <td colspan="8" class="text-center text-muted">No hay registros en el Kardex</td>
+                    <td colspan="10" class="text-center text-muted">No hay registros en el Kardex</td>
                 </tr>
             </tbody>
         </table>

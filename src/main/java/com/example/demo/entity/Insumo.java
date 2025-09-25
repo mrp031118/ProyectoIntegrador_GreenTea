@@ -23,8 +23,8 @@ import lombok.ToString;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString(exclude = {"lotes", "movimientos", "proveedor", "unidadMedida"})
-@EqualsAndHashCode(exclude = {"lotes", "movimientos", "proveedor", "unidadMedida"})
+@ToString(exclude = {"lotes", "movimientos", "unidadMedida"})
+@EqualsAndHashCode(exclude = {"lotes", "movimientos", "unidadMedida"})
 public class Insumo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,17 +33,12 @@ public class Insumo {
     @Column(nullable = false, length = 100)
     private String nombre;
 
-    private Double stockMinimo;
+    private Integer stockMinimo;
 
     // Relación con Unidad de Medida
     @ManyToOne
     @JoinColumn(name = "unidad_medida_id")
     private UnidadMedida unidadMedida;
-
-    // Relación con Proveedor
-    @ManyToOne
-    @JoinColumn(name = "proveedor_id")
-    private Proveedor proveedor;
 
     // Relación con Lote
     @OneToMany(mappedBy = "insumo", cascade = CascadeType.ALL)
