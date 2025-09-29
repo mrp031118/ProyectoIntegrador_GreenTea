@@ -40,20 +40,7 @@ public class AdminController {
     }
 
     @GetMapping("/dashboard")
-    public String adminDashboard(Model model, Principal principal) {
-        // Obtiene el username del usuario autenticado
-        String username = principal.getName();
-
-        // Busca en la BD al usuario por su username
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-
-        // Concatenamos nombre + apellido
-        String nombreCompleto = user.getNombre() + " " + user.getApellido();
-
-        // Lo pasamos al modelo
-        model.addAttribute("nombreCompleto", nombreCompleto);
-
+    public String adminDashboard() {
         return "admin/dashboardAdmi";
     }
 
