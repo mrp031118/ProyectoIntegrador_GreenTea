@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head></head>
+
+<body>
+
+    <!-- Header -->
+    <div th:fragment="header">
+        <div class="box-menu d-flex justify-content-between align-items-center p-3 shadow-sm">
+            <div>
+                <img th:src="@{/img/logo-greentee.png}" alt="Green Tea" style="height: 60px;">
+            </div>
+            <div>
+                <button class="btn bg-principal" type="button" data-bs-toggle="offcanvas"
+                    data-bs-target="#staticBackdrop" aria-controls="staticBackdrop">
+                    <i class="fa-solid fa-bars text-light"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Menú lateral -->
+    <div th:fragment="menuLateral">
+        <div class="offcanvas offcanvas-start bg-principal" data-bs-backdrop="static" tabindex="-1" id="staticBackdrop"
+            aria-labelledby="staticBackdropLabel">
+            <div class="offcanvas-header shadow-sm">
+                <div class="col-auto">
+                    <i class="fa-solid fa-circle-user fa-2x c-white"></i>
+                </div>
+                <div class="col px-1">
+                    <!-- Aquí va el nombre dinámico -->
+                    <p class="mb-0 fw-bold fs-6 c-white" th:text="${nombreCompleto}"></p>
+                    <p class="mb-0 text-rol c-white">Empleado</p>
+                </div>
+                <button type="button" class="btn-close c-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+
+            <div class="offcanvas-body">
+                <div class="row h-100">
+                    <div class="col-12 pt-3" style="height: 90%;">
+
+                        <!-- Inicio -->
+                        <a th:href="@{/empleado/dashboard}" class="module-a d-flex align-items-center row mx-0 mt-3">
+                            <div class="col-2"><i class="fa-solid fa-house c-white"></i></div>
+                            <div class="col-10 c-white"><span>Inicio</span></div>
+                        </a>
+
+                        <!-- Registrar Venta -->
+                        <a th:href="@{/empleado/dashboard}" class="module-a d-flex align-items-center row mx-0 mt-3">
+                            <div class="col-2"><i class="fa-solid fa-cart-plus c-white"></i></div>
+                            <div class="col-10 c-white"><span>Registrar Venta</span></div>
+                        </a>
+
+                        <!-- Producción -->
+                        <a th:href="@{/empleado/dashboard}" class="module-a d-flex align-items-center row mx-0 mt-3">
+                            <div class="col-2"><i class="fa-solid fa-industry c-white"></i></div>
+                            <div class="col-10 c-white"><span>Producción</span></div>
+                        </a>
+
+                        <!-- Mermas y Desperdicios -->
+                        <a th:href="@{/empleado/dashboard}" class="module-a d-flex align-items-center row mx-0 mt-3">
+                            <div class="col-2"><i class="fa-solid fa-trash-arrow-up c-white"></i></div>
+                            <div class="col-10 c-white"><span>Mermas y Desperdicios</span></div>
+                        </a>
+
+                        <!-- Verificar Disponibilidad -->
+                        <a th:href="@{/empleado/dashboard}" class="module-a d-flex align-items-center row mx-0 mt-3">
+                            <div class="col-2"><i class="fa-solid fa-box-open c-white"></i></div>
+                            <div class="col-10 c-white"><span>Verificar Disponibilidad</span></div>
+                        </a>
+
+                        <!-- Reportes -->
+                        <a th:href="@{/empleado/dashboard}" class="module-a d-flex align-items-center row mx-0 mt-3">
+                            <div class="col-2"><i class="fa-solid fa-chart-line c-white"></i></div>
+                            <div class="col-10 c-white"><span>Reportes</span></div>
+                        </a>
+
+                    </div>
+
+
+                    <!-- Cerrar Sesión -->
+                    <div class="col-12 mt-4">
+                        <a th:href="@{/logout}" class="module-a d-flex align-items-center row mx-0 btn-logout">
+                            <div class="col-2"><i class="fa-solid fa-door-open c-white"></i></div>
+                            <div class="col-10 c-white"><span>Cerrar Sesión</span></div>
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

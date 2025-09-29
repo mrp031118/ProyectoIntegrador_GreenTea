@@ -1,16 +1,40 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Empleado</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
+
 <body>
-    <h1>¡WELCOME EMPLEADO <span th:text="${nombreCompleto}"></span> A TU DASHBOARD!</h1>
-    <p>Esta es la página de dashboard.</p>
-    <!---Enlace para ir a la seccion perfil-->
-    <a th:href="@{/empleado/perfil}">Ir a Perfil</a><br>
-    <!-- Enlace para cerrar sesión -->
-    <a th:href="@{/logout}">Cerrar Sesión</a>
+    <!-- Header -->
+    <div th:replace="fragmentsEmp :: header"></div>
+
+    <!-- Body principal -->
+    <div class="row mx-0 justify-content-center">
+        <div class="col-10 px-0 mt-3"><h3>Reporte Diario</h3></div>
+        <div class="col-10 my-2 p-3 bg-secundario rounded-1">
+            Clientes Hoy
+        </div>
+        <div class="col-10 my-2 p-3 bg-secundario rounded-1">
+            Monto Hoy
+        </div>
+        <div class="col-10 my-2 p-3 bg-secundario rounded-1">
+            Venta Hoy
+        </div>
+    </div>
+
+    <!-- Menú Desplegable -->
+    <div th:replace="fragmentsEmp :: menuLateral"></div>
+
 </body>
+
 </html>
