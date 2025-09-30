@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Movimientos de Insumos - Green Tea</title>
+    <title>Ventas - Green Tea</title>
 
     <!-- CSS propio -->
     <link rel="stylesheet" th:href="@{/css/estilos.css}">
@@ -25,68 +25,61 @@
 
         <!-- Título -->
         <div class="col-10 px-0 py-2">
-            <h3 class="fw-bold text-dark mb-2">Movimientos de Insumos</h3>
+            <h3 class="fw-bold text-dark mb-2">Gestión de Ventas</h3>
             <hr class="border-secondary mt-0 mb-2">
         </div>
 
-        <!-- Botón registrar merma -->
-        <div class="col-10 mb-3 px-0">
-            <a th:href="@{/admin/movimientos/insumo/merma}" class="btn btn-success btn-sm">
-                <i class="fa-solid fa-plus"></i> Registrar Merma
-            </a>
+        <!-- Filtros -->
+        <div class="col-10 bg-secundario rounded-2 shadow-sm p-3 mb-3">
+            <h5 class="text-dark mb-3">Filtros</h5>
+            <form th:action="@{/admin/ventas}" method="get" class="row g-2">
+                <div class="col-md-6">
+                    <input type="date" name="fecha" class="form-control form-control-sm">
+                </div>
+                <div class="col-md-2 d-grid">
+                    <button type="submit" class="btn btn-sm btn-primary">
+                        <i class="fa-solid fa-filter"></i> Filtrar
+                    </button>
+                </div>
+            </form>
         </div>
 
-        <!-- Tabla de movimientos de insumos -->
+
+        <!-- Tabla de ventas -->
         <div class="col-10 bg-secundario rounded-2 shadow-sm p-3">
-            <h5 class="text-dark mb-3">Lista de Movimientos de Insumos</h5>
+            <h5 class="text-dark mb-3">Lista de Ventas</h5>
             <div class="table-responsive" style="max-height: 320px; overflow-y: auto;">
                 <table class="table table-hover align-middle table-borderless table-sm table-transparent">
                     <thead style="position: sticky; top: 0; background-color: rgba(0,0,0,0.6); z-index: 10;">
                         <tr class="text-white">
-                            <th>Insumo</th>
+                            <th>ID</th>
+                            <th>Producto</th>
+                            <th>Cantidad Vendida</th>
                             <th>Fecha</th>
-                            <th>Entrada</th>
-                            <th>Salida</th>
-                            <th>Costo Unitario</th>
-                            <th>Merma</th>
-                            <th>Lote</th>
-                            <th>Cantidad Disponible</th>
-                            <th>Total</th>
+                            <th>Empleado Responsable</th>
                         </tr>
                     </thead>
                     <tbody class="text-light">
                         <tr>
-                            <td>Leche</td>
+                            <td>1</td>
+                            <td>Torta Chocolate</td>
+                            <td>12</td>
                             <td>12/09/2025</td>
-                            <td>20</td>
-                            <td>0</td>
-                            <td>S/ 3.00</td>
-                            <td>0</td>
-                            <td>L-001</td>
-                            <td>20</td>
-                            <td>S/ 60.00</td>
+                            <td>Celeste Napa</td>
                         </tr>
                         <tr>
-                            <td>Azúcar</td>
-                            <td>12/09/2025</td>
-                            <td>50</td>
-                            <td>10</td>
-                            <td>S/ 1.50</td>
-                            <td>0</td>
-                            <td>L-002</td>
-                            <td>40</td>
-                            <td>S/ 60.00</td>
-                        </tr>
-                        <tr>
-                            <td>Café en grano</td>
-                            <td>12/09/2025</td>
-                            <td>30</td>
-                            <td>5</td>
-                            <td>S/ 12.00</td>
                             <td>2</td>
-                            <td>L-003</td>
-                            <td>23</td>
-                            <td>S/ 276.00</td>
+                            <td>Latte Matcha</td>
+                            <td>8</td>
+                            <td>12/09/2025</td>
+                            <td>Juan Pérez</td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>Muffin</td>
+                            <td>5</td>
+                            <td>12/09/2025</td>
+                            <td>María López</td>
                         </tr>
                     </tbody>
                 </table>

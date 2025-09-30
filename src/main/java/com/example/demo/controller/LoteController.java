@@ -75,7 +75,7 @@ public class LoteController {
             lote.setInsumo(ins);
         } else {
             ra.addFlashAttribute("error", "Selecciona un insumo válido.");
-            return "redirect:/admin/lote/nuevo";
+            return "redirect:/admin/lotes/nuevo";
         }
 
         // Validar proveedor
@@ -84,7 +84,7 @@ public class LoteController {
             lote.setProveedor(prov);
         } else {
             ra.addFlashAttribute("error", "Selecciona un proveedor válido.");
-            return "redirect:/admin/lote/nuevo";
+            return "redirect:/admin/lotes/nuevo";
         }
 
         // Guardar

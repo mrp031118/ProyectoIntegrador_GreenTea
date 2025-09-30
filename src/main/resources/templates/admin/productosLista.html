@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Productos - Green Tea</title>
+
+    <!-- CSS propio -->
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" />
+</head>
+
+<body>
+    <!--Header-->
+    <div th:replace="fragmentsAdmi :: header"></div>
+
+    <div class="row justify-content-center mx-0 mt-3">
+
+        <!-- Título -->
+        <div class="col-10 px-0 py-2">
+            <h3 class="fw-bold text-dark mb-2">Gestión de Productos</h3>
+            <hr class="border-secondary mt-0 mb-2">
+        </div>
+
+        <!-- Filtros -->
+        <div class="col-10 bg-secundario rounded-2 shadow-sm p-3 mb-3">
+            <h5 class="text-dark mb-3">Filtros</h5>
+            <form class="row g-2">
+                <div class="col-md-6">
+                    <input type="text" placeholder="Buscar por nombre" class="form-control form-control-sm">
+                </div>
+                <div class="col-md-4">
+                    <select class="form-select form-select-sm">
+                        <option>Todas las categorías</option>
+                        <option>Café</option>
+                        <option>Té</option>
+                        <option>Repostería</option>
+                    </select>
+                </div>
+                <div class="col-md-2 d-grid">
+                    <button type="button" class="btn btn-sm btn-primary">
+                        <i class="fa-solid fa-filter"></i> Filtrar
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Botones de acción -->
+        <div class="col-10 mb-3 px-0">
+            <a th:href="@{/admin/productos/nuevo}" class="btn btn-success btn-sm me-2">
+                <i class="fa-solid fa-plus"></i> Nuevo Producto
+            </a>
+        </div>
+
+        <!-- Tabla de productos -->
+        <div class="col-10 bg-secundario rounded-2 shadow-sm p-3">
+            <h5 class="text-dark mb-3">Lista de Productos</h5>
+            <div class="table-responsive" style="max-height: 320px; overflow-y: auto;">
+                <table class="table table-hover align-middle table-borderless table-sm table-transparent">
+                    <thead style="position: sticky; top: 0; background-color: rgba(0,0,0,0.6); z-index: 10;">
+                        <tr class="text-white">
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Categoría</th>
+                            <th>Precio</th>
+                            <th>Stock Actual</th>
+                            <th>Stock Mínimo</th>
+                            <th>Fraccionable</th>
+                            <th>Unidad Conversión</th>
+                            <th class="text-center">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-light">
+                        <tr>
+                            <td>3</td>
+                            <td>Muffin</td>
+                            <td>Repostería</td>
+                            <td>S/ 6.50</td>
+                            <td>20</td>
+                            <td>5</td>
+                            <td>No</td>
+                            <td>Unidad</td>
+                            <td class="text-center">
+                                <button class="btn btn-sm btn-outline-light me-1"><i class="fa-solid fa-pen"></i></button>
+                                <button class="btn btn-sm btn-outline-danger"><i class="fa-solid fa-trash"></i></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <!--Menu Deslizable-->
+    <div th:replace="fragmentsAdmi :: menuLateral"></div>
+
+</body>
+</html>

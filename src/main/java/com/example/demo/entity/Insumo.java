@@ -35,6 +35,7 @@ public class Insumo {
 
     private Integer stockMinimo;
 
+
     // Relación con Unidad de Medida
     @ManyToOne
     @JoinColumn(name = "unidad_medida_id")

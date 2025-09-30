@@ -3,6 +3,7 @@ package com.example.demo.entity;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -17,34 +18,30 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Data
+@Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
 @Table(name = "movimientos")
 @ToString(exclude = {"insumo", "lote", "tipoMovimiento"})
 @EqualsAndHashCode(exclude = {"insumo", "lote", "tipoMovimiento"})
 public class Movimiento {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // autoincremental según MySQL
     private Long movimientoId;
 
-    //Relación con Insumo
     @ManyToOne
-    @JoinColumn(name = "insumo_id")
+    @JoinColumn(name = "insumo_id", nullable = false)
     private Insumo insumo;
 
-    // Relación con Tipos de movimientos de Kardex
     @ManyToOne
-    @JoinColumn(name = "tipo_movimiento_id")
+    @JoinColumn(name = "tipo_movimiento_id", nullable = false)
     private TipoMovimientoKardex tipoMovimiento;
 
-    private LocalDateTime fecha;
+    private java.util.Date fecha;
+    private Double cantidad;
+    private Double costoUnitario;
+    private Double total;
 
-    private BigDecimal cantidad;
-    private BigDecimal costoUnitario;
-    private BigDecimal total;
-
-    // Relación con Lote
     @ManyToOne
     @JoinColumn(name = "lote_id")
     private Lote lote;
