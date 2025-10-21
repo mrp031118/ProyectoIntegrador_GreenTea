@@ -35,7 +35,7 @@ public class Movimiento {
     private TipoMovimientoKardex tipoMovimiento;
 
     private java.util.Date fecha;
-    private Double cantidad;
+    private Integer cantidad;
     private Double costoUnitario;
     private Double total;
 

@@ -61,41 +61,29 @@
                             <th>Valor Total</th>
                         </tr>
                     </thead>
-                    <tbody class="text-light">
-                        <tr>
-                            <td>2025-09-12 08:30</td>
-                            <td>Leche</td>
-                            <td>L-001</td>
-                            <td>20</td>
-                            <td>S/ 3.00</td>
-                            <td>0</td>
-                            <td>-</td>
-                            <td>20</td>
-                            <td>S/ 60.00</td>
-                        </tr>
-                        <tr>
-                            <td>2025-09-12 10:00</td>
-                            <td>Leche</td>
-                            <td>L-001</td>
-                            <td>0</td>
-                            <td>-</td>
-                            <td>5</td>
-                            <td>S/ 3.00</td>
-                            <td>15</td>
-                            <td>S/ 45.00</td>
-                        </tr>
-                        <tr>
-                            <td>2025-09-12 11:30</td>
-                            <td>Azúcar</td>
-                            <td>L-002</td>
-                            <td>50</td>
-                            <td>S/ 1.50</td>
-                            <td>0</td>
-                            <td>-</td>
-                            <td>50</td>
-                            <td>S/ 75.00</td>
+                    <tbody>
+                        <tr th:each="mov : ${movimientos}"
+                            th:classappend="${mov.tipoMovimiento.nombre == 'ENTRADA'} ? 'table-success' : 
+                                            (${mov.tipoMovimiento.nombre == 'SALIDA'} ? 'table-danger' : 'table-warning')"
+                            class="text-center">
+                            <td th:text="${#dates.format(mov.fecha, 'dd/MM/yyyy')}"></td>
+                            <td th:text="${mov.insumo.nombre}"></td>
+                            <td th:text="${mov.lote.loteId}"></td>
+
+                            <!-- ENTRADAS -->
+                            <td th:text="${mov.tipoMovimiento.nombre == 'ENTRADA' ? mov.cantidad : '-'}"></td>
+                            <td th:text="${mov.tipoMovimiento.nombre == 'ENTRADA' ? mov.costoUnitario : '-'}"></td>
+
+                            <!-- SALIDAS -->
+                            <td th:text="${mov.tipoMovimiento.nombre == 'SALIDA' ? mov.cantidad : '-'}"></td>
+                            <td th:text="${mov.tipoMovimiento.nombre == 'SALIDA' ? mov.costoUnitario : '-'}"></td>
+
+                            <!-- SALDO -->
+                            <td th:text="${mov.cantidad}"></td>
+                            <td th:text="${mov.total}"></td>
                         </tr>
                     </tbody>
+
                 </table>
             </div>
         </div>

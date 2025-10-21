@@ -89,7 +89,7 @@ public class LoteController {
 
         // Guardar
         loteService.guardarLote(lote);
-        ra.addFlashAttribute("success", "Lote guardado correctamente.");
+        ra.addFlashAttribute("mensaje", "Lote registrado y movimiento de entrada creado correctamente.");
         return "redirect:/admin/lotes";
     }
 

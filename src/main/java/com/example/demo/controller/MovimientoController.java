@@ -1,25 +1,36 @@
 package com.example.demo.controller;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import ch.qos.logback.core.model.Model;
+import com.example.demo.entity.Movimiento;
+import com.example.demo.repository.MovimientoRepository;
 
 
-@Controller 
+@Controller
 @RequestMapping("/admin/movimientos/insumo")
 public class MovimientoController {
 
+    @Autowired
+    private MovimientoRepository movimientoRepository;
+
     @GetMapping()
-    public String listar(Model model) {
-        return "admin/movimientosLista"; 
+    public String listarMovimientos(Model model) {
+        List<Movimiento> movimientos = movimientoRepository.findAll(Sort.by(Sort.Direction.DESC, "fecha"));
+        model.addAttribute("movimientos", movimientos);
+        return "/admin/movimientosLista";
     }
 
     // Mostrar formulario de nuevo producto
     @GetMapping("/merma")
     public String guardarMerma(Model model) {
-        return "admin/movimientoFormulario"; 
+        return "admin/movimientoFormulario";
     }
-    
+
 }

@@ -53,8 +53,8 @@ public class Lote {
     @Column(nullable = false)
     private Integer cantidad;
 
-    @Column(precision = 10, scale = 2, nullable = false)
-    private BigDecimal costoUnitario;
+    @Column
+    private Double costoUnitario;
 
     private String observaciones;
 
