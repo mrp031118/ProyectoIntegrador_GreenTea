@@ -42,10 +42,6 @@
                             <option th:each="p : ${productos}" th:value="${p.id}" th:text="${p.nombre}"></option>
                         </select>
                     </div>
-                    <div class="col-md-4">
-                        <label class="form-label fw-bold">Cantidad</label>
-                        <input type="number" name="cantidadProducto" class="form-control" min="1" step="0.01" required>
-                    </div>
                 </div>
 
                 <hr class="border-secondary">

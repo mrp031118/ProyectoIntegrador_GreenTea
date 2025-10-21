@@ -12,7 +12,7 @@ public class ReportesEmpleadoController {
 
     @GetMapping()
     public String listarProductos(Model model) {
-        return "admin/Reportes"; 
+        return "empleado/Reportes"; 
     }
 
 }
