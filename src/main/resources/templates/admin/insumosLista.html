@@ -6,15 +6,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Insumos - Green Tea</title>
 
-    <!-- CSS propio -->
-    <link rel="stylesheet" th:href="@{/css/estilos.css}">
-
     <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" />
+
+    <!-- CSS propio -->
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+
 </head>
 
 <body>
@@ -22,75 +23,95 @@
     <div th:replace="fragmentsAdmi :: header"></div>
 
     <!-- Body -->
-    <div class="row justify-content-center mx-0 mt-3">
+    <!-- Body -->
+    <div class="container mt-4">
 
-        <!-- Título -->
-        <div class="col-10 px-0 py-2">
-            <h3 class="fw-bold text-dark mb-2">Gestión de Insumos</h3>
-            <hr class="border-secondary mt-0 mb-2">
+        <!-- Título con icono -->
+        <div class="d-flex align-items-center mb-3">
+            <i class="fa-solid fa-boxes-stacked text-success me-2" style="font-size: 1.5rem;"></i>
+            <h3 class="fw-bold text-dark mb-0">Gestión de Insumos</h3>
         </div>
+        <hr class="mt-2 mb-3" style="border: 0.5px solid #000000; width: 100%;">
+
 
         <!-- Mensaje de error -->
-        <div class="col-10" th:if="${error}">
-            <div class="alert alert-danger py-2 px-3" th:text="${error}"></div>
+        <div th:if="${error}">
+            <div class="alert alert-danger py-2 px-3 text-center" th:text="${error}"></div>
         </div>
 
         <!-- Filtros -->
-        <div class="col-10 bg-secundario rounded-2 shadow-sm p-3 mb-3">
-            <h5 class="text-dark mb-3">Filtros</h5>
-            <form th:action="@{/admin/insumos}" method="get" class="row g-2">
-                <div class="col-md-6">
+        <div class="bg-secundario rounded-3 shadow-sm p-4 mb-4 mx-auto" style="max-width: 1100px;">
+            <!-- Título -->
+            <div class="d-flex align-items-center mb-3">
+                <i class="fa-solid fa-filter text-success me-2" style="font-size: 1.3rem;"></i>
+                <h5 class="text-dark fw-semibold mb-0">Filtros de búsqueda</h5>
+            </div>
+
+            <!-- Formulario de búsqueda -->
+            <form th:action="@{/admin/insumos}" method="get" class="row g-3 align-items-center">
+                <!-- Campo nombre -->
+                <div class="col-md-5">
                     <input type="text" name="nombre" th:value="${param.nombre}" placeholder="Buscar por nombre"
-                        class="form-control form-control-sm">
+                        class="form-control form-control-sm shadow-sm">
                 </div>
+
+                <!-- Selector unidad de medida -->
                 <div class="col-md-4">
-                    <select name="unidadMedidaId" class="form-select form-select-sm">
+                    <select name="unidadMedidaId" class="form-select form-select-sm shadow-sm">
                         <option value="">Todas las unidades</option>
                         <option th:each="u : ${unidades}" th:value="${u.id}" th:text="${u.nombre}"
                             th:selected="${u.id} == ${param.unidadMedidaId}">
                         </option>
                     </select>
                 </div>
-                <div class="col-md-2 d-grid">
-                    <button type="submit" class="btn btn-sm btn-primary">
-                        <i class="fa-solid fa-filter"></i> Filtrar
+
+                <!-- Botones de acción -->
+                <div class="col-md-3 d-flex justify-content-end gap-2">
+                    <button type="submit" class="btn btn-sm btn-success-custom px-3">
+                        <i class="fa-solid fa-magnifying-glass"></i> Buscar
                     </button>
+
+                    <a th:href="@{/admin/insumos}" class="btn btn-sm btn-outline-secondary px-3">
+                        <i class="fa-solid fa-rotate-right"></i> Limpiar
+                    </a>
                 </div>
             </form>
+
+            <hr class="my-4">
+
+            <!-- Botones secundarios -->
+            <div class="d-flex justify-content-right align-items-center gap-3">
+                <a th:href="@{/admin/insumos/nuevo}" class="btn btn-success btn-sm shadow-sm">
+                    <i class="fa-solid fa-plus"></i> Nuevo Insumo
+                </a>
+                <button class="btn btn-info btn-sm shadow-sm" onclick="mostrarStock()" data-bs-toggle="modal"
+                    data-bs-target="#modalStock">
+                    <i class="fa-solid fa-boxes"></i> Ver Stock Actual
+                </button>
+            </div>
         </div>
 
-        <!-- Botón agregar insumo -->
-        <div class="col-10 mb-3 px-0">
-            <a th:href="@{/admin/insumos/nuevo}" class="btn btn-success btn-sm">
-                <i class="fa-solid fa-plus"></i> Nuevo Insumo
-            </a>
-            <button class="btn btn-info btn-sm" onclick="mostrarStock()" data-bs-toggle="modal"
-                data-bs-target="#modalStock">
-                <i class="fa-solid fa-boxes"></i> Ver Stock Actual
-            </button>
-        </div>
 
-       
 
 
         <!-- Tabla de insumos -->
-        <div class="col-10 bg-secundario rounded-2 shadow-sm p-3">
-            <h5 class="text-dark mb-3">Lista de Insumos</h5>
-            <div class="table-responsive" style="max-height: 320px; overflow-y: auto;">
-                <table class="table table-hover align-middle table-borderless table-sm table-transparent">
-                    <thead style="position: sticky; top: 0; background-color: rgba(0,0,0,0.6); z-index: 10;">
+        <div class="bg-secundario rounded-3 shadow-sm p-4 mx-auto" style="max-width: 1100px;">
+            <h5 class="titulo-seccion mb-3">Lista de Insumos</h5>
+            <div class="table-responsive tabla-scroll">
+                <table class="table-modern w-100 mx-auto">
+                    <thead>
                         <tr class="text-white">
                             <th>Nombre</th>
+                            <th class="text-center">Stock Mínimo</th>
                             <th>Unidad de Medida</th>
-                            <th>Stock Mínimo</th>
                             <th class="text-center">Acciones</th>
                         </tr>
                     </thead>
-                    <tbody class="text-light">
+                    <tbody>
                         <tr th:each="insumo : ${insumos}">
                             <td th:text="${insumo.nombre}"></td>
+                            <td class="text-center" th:text="${insumo.stockMinimo}"></td>
                             <td th:text="${insumo.unidadMedida.nombre}"></td>
-                            <td th:text="${insumo.stockMinimo}"></td>
                             <td class="text-center">
                                 <!-- Editar -->
                                 <a th:href="@{'/admin/insumos/editar/' + ${insumo.insumoId}}"
@@ -112,6 +133,7 @@
         </div>
 
     </div>
+
 
     <!--Menu Deslizable-->
     <div th:replace="fragmentsAdmi :: menuLateral"></div>

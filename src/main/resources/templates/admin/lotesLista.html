@@ -4,10 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestión de Lotes - Green Tea</title>
-
-    <!-- CSS propio -->
-    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+    <title>Lotes - Green Tea</title>
 
     <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -15,85 +12,98 @@
 
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" />
+
+    <!-- CSS propio -->
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
 </head>
 
 <body>
-    <!--Header-->
+    <!-- Header -->
     <div th:replace="fragmentsAdmi :: header"></div>
 
-    <!-- Body -->
-    <div class="row justify-content-center mx-0 mt-3">
+    <!-- Contenedor principal -->
+    <div class="container mt-4">
 
-        <!-- Título -->
-        <div class="col-10 px-0 py-2">
-            <h3 class="fw-bold text-dark mb-2">Gestión de Lotes</h3>
-            <hr class="border-secondary mt-0 mb-2">
+        <!-- Título principal -->
+        <div class="d-flex align-items-center mb-3">
+            <i class="fa-solid fa-cubes text-success me-2" style="font-size: 1.5rem;"></i>
+            <h3 class="fw-bold text-dark mb-0">Gestión de Lotes</h3>
+        </div>
+        <hr class="mt-2 mb-3" style="border: 0.5px solid #000000; width: 100%;">
+
+        <!-- Mensaje de error -->
+        <div th:if="${error}">
+            <div class="alert alert-danger py-2 px-3 text-center" th:text="${error}"></div>
         </div>
 
-        <!-- Botones -->
-        <div class="col-10 d-flex flex-wrap gap-2 mb-3">
-            <a th:href="@{/admin/lotes/nuevo}"
-                class="bg-success text-white rounded-1 d-flex align-items-center px-3 py-2 text-decoration-none btn-sm">
-                <i class="fa-solid fa-plus me-2"></i> Nuevo Lote
-            </a>
-            <a th:href="@{/admin/lotes/kardex}"
-                class="bg-info text-white rounded-1 d-flex align-items-center px-3 py-2 text-decoration-none btn-sm">
-                <i class="fa-solid fa-book me-2"></i> Inventario
-            </a>
-        </div>
+        <!-- FILTROS -->
+        <div class="bg-secundario rounded-3 shadow-sm p-4 mb-4 mx-auto" style="max-width: 1100px;">
+            <div class="d-flex align-items-center mb-3">
+                <i class="fa-solid fa-filter text-success me-2" style="font-size: 1.3rem;"></i>
+                <h5 class="text-dark fw-semibold mb-0">Filtros de búsqueda</h5>
+            </div>
 
-        <!-- Filtros -->
-        <div class="col-10 bg-secundario rounded-2 shadow-sm p-4 mb-4">
-            <form method="get" th:action="@{/admin/lotes}" class="row g-3">
+            <!-- Formulario de búsqueda -->
+            <form method="get" th:action="@{/admin/lotes}" class="row g-3 align-items-center">
+
+                <!-- Buscar por nombre -->
                 <div class="col-md-4">
-                    <label class="form-label fw-semibold">Proveedor</label>
-                    <select name="proveedorId" class="form-select form-select-sm rounded-1">
-                        <option value="">-- Todos --</option>
+                    <input type="text" name="nombreInsumo" class="form-control form-control-sm shadow-sm"
+                        th:value="${nombreInsumo}" placeholder="Buscar por nombre de insumo...">
+                </div>
+
+                <!-- Proveedor -->
+                <div class="col-md-4">
+                    <select name="proveedorId" class="form-select form-select-sm shadow-sm">
+                        <option value="">Todos los proveedores</option>
                         <option th:each="prov : ${proveedores}" th:value="${prov.id}" th:text="${prov.nombre}"
                             th:selected="${prov.id == proveedorId}">
                         </option>
                     </select>
                 </div>
 
+                <!-- Insumo -->
                 <div class="col-md-4">
-                    <label class="form-label fw-semibold">Insumo</label>
-                    <select name="insumoId" class="form-select form-select-sm rounded-1">
-                        <option value="">-- Todos --</option>
+                    <select name="insumoId" class="form-select form-select-sm shadow-sm">
+                        <option value="">Todos los insumos</option>
                         <option th:each="insumo : ${insumos}" th:value="${insumo.insumoId}" th:text="${insumo.nombre}"
                             th:selected="${insumo.insumoId == insumoId}">
                         </option>
                     </select>
                 </div>
 
-                <div class="col-md-4">
-                    <label class="form-label fw-semibold">Nombre de Insumo</label>
-                    <input type="text" name="nombreInsumo" class="form-control form-control-sm rounded-1"
-                        th:value="${nombreInsumo}" placeholder="Buscar por nombre..." />
-                </div>
 
-                <div class="col-12 mt-2 d-flex gap-2">
-                    <button type="submit"
-                        class="bg-info text-white rounded-1 d-flex align-items-center justify-content-center px-3 py-2 border-0 btn-sm"
-                        style="width: 15%;">
-                        <i class="fa-solid fa-search me-2"></i> Buscar
+                <!-- Botones -->
+                <div class="col-12 d-flex justify-content-end gap-2 mt-2">
+                    <button type="submit" class="btn btn-sm btn-success-custom px-3">
+                        <i class="fa-solid fa-magnifying-glass"></i> Buscar
                     </button>
-                    <a th:href="@{/admin/lotes}"
-                        class="bg-secondary text-white rounded-1 d-flex align-items-center justify-content-center px-3 py-2 text-decoration-none btn-sm"
-                        style="width: 15%;">
-                        <i class="fa-solid fa-eraser me-2"></i> Limpiar
+                    <a th:href="@{/admin/lotes}" class="btn btn-sm btn-outline-secondary px-3">
+                        <i class="fa-solid fa-rotate-right"></i> Limpiar
                     </a>
                 </div>
             </form>
+
+            <hr class="my-4">
+
+            <!-- Botones secundarios -->
+            <div class="d-flex justify-content-start align-items-center gap-3">
+                <a th:href="@{/admin/lotes/nuevo}" class="btn btn-success btn-sm shadow-sm">
+                    <i class="fa-solid fa-plus"></i> Nuevo Lote
+                </a>
+                <a th:href="@{/admin/lotes/kardex}" class="btn btn-info btn-sm shadow-sm">
+                    <i class="fa-solid fa-book"></i> Inventario
+                </a>
+            </div>
         </div>
 
-        <!-- Tabla de Lotes -->
-        <!-- Tabla de Lotes -->
-        <div class="col-10 bg-secundario rounded-2 shadow-sm p-4">
-            <h5 class="text-dark mb-3">Lista de Lotes</h5>
-            <div class="table-responsive" style="max-height: 320px; overflow-y: auto;">
-                <table class="table table-hover align-middle table-borderless table-sm table-transparent">
-                    <thead style="position: sticky; top: 0; background-color: rgba(0,0,0,0.6); z-index: 10;">
-                        <tr class="text-white">
+        <!-- TABLA DE LOTES -->
+        <div class="tabla-contenedor mx-auto bg-secundario rounded-3 shadow-sm p-4">
+            <h5 class="titulo-seccion mb-3">Lista de Lotes</h5>
+            <div class="table-responsive tabla-scroll">
+                <table class="table-modern w-100 mx-auto">
+                    <thead class="table-header">
+                        <tr class="text-white text-center">
                             <th>ID</th>
                             <th>Insumo</th>
                             <th>Proveedor</th>
@@ -102,39 +112,39 @@
                             <th>Cantidad</th>
                             <th>Costo Unitario</th>
                             <th>Observaciones</th>
-                            <th class="text-center">Acciones</th>
+                            <th>Acciones</th>
                         </tr>
                     </thead>
-                    <tbody class="text-light">
+                    <tbody class="text-center text-dark">
                         <tr th:each="lote : ${lotes}">
                             <td th:text="${lote.loteId}"></td>
                             <td th:text="${lote.insumo.nombre}"></td>
-                            <td th:text="${lote.proveedor.nombre}"></td>
+                            <td class="proveedor" th:text="${lote.proveedor.nombre}"></td>
                             <td th:text="${#temporals.format(lote.fechaEntrada, 'dd/MM/yyyy HH:mm')}"></td>
                             <td th:text="${#temporals.format(lote.fechaVencimiento, 'dd/MM/yyyy')}"></td>
-                            <td th:text="${lote.cantidad}"></td>
+                            <td th:text="${lote.cantidad + ' ' + lote.insumo.unidadMedida.abreviatura}"></td>
                             <td th:text="${lote.costoUnitario}"></td>
-                            <td th:text="${lote.observaciones}"></td>
-                            <td class="text-center">
-                                <!-- Editar -->
+                            <td class="observaciones" th:text="${lote.observaciones}"></td>
+                            <td>
                                 <form th:action="@{/admin/lotes/editar/{id}(id=${lote.loteId})}" method="get"
                                     class="d-inline">
-                                    <button type="submit" class="btn btn-sm btn-outline-light" title="Editar lote">
+                                    <button type="submit" class="btn btn-sm btn-outline-light me-1" title="Editar lote">
                                         <i class="fa-solid fa-pen"></i>
                                     </button>
                                 </form>
-                                <!-- Eliminar -->
                                 <form th:action="@{/admin/lotes/eliminar/{id}(id=${lote.loteId})}" method="post"
                                     class="d-inline">
-                                    <button type="submit" class="btn btn-sm btn-outline-warning" title="Eliminar lote"
-                                        onclick="return confirm('¿Seguro que deseas eliminar este lote?');">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger"
+                                        onclick="return confirm('¿Seguro que deseas eliminar este lote?');"
+                                        title="Eliminar lote">
                                         <i class="fa-solid fa-trash"></i>
                                     </button>
                                 </form>
                             </td>
                         </tr>
+
                         <tr th:if="${#lists.isEmpty(lotes)}">
-                            <td colspan="9" class="text-center text-muted">
+                            <td colspan="9" class="text-center text-muted py-3">
                                 <i class="fa-solid fa-circle-exclamation me-2"></i> No hay lotes registrados
                             </td>
                         </tr>
@@ -143,11 +153,11 @@
             </div>
         </div>
 
-
     </div>
 
-    <!--Menu Deslizable-->
+    <!-- Menu Lateral -->
     <div th:replace="fragmentsAdmi :: menuLateral"></div>
+
 </body>
 
 </html>

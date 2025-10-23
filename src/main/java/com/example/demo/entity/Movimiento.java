@@ -1,6 +1,5 @@
 package com.example.demo.entity;
 
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -8,6 +7,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -19,8 +19,8 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "movimientos")
-@ToString(exclude = {"insumo", "lote", "tipoMovimiento"})
-@EqualsAndHashCode(exclude = {"insumo", "lote", "tipoMovimiento"})
+@ToString(exclude = { "insumo", "lote", "tipoMovimiento" })
+@EqualsAndHashCode(exclude = { "insumo", "lote", "tipoMovimiento" })
 public class Movimiento {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // autoincremental según MySQL
@@ -35,7 +35,7 @@ public class Movimiento {
     private TipoMovimientoKardex tipoMovimiento;
 
     private java.util.Date fecha;
-    private Integer cantidad;
+    private Double cantidad;
     private Double costoUnitario;
     private Double total;
 
@@ -44,4 +44,10 @@ public class Movimiento {
     private Lote lote;
 
     private String observaciones;
+
+    @Transient
+    private Double saldoCantidad;
+
+    @Transient
+    private Double saldoValor;
 }

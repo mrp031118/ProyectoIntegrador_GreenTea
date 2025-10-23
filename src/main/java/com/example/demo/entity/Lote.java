@@ -1,6 +1,5 @@
 package com.example.demo.entity;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -51,7 +50,7 @@ public class Lote {
     private LocalDate fechaVencimiento;
 
     @Column(nullable = false)
-    private Integer cantidad;
+    private Double cantidad;
 
     @Column
     private Double costoUnitario;

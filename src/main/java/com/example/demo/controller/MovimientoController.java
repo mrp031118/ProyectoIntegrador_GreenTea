@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.example.demo.entity.Movimiento;
 import com.example.demo.repository.MovimientoRepository;
+import com.example.demo.service.MovimientoService;
 
 
 @Controller
@@ -18,11 +19,11 @@ import com.example.demo.repository.MovimientoRepository;
 public class MovimientoController {
 
     @Autowired
-    private MovimientoRepository movimientoRepository;
+    private MovimientoService movimientoService;
 
     @GetMapping()
     public String listarMovimientos(Model model) {
-        List<Movimiento> movimientos = movimientoRepository.findAll(Sort.by(Sort.Direction.DESC, "fecha"));
+        List<Movimiento> movimientos = movimientoService.listarMovimientosPEPS();
         model.addAttribute("movimientos", movimientos);
         return "/admin/movimientosLista";
     }

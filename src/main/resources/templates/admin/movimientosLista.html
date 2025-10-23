@@ -23,11 +23,15 @@
 
     <div class="row justify-content-center mx-0 mt-3">
 
-        <!-- Título -->
+        <!-- Título con icono -->
         <div class="col-10 px-0 py-2">
-            <h3 class="fw-bold text-dark mb-2">Movimientos de Insumos</h3>
-            <hr class="border-secondary mt-0 mb-2">
+            <div class="d-flex align-items-center mb-3">
+                <i class="fa-solid fa-right-left text-success me-2" style="font-size: 1.5rem;"></i>
+                <h3 class="fw-bold text-dark mb-0">Movimientos de Insumos</h3>
+            </div>
+            <hr class="mt-2 mb-3" style="border: 0.5px solid #000000; width: 100%;">
         </div>
+
 
         <!-- Botón registrar merma -->
         <div class="col-10 mb-3 px-0">
@@ -39,20 +43,21 @@
         <!-- Tabla Kardex PEPS -->
         <div class="col-10 bg-secundario rounded-2 shadow-sm p-3">
             <h5 class="text-dark mb-3">Kardex Histórico Detallado (PEPS)</h5>
-            <div class="table-responsive" style="max-height: 320px; overflow-y: auto;">
-                <table class="table table-hover align-middle table-borderless table-sm table-transparent">
-                    <thead style="position: sticky; top: 0; background-color: rgba(0,0,0,0.6); z-index: 10;">
+
+            <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                <table class="table table-hover align-middle table-sm table-borderless">
+                    <thead style="position: sticky; top: 0; background-color: #2d4d1e; z-index: 10;">
                         <!-- Fila de encabezados principales -->
                         <tr class="text-white text-center">
-                            <th rowspan="2">Fecha</th>
-                            <th rowspan="2">Insumo</th>
-                            <th rowspan="2">Lote</th>
-                            <th colspan="2">ENTRADAS</th>
-                            <th colspan="2">SALIDAS</th>
-                            <th colspan="2">SALDO</th>
+                            <th rowspan="2" class="py-2 small">Fecha</th>
+                            <th rowspan="2" class="py-2 small">Insumo</th>
+                            <th rowspan="2" class="py-2 small">Lote</th>
+                            <th colspan="2" class="py-2 small">ENTRADAS</th>
+                            <th colspan="2" class="py-2 small">SALIDAS</th>
+                            <th colspan="2" class="py-2 small">SALDO (PEPS)</th>
                         </tr>
                         <!-- Fila de sub-encabezados -->
-                        <tr class="text-white text-center">
+                        <tr class="text-white text-center small">
                             <th>Cantidad</th>
                             <th>C. Unitario</th>
                             <th>Cantidad</th>
@@ -61,33 +66,52 @@
                             <th>Valor Total</th>
                         </tr>
                     </thead>
+
                     <tbody>
+                        <!-- Iterar sobre los movimientos -->
                         <tr th:each="mov : ${movimientos}"
                             th:classappend="${mov.tipoMovimiento.nombre == 'ENTRADA'} ? 'table-success' : 
-                                            (${mov.tipoMovimiento.nombre == 'SALIDA'} ? 'table-danger' : 'table-warning')"
-                            class="text-center">
+                                            (${mov.tipoMovimiento.nombre == 'SALIDA'} ? 'table-danger' : 'table-warning')" class="text-center small">
+
+                            <!-- Fecha -->
                             <td th:text="${#dates.format(mov.fecha, 'dd/MM/yyyy')}"></td>
+
+                            <!-- Insumo -->
                             <td th:text="${mov.insumo.nombre}"></td>
+
+                            <!-- Lote -->
                             <td th:text="${mov.lote.loteId}"></td>
 
                             <!-- ENTRADAS -->
-                            <td th:text="${mov.tipoMovimiento.nombre == 'ENTRADA' ? mov.cantidad : '-'}"></td>
-                            <td th:text="${mov.tipoMovimiento.nombre == 'ENTRADA' ? mov.costoUnitario : '-'}"></td>
+                            <td
+                                th:text="${mov.tipoMovimiento.nombre == 'ENTRADA' ? #numbers.formatDecimal(mov.cantidad, 0, 'COMMA', 2, 'POINT') : '-'}">
+                            </td>
+                            <td
+                                th:text="${mov.tipoMovimiento.nombre == 'ENTRADA' ? #numbers.formatDecimal(mov.costoUnitario, 2, 'COMMA', 2, 'POINT') : '-'}">
+                            </td>
 
-                            <!-- SALIDAS -->
-                            <td th:text="${mov.tipoMovimiento.nombre == 'SALIDA' ? mov.cantidad : '-'}"></td>
-                            <td th:text="${mov.tipoMovimiento.nombre == 'SALIDA' ? mov.costoUnitario : '-'}"></td>
+                            <!-- SALIDAS (SALIDA, MERMAS, USO) -->
+                            <td
+                                th:text="${mov.tipoMovimiento.nombre == 'SALIDA' or mov.tipoMovimiento.nombre == 'MERMAS' or mov.tipoMovimiento.nombre == 'USO' ? mov.cantidad : '-'}">
+                            </td>
+                            <td
+                                th:text="${mov.tipoMovimiento.nombre == 'SALIDA' or mov.tipoMovimiento.nombre == 'MERMAS' or mov.tipoMovimiento.nombre == 'USO' ? #numbers.formatDecimal(mov.costoUnitario, 1, 'COMMA', 2, 'POINT') : '-'}">
+                            </td>
 
-                            <!-- SALDO -->
-                            <td th:text="${mov.cantidad}"></td>
-                            <td th:text="${mov.total}"></td>
+
+                            <!-- SALDO PEPS -->
+                            <td th:text="${#numbers.formatDecimal(mov.saldoCantidad, 0, 'COMMA', 2, 'POINT')}"></td>
+                            <td th:text="${#numbers.formatDecimal(mov.total, 2, 'COMMA', 2, 'POINT')}"></td>
+                        </tr>
+
+                        <!-- Ejemplo visible si no hay datos -->
+                        <tr th:if="${#lists.isEmpty(movimientos)}" class="text-center">
+                            <td colspan="9" class="text-muted py-3">No hay movimientos registrados</td>
                         </tr>
                     </tbody>
-
                 </table>
             </div>
         </div>
-
 
     </div>
 

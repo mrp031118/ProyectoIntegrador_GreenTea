@@ -22,4 +22,16 @@ public class UnidadMedida {
 
     @Column(nullable = false, length = 50)
     private  String nombre;
+
+    // Método para mostrar abreviaturas
+    public String getAbreviatura() {
+        if (nombre == null) return "";
+        return switch (nombre.trim().toLowerCase()) {
+            case "kilogramo" -> "kg";
+            case "litro" -> "L";
+            case "unidad" -> "unid";
+            case "paquete" -> "pqt";
+            default -> nombre; // En caso de que haya otras medidas
+        };
+    }
 }
