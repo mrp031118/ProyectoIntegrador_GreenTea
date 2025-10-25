@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 import com.example.demo.entity.User;
-import com.example.demo.repository.UserRepository;
+import com.example.demo.repository.usuarios.UserRepository;
 
 @ControllerAdvice
 public class GlobalControllerAdvice {

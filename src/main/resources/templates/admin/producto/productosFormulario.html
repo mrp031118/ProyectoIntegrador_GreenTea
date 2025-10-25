@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${producto.id == null} ? 'Nuevo Producto - Green Tea' : 'Editar Producto - Green Tea'">Nuevo
+        Producto - Green Tea</title>
+
+    <!-- CSS propio -->
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" />
+</head>
+
+<body>
+    <!-- Header -->
+    <div th:replace="fragmentsAdmi :: header"></div>
+
+    <!-- Body -->
+    <div class="row justify-content-center mx-0 mt-3">
+
+        <!-- Título -->
+        <div class="col-10 px-0 py-2">
+            <h3 class="fw-bold text-dark mb-2" th:text="${producto.id == null} ? 'Nuevo Producto' : 'Editar Producto'">
+                Nuevo Producto</h3>
+            <hr class="border-secondary mt-0 mb-2">
+        </div>
+
+        <!-- Formulario -->
+        <div class="col-10 bg-secundario rounded-2 shadow-sm p-4 mb-4">
+
+            <!-- 🔹 Acción dinámica: guardar o actualizar -->
+            <form th:action="${producto.id == null} ? @{/admin/productos/guardar} : @{/admin/productos/actualizar}"
+                th:object="${producto}" method="post" class="row g-3">
+
+                <!-- Campo oculto para ID -->
+                <input type="hidden" th:field="*{id}" />
+
+                <!-- Nombre -->
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Nombre</label>
+                    <input type="text" th:field="*{nombre}" class="form-control form-control-sm rounded-1"
+                        placeholder="Ej: Latte Vainilla" required />
+                </div>
+
+                <!-- Categoría -->
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Categoría</label>
+                    <select th:field="*{categoria}" class="form-select form-select-sm rounded-1">
+                        <option th:each="cat : ${categorias}" th:value="${cat.id}" th:text="${cat.nombre}"></option>
+                    </select>
+                </div>
+
+                <!-- Precio -->
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Precio (S/)</label>
+                    <input type="number" step="0.01" min="0" th:field="*{precio}"
+                        class="form-control form-control-sm rounded-1" required />
+                </div>
+
+                <!-- Unidad de conversión -->
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Unidad de Conversión</label>
+                    <select th:field="*{unidadConversion}" class="form-select form-select-sm rounded-1">
+                        <option th:each="u : ${unidades}" th:value="${u.id}" th:text="${u.nombreUnidad}"></option>
+                    </select>
+                </div>
+
+                <!-- Stock mínimo -->
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Stock Mínimo</label>
+                    <input type="number" min="0" th:field="*{stockMinimo}"
+                        class="form-control form-control-sm rounded-1" required />
+                </div>
+
+                <!-- Stock actual -->
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Stock Actual</label>
+                    <input type="number" min="0" th:field="*{stockActual}"
+                        class="form-control form-control-sm rounded-1" required />
+                </div>
+
+                <!-- Fraccionable -->
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Fraccionable</label>
+                    <select th:field="*{fraccionable}" class="form-select form-select-sm rounded-1" required>
+                        <option value="true">Sí</option>
+                        <option value="false">No</option>
+                    </select>
+                </div>
+
+                <!-- Botones -->
+                <div class="col-12 mt-3 d-flex gap-2">
+                    <button type="submit" class="btn btn-success btn-sm">
+                        <i class="fa-solid fa-save me-2"></i>
+                        <span th:text="${producto.id == null} ? 'Guardar' : 'Actualizar'">Guardar</span>
+                    </button>
+                    <a th:href="@{/admin/productos}" class="btn btn-secondary btn-sm">
+                        <i class="fa-solid fa-xmark me-2"></i> Cancelar
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Menú Deslizable -->
+    <div th:replace="fragmentsAdmi :: menuLateral"></div>
+</body>
+
+</html>

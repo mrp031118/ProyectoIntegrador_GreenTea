@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.example.demo.entity.Role;
 import com.example.demo.entity.User;
-import com.example.demo.repository.RoleRepository;
-import com.example.demo.repository.UserRepository;
+import com.example.demo.repository.usuarios.RoleRepository;
+import com.example.demo.repository.usuarios.UserRepository;
 
 import jakarta.validation.Valid;
 

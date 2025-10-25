@@ -7,7 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import com.example.demo.entity.User;
-import com.example.demo.repository.UserRepository;
+import com.example.demo.repository.usuarios.UserRepository;
 
 @Controller
 public class UserController {

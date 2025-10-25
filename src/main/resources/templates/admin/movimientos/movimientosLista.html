@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movimientos de Insumos - Green Tea</title>
+
+    <!-- CSS propio -->
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" />
+</head>
+
+<body>
+    <!--Header-->
+    <div th:replace="fragmentsAdmi :: header"></div>
+
+    <div class="row justify-content-center mx-0 mt-3">
+
+        <!-- Título con icono -->
+        <div class="col-10 px-0 py-2">
+            <div class="d-flex align-items-center mb-3">
+                <i class="fa-solid fa-right-left text-success me-2" style="font-size: 1.5rem;"></i>
+                <h3 class="fw-bold text-dark mb-0">Movimientos de Insumos</h3>
+            </div>
+            <hr class="mt-2 mb-3" style="border: 0.5px solid #000000; width: 100%;">
+        </div>
+
+
+        <!-- Botón registrar merma -->
+        <div class="col-10 mb-3 px-0">
+            <a th:href="@{/admin/movimientos/insumo/merma}" class="btn btn-success btn-sm">
+                <i class="fa-solid fa-plus"></i> Registrar Merma
+            </a>
+        </div>
+
+        <!-- Tabla Kardex PEPS -->
+        <div class="col-10 bg-secundario rounded-2 shadow-sm p-3">
+            <h5 class="text-dark mb-3">Kardex Histórico Detallado (PEPS)</h5>
+
+            <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                <table class="table table-hover align-middle table-sm table-borderless">
+                    <thead style="position: sticky; top: 0; background-color: #2d4d1e; z-index: 10;">
+                        <!-- Fila de encabezados principales -->
+                        <tr class="text-white text-center">
+                            <th rowspan="2" class="py-2 small">Fecha</th>
+                            <th rowspan="2" class="py-2 small">Insumo</th>
+                            <th rowspan="2" class="py-2 small">Lote</th>
+                            <th colspan="2" class="py-2 small">ENTRADAS</th>
+                            <th colspan="2" class="py-2 small">SALIDAS</th>
+                            <th colspan="2" class="py-2 small">SALDO (PEPS)</th>
+                        </tr>
+                        <!-- Fila de sub-encabezados -->
+                        <tr class="text-white text-center small">
+                            <th>Cantidad</th>
+                            <th>C. Unitario</th>
+                            <th>Cantidad</th>
+                            <th>C. Unitario</th>
+                            <th>Cantidad</th>
+                            <th>Valor Total</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <!-- Iterar sobre los movimientos -->
+                        <tr th:each="mov : ${movimientos}"
+                            th:classappend="${mov.tipoMovimiento.nombre == 'ENTRADA'} ? 'table-success' : 
+                                            (${mov.tipoMovimiento.nombre == 'SALIDA'} ? 'table-danger' : 'table-warning')" class="text-center small">
+
+                            <!-- Fecha -->
+                            <td th:text="${#dates.format(mov.fecha, 'dd/MM/yyyy')}"></td>
+
+                            <!-- Insumo -->
+                            <td th:text="${mov.insumo.nombre}"></td>
+
+                            <!-- Lote -->
+                            <td th:text="${mov.lote.loteId}"></td>
+
+                            <!-- ENTRADAS -->
+                            <td
+                                th:text="${mov.tipoMovimiento.nombre == 'ENTRADA' ? #numbers.formatDecimal(mov.cantidad, 0, 'COMMA', 2, 'POINT') : '-'}">
+                            </td>
+                            <td
+                                th:text="${mov.tipoMovimiento.nombre == 'ENTRADA' ? #numbers.formatDecimal(mov.costoUnitario, 2, 'COMMA', 2, 'POINT') : '-'}">
+                            </td>
+
+                            <!-- SALIDAS (SALIDA, MERMAS, USO) -->
+                            <td
+                                th:text="${mov.tipoMovimiento.nombre == 'SALIDA' or mov.tipoMovimiento.nombre == 'MERMAS' or mov.tipoMovimiento.nombre == 'USO' ? #numbers.formatDecimal(mov.cantidad, 0, 'COMMA', 2, 'POINT') : '-'}">
+                            </td>
+                            <td
+                                th:text="${mov.tipoMovimiento.nombre == 'SALIDA' or mov.tipoMovimiento.nombre == 'MERMAS' or mov.tipoMovimiento.nombre == 'USO' ? #numbers.formatDecimal(mov.costoUnitario, 2, 'COMMA', 2, 'POINT') : '-'}">
+                            </td>
+
+                            <!-- SALDO PEPS -->
+                            <td th:text="${#numbers.formatDecimal(mov.saldoCantidad, 0, 'COMMA', 2, 'POINT')}"></td>
+                            <td th:text="${#numbers.formatDecimal(mov.total, 2, 'COMMA', 2, 'POINT')}"></td>
+
+                        </tr>
+
+                        <!-- Ejemplo visible si no hay datos -->
+                        <tr th:if="${#lists.isEmpty(movimientos)}" class="text-center">
+                            <td colspan="9" class="text-muted py-3">No hay movimientos registrados</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <!--Menu Deslizable-->
+    <div th:replace="fragmentsAdmi :: menuLateral"></div>
+
+</body>
+
+</html>

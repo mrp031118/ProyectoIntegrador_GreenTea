@@ -21,17 +21,21 @@ public class UnidadMedida {
     private Integer id;
 
     @Column(nullable = false, length = 50)
-    private  String nombre;
+    private String nombre;
 
     // Método para mostrar abreviaturas
     public String getAbreviatura() {
-        if (nombre == null) return "";
+        if (nombre == null)
+            return "";
         return switch (nombre.trim().toLowerCase()) {
             case "kilogramo" -> "kg";
+            case "gramo" -> "g";
             case "litro" -> "L";
+            case "mililitro" -> "ml";
             case "unidad" -> "unid";
             case "paquete" -> "pqt";
             default -> nombre; // En caso de que haya otras medidas
         };
+
     }
 }
