@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.example.demo.entity.Insumo;
-import com.example.demo.entity.UnidadMedida;
+import com.example.demo.entity.insumos.Insumo;
+import com.example.demo.entity.insumos.UnidadMedida;
 
 public interface InsumoRepository extends JpaRepository<Insumo, Long>{
     // búsqueda por nombre, ignorando mayúsculas

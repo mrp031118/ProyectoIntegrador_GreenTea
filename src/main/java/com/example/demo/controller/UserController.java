@@ -1,18 +1,16 @@
 package com.example.demo.controller;
 
-import java.security.Principal;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import com.example.demo.entity.User;
 import com.example.demo.repository.usuarios.UserRepository;
 
 @Controller
 public class UserController {
 
-    private final UserRepository userRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     public UserController(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -24,8 +22,4 @@ public class UserController {
         return "empleado/dashboardEmple";
     }
     
-    @GetMapping("/empleado/perfil")
-    public String empleadoPerfil() {
-        return "empleado/perfil"; 
-    }
 }

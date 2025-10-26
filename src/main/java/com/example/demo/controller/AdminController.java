@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.example.demo.entity.Role;
-import com.example.demo.entity.User;
+import com.example.demo.entity.usuarios.Role;
+import com.example.demo.entity.usuarios.User;
 import com.example.demo.repository.usuarios.RoleRepository;
 import com.example.demo.repository.usuarios.UserRepository;
 
@@ -53,7 +53,7 @@ public class AdminController {
     public String listarUsuarios(Model model) {
         model.addAttribute("usuarios", userRepository.findAll());
         model.addAttribute("roles", roleRepository.findAll());
-        return "admin/usuariosAdmi";
+        return "admin/usuario/usuariosAdmi";
     }
 
     // agregar nuevo usuario
@@ -107,7 +107,7 @@ public class AdminController {
                 .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
         model.addAttribute("usuario", usuario);
         model.addAttribute("roles", roleRepository.findAll());
-        return "admin/editarUsuario";
+        return "admin/usuario/editarUsuario";
     }
 
     @PostMapping("/usuarios/editar")
@@ -120,7 +120,7 @@ public class AdminController {
         if (result.hasErrors()) {
             // Si hay errores de validación, recargar el formulario con los roles
             model.addAttribute("roles", roleRepository.findAll());
-            return "admin/editarUsuario";
+            return "admin/usuario/editarUsuario";
         }
 
         // Cargar el usuario original desde la BD
@@ -154,7 +154,7 @@ public class AdminController {
         User usuario = userRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
         model.addAttribute("usuario", usuario);
-        return "admin/cambiarContrasena"; // nueva plantilla HTML
+        return "admin/usuario/cambiarContrasena"; // nueva plantilla HTML
     }
 
     // Guardar la nueva contraseña

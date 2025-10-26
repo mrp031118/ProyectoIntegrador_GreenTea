@@ -1,6 +1,9 @@
-package com.example.demo.entity;
+package com.example.demo.entity.insumos;
 
 import java.util.List;
+
+import com.example.demo.entity.lotes.Lote;
+import com.example.demo.entity.movimientos.Movimiento;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;

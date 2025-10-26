@@ -9,7 +9,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.demo.entity.Movimiento;
+import com.example.demo.entity.movimientos.Movimiento;
 import com.example.demo.repository.movimientos.MovimientoRepository;
 
 @Service

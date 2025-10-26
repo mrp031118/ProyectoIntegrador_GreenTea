@@ -6,9 +6,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import com.example.demo.dto.KardexLoteProjection;
-import com.example.demo.entity.Insumo;
-import com.example.demo.entity.Lote;
-import com.example.demo.entity.Proveedor;
+import com.example.demo.entity.insumos.Insumo;
+import com.example.demo.entity.lotes.Lote;
+import com.example.demo.entity.proveedores.Proveedor;
 
 public interface LoteRepository extends JpaRepository<Lote, Long> {
     // Buscar por proveedor (entidad completa)

@@ -5,11 +5,11 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.demo.entity.Insumo;
-import com.example.demo.entity.Lote;
-import com.example.demo.entity.Movimiento;
-import com.example.demo.entity.Proveedor;
-import com.example.demo.entity.TipoMovimientoKardex;
+import com.example.demo.entity.insumos.Insumo;
+import com.example.demo.entity.lotes.Lote;
+import com.example.demo.entity.movimientos.Movimiento;
+import com.example.demo.entity.movimientos.TipoMovimientoKardex;
+import com.example.demo.entity.proveedores.Proveedor;
 import com.example.demo.repository.lotes.LoteRepository;
 import com.example.demo.repository.movimientos.MovimientoRepository;
 import com.example.demo.service.movimientos.TipoMovimientoService;

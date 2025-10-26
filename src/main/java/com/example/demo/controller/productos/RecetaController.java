@@ -1,7 +1,6 @@
 package com.example.demo.controller.productos;
 
 import java.beans.PropertyEditorSupport;
-import java.time.LocalDate;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,11 +13,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.example.demo.entity.DetalleRecetaProducto;
-import com.example.demo.entity.Insumo;
-import com.example.demo.entity.Producto;
-import com.example.demo.entity.RecetaProducto;
-import com.example.demo.entity.UnidadMedida;
+import com.example.demo.entity.insumos.Insumo;
+import com.example.demo.entity.insumos.UnidadMedida;
+import com.example.demo.entity.productos.DetalleRecetaProducto;
+import com.example.demo.entity.productos.Producto;
+import com.example.demo.entity.productos.RecetaProducto;
 import com.example.demo.service.insumos.InsumoService;
 import com.example.demo.service.insumos.UnidadMedidaService;
 import com.example.demo.service.productos.ProductoService;
@@ -46,7 +45,6 @@ public class RecetaController {
     @GetMapping("/nuevo")
     public String nuevo(Model model) {
         RecetaProducto receta = new RecetaProducto();
-        receta.setFechaCreacion(LocalDate.now());
         // agregar un detalle vacío para el formulario
         receta.getDetalles().add(new DetalleRecetaProducto());
         model.addAttribute("receta", receta);

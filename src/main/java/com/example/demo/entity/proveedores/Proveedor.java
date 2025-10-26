@@ -1,4 +1,6 @@
-package com.example.demo.entity;
+package com.example.demo.entity.proveedores;
+
+import com.example.demo.entity.categorias.CategoriaProveedor;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

@@ -19,62 +19,70 @@
 
 <body>
     <!-- Header -->
-    <div th:replace="fragmentsAdmi :: header"></div>
+    <div th:replace="~{fragmentsAdmi :: header}"></div>
 
     <!-- Body -->
-    <div class="row justify-content-center mx-0 mt-3">
-        <div class="col-10 px-0 py-2">
-            <h3 class="fw-bold text-dark mb-2">Editar Usuario</h3>
-            <hr class="border-secondary mt-0 mb-2">
+    <div class="container mt-3">
+        <!-- Título con icono -->
+        <div class="d-flex align-items-center mb-3">
+            <i class="fa-solid fa-user text-success me-2" style="font-size: 1.5rem;"></i>
+            <h3 class="fw-bold text-dark mb-0">Editar Usuario</h3>
         </div>
+        <hr class="mt-2 mb-3" style="border: 0.5px solid #000000; width: 100%;">
 
         <!-- Formulario -->
         <div class="col-10 bg-secundario rounded-2 shadow-sm p-4 mb-4">
             <form th:action="@{/admin/usuarios/editar}" th:object="${usuario}" method="post">
                 <input type="hidden" th:field="*{id}" />
 
-                <div class="mb-3">
-                    <label class="form-label text-dark">Nombre:</label>
-                    <input type="text" th:field="*{nombre}" class="form-control form-control-sm" required
-                        pattern="[A-Za-zÀ-ÿ\s]+" title="Solo letras y espacios">
-                    <div th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}" class="text-danger"></div>
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label text-dark">Nombre:</label>
+                        <input type="text" th:field="*{nombre}" class="form-control form-control-sm" required
+                            pattern="[A-Za-zÀ-ÿ\s]+" title="Solo letras y espacios">
+                        <div th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}" class="text-danger"></div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label text-dark">Apellido:</label>
+                        <input type="text" th:field="*{apellido}" class="form-control form-control-sm" required
+                            pattern="[A-Za-zÀ-ÿ\s]+" title="Solo letras y espacios">
+                        <div th:if="${#fields.hasErrors('apellido')}" th:errors="*{apellido}" class="text-danger"></div>
+                    </div>
                 </div>
 
-                <div class="mb-3">
-                    <label class="form-label text-dark">Apellido:</label>
-                    <input type="text" th:field="*{apellido}" class="form-control form-control-sm" required
-                        pattern="[A-Za-zÀ-ÿ\s]+" title="Solo letras y espacios">
-                    <div th:if="${#fields.hasErrors('apellido')}" th:errors="*{apellido}" class="text-danger"></div>
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label text-dark">Teléfono:</label>
+                        <input type="text" th:field="*{telefono}" class="form-control form-control-sm" maxlength="9"
+                            pattern="\d{9}" title="Debe tener exactamente 9 dígitos" required>
+                        <div th:if="${#fields.hasErrors('telefono')}" th:errors="*{telefono}" class="text-danger"></div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label text-dark">Username / Correo:</label>
+                        <input type="text" th:field="*{username}" class="form-control form-control-sm" required
+                            pattern=".+@gtcoffee\.com" title="Debe terminar con @gtcoffee.com">
+                        <div th:if="${#fields.hasErrors('username')}" th:errors="*{username}" class="text-danger"></div>
+                    </div>
                 </div>
 
-                <div class="mb-3">
-                    <label class="form-label text-dark">Teléfono:</label>
-                    <input type="text" th:field="*{telefono}" class="form-control form-control-sm" maxlength="9"
-                        pattern="\d{9}" title="Debe tener exactamente 9 dígitos" required>
-                    <div th:if="${#fields.hasErrors('telefono')}" th:errors="*{telefono}" class="text-danger"></div>
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label text-dark">Rol:</label>
+                        <select name="rol" class="form-select form-select-sm" required>
+                            <option th:each="r : ${roles}" th:value="${r.nombre}"
+                                th:text="${r.nombre == 'ROLE_ADMIN' ? 'Administrador' : (r.nombre == 'ROLE_USER' ? 'Empleado' : r.nombre)}"
+                                th:selected="${usuario.roles.contains(r)}">
+                            </option>
+                        </select>
+                    </div>
                 </div>
 
-                <div class="mb-3">
-                    <label class="form-label text-dark">Username / Correo:</label>
-                    <input type="text" th:field="*{username}" class="form-control form-control-sm" required
-                        pattern=".+@gtcoffee\.com" title="Debe terminar con @gtcoffee.com">
-                    <div th:if="${#fields.hasErrors('username')}" th:errors="*{username}" class="text-danger"></div>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label text-dark">Rol:</label>
-                    <select name="rol" class="form-select form-select-sm" required>
-                        <option th:each="r : ${roles}" th:value="${r.nombre}" th:text="${r.nombre}"
-                            th:selected="${usuario.roles.contains(r)}">
-                        </option>
-                    </select>
-                </div>
-
-                <!-- Botones -->
-                <!-- Botón Cambiar Contraseña -->
+                <!-- Botón Cambiar Contraseña en fila separada -->
                 <div class="mb-3">
                     <a th:href="@{/admin/usuarios/cambiarPassword/{id}(id=${usuario.id})}"
-                        class="btn btn-warning btn-sm">
+                        class="btn btn-warning btn-sm w-20">
                         <i class="fa-solid fa-key"></i> Cambiar Contraseña
                     </a>
                 </div>
@@ -88,12 +96,15 @@
                         Cancelar
                     </a>
                 </div>
+
             </form>
         </div>
+
+
     </div>
 
     <!-- Menu Lateral -->
-    <div th:replace="fragmentsAdmi :: menuLateral"></div>
+    <div th:replace="~{fragmentsAdmi :: menuLateral}"></div>
 
 </body>
 

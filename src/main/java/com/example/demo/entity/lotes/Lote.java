@@ -1,8 +1,12 @@
-package com.example.demo.entity;
+package com.example.demo.entity.lotes;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+
+import com.example.demo.entity.insumos.Insumo;
+import com.example.demo.entity.movimientos.Movimiento;
+import com.example.demo.entity.proveedores.Proveedor;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;

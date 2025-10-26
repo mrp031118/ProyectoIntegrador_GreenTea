@@ -19,16 +19,19 @@
 
 <body>
     <!--Header-->
-     <div th:replace="fragmentsAdmi :: header"></div>
+    <div th:replace="~{fragmentsAdmi :: header}"></div>
 
     <!-- Body -->
     <div class="row justify-content-center mx-0 mt-3">
 
-        <!-- Título -->
-        <div class="col-10 px-0 py-2">
-            <h3 class="fw-bold text-dark mb-2">Gestión de Usuarios</h3>
-            <hr class="border-secondary mt-0 mb-2">
+        <div class="col-10">
+            <div class="d-flex align-items-center mb-3">
+                <i class="fa-solid fa-users text-success me-2" style="font-size: 1.5rem;"></i>
+                <h3 class="fw-bold text-dark mb-0">Gestión de Usuarios</h3>
+            </div>
+            <hr class="mt-2 mb-3" style="border: 0.5px solid #000000">
         </div>
+
 
         <!-- Formulario para agregar usuario -->
         <div class="col-10 bg-secundario rounded-2 shadow-sm p-3 mb-3">
@@ -60,7 +63,8 @@
                     </div>
                     <div class="col">
                         <select name="rol" class="form-select form-select-sm" required>
-                            <option th:each="rol : ${roles}" th:value="${rol.nombre}" th:text="${rol.nombre}">
+                            <option th:each="rol : ${roles}" th:value="${rol.nombre}"
+                                th:text="${rol.nombre == 'ROLE_ADMIN' ? 'Administrador' : (rol.nombre == 'ROLE_USER' ? 'Empleado' : rol.nombre)}">
                             </option>
                         </select>
                     </div>
@@ -96,9 +100,9 @@
                             <td th:text="${usuario.nombre}"></td>
                             <td th:text="${usuario.apellido}"></td>
                             <td th:text="${usuario.telefono}"></td>
-                            <td>
+                            <td class="text-center">
                                 <span th:each="rol : ${usuario.roles}" class="badge bg-info text-dark me-1"
-                                    th:text="${rol.nombre}">
+                                    th:text="${rol.nombre == 'ROLE_ADMIN' ? 'Administrador' : (rol.nombre == 'ROLE_USER' ? 'Empleado' : rol.nombre)}">
                                 </span>
                             </td>
                             <td
@@ -124,7 +128,8 @@
                                 <!-- Editar -->
                                 <form th:action="@{/admin/usuarios/editar/{id}(id=${usuario.id})}" method="get"
                                     class="d-inline">
-                                    <button type="submit" class="btn btn-sm btn-outline-light" title="Editar usuario">
+                                    <button type="submit" class="btn btn-sm btn-outline-light-custom"
+                                        title="Editar usuario">
                                         <i class="fa-solid fa-pen"></i>
                                     </button>
                                 </form>
@@ -149,7 +154,7 @@
 
 
     <!--Menu Deslizable-->
-    <div th:replace="fragmentsAdmi :: menuLateral"></div>
+    <div th:replace="~{fragmentsAdmi :: menuLateral}"></div>
 
 
 </body>

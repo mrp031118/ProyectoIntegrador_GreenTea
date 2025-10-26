@@ -1,4 +1,4 @@
-package com.example.demo.entity;
+package com.example.demo.entity.insumos;
 
 import java.math.BigDecimal;
 
@@ -18,27 +18,22 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "detalle_receta_producto")
-public class DetalleRecetaProducto {
+@Table(name = "conversion_unidades")
+public class ConversionUnidad {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "receta_producto_id")
-    private RecetaProducto recetaProducto;
+    @JoinColumn(name = "unidad_origen_id")
+    private UnidadMedida unidadOrigen;
 
     @ManyToOne
-    @JoinColumn(name = "insumo_id")
-    private Insumo insumo;
+    @JoinColumn(name = "unidad_destino_id")
+    private UnidadMedida unidadDestino;
 
-    // cantidad tal como la define la receta (ej 10.00)
-    @Column(precision = 8, scale = 2)
-    private BigDecimal cantidad;
-
-    @ManyToOne
-    @JoinColumn(name = "unidad_medida_id")
-    private UnidadMedida unidadMedida;
+    @Column(name = "factor_conversion", precision = 18, scale = 6)
+    private BigDecimal factorConversion;
     
 }

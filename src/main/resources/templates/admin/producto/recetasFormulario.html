@@ -38,12 +38,6 @@
                     <option value="">-- Seleccionar producto --</option>
                     <option th:each="p : ${productos}" th:value="${p.id}" th:text="${p.nombre}"></option>
                 </select>
-
-                <!-- Fecha -->
-                <div class="col-12">
-                    <label class="form-label">Fecha</label>
-                    <input type="date" th:field="*{fechaCreacion}" class="form-control" required />
-                </div>
             </div>
 
             <hr />

@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.example.demo.entity.Producto;
+import com.example.demo.entity.productos.Producto;
 import com.example.demo.repository.categorias.CategoriaProductoRepository;
 import com.example.demo.repository.productos.UnidadConversionRepository;
 import com.example.demo.service.productos.ProductoService;

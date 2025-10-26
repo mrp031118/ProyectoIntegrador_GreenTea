@@ -1,4 +1,7 @@
-package com.example.demo.entity;
+package com.example.demo.entity.movimientos;
+
+import com.example.demo.entity.insumos.Insumo;
+import com.example.demo.entity.lotes.Lote;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

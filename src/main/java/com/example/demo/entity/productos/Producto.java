@@ -1,4 +1,7 @@
-package com.example.demo.entity;
+package com.example.demo.entity.productos;
+
+import com.example.demo.entity.categorias.CategoriaProducto;
+import com.example.demo.entity.insumos.UnidadConversion;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

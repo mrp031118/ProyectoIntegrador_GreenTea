@@ -20,97 +20,101 @@
 
 <body>
     <!-- Header -->
-    <div th:replace="fragmentsAdmi :: header"></div>
+    <div th:replace="~{fragmentsAdmi :: header}"></div>
 
-    <!-- Body -->
-    <div class="row justify-content-center mx-0 mt-3">
+    <!-- Contenido principal -->
+    <div class="container mt-3">
 
         <!-- Título -->
-        <div class="col-10 px-0 py-2">
-            <h3 class="fw-bold text-dark mb-2" th:text="${producto.id == null} ? 'Nuevo Producto' : 'Editar Producto'">
+        <div class="d-flex align-items-center mb-3">
+            <i class="fa-solid fa-box-open text-success me-2" style="font-size: 1.5rem;"></i>
+            <h3 class="fw-bold text-dark mb-0" th:text="${producto.id == null} ? 'Nuevo Producto' : 'Editar Producto'">
                 Nuevo Producto</h3>
-            <hr class="border-secondary mt-0 mb-2">
         </div>
+        <hr class="mt-2 mb-4" style="border: 0.5px solid #000000; width: 100%;">
 
-        <!-- Formulario -->
-        <div class="col-10 bg-secundario rounded-2 shadow-sm p-4 mb-4">
+        <!-- Tarjeta del formulario -->
+        <div class="bg-secundario rounded-3 shadow-sm p-4 mx-auto" style="max-width: 1000px;">
+            <div class="d-flex align-items-center mb-3">
+                <i class="fa-solid fa-box text-success me-2" style="font-size: 1.2rem;"></i>
+                <h5 class="text-dark fw-semibold mb-0"
+                    th:text="${producto.id == null} ? 'Registrar Nuevo Producto' : 'Actualizar Producto'">
+                    Registrar Nuevo Producto</h5>
+            </div>
 
-            <!-- 🔹 Acción dinámica: guardar o actualizar -->
             <form th:action="${producto.id == null} ? @{/admin/productos/guardar} : @{/admin/productos/actualizar}"
                 th:object="${producto}" method="post" class="row g-3">
 
-                <!-- Campo oculto para ID -->
                 <input type="hidden" th:field="*{id}" />
 
-                <!-- Nombre -->
+                <!-- Primera fila: Nombre / Categoría -->
                 <div class="col-md-6">
-                    <label class="form-label fw-semibold">Nombre</label>
-                    <input type="text" th:field="*{nombre}" class="form-control form-control-sm rounded-1"
+                    <label class="form-label fw-semibold">Nombre del Producto</label>
+                    <input th:field="*{nombre}" type="text" class="form-control form-control-sm shadow-sm"
                         placeholder="Ej: Latte Vainilla" required />
                 </div>
-
-                <!-- Categoría -->
                 <div class="col-md-6">
                     <label class="form-label fw-semibold">Categoría</label>
-                    <select th:field="*{categoria}" class="form-select form-select-sm rounded-1">
+                    <select th:field="*{categoria}" class="form-select form-select-sm shadow-sm">
+                        <option value="" disabled selected>Selecciona una categoría</option>
                         <option th:each="cat : ${categorias}" th:value="${cat.id}" th:text="${cat.nombre}"></option>
                     </select>
                 </div>
 
-                <!-- Precio -->
+                <!-- Segunda fila: Precio / Unidad de Conversión -->
                 <div class="col-md-6">
                     <label class="form-label fw-semibold">Precio (S/)</label>
-                    <input type="number" step="0.01" min="0" th:field="*{precio}"
-                        class="form-control form-control-sm rounded-1" required />
+                    <input th:field="*{precio}" type="number" step="0.01" min="0"
+                        class="form-control form-control-sm shadow-sm" placeholder="Ej: 12.50" required />
                 </div>
-
-                <!-- Unidad de conversión -->
                 <div class="col-md-6">
                     <label class="form-label fw-semibold">Unidad de Conversión</label>
-                    <select th:field="*{unidadConversion}" class="form-select form-select-sm rounded-1">
+                    <select th:field="*{unidadConversion}" class="form-select form-select-sm shadow-sm">
+                        <option value="" disabled selected>Selecciona una unidad</option>
                         <option th:each="u : ${unidades}" th:value="${u.id}" th:text="${u.nombreUnidad}"></option>
                     </select>
                 </div>
 
-                <!-- Stock mínimo -->
+                <!-- Tercera fila: Stock mínimo / Stock actual -->
                 <div class="col-md-6">
                     <label class="form-label fw-semibold">Stock Mínimo</label>
-                    <input type="number" min="0" th:field="*{stockMinimo}"
-                        class="form-control form-control-sm rounded-1" required />
+                    <input th:field="*{stockMinimo}" type="number" min="0"
+                        class="form-control form-control-sm shadow-sm" placeholder="Ej: 5" required />
                 </div>
-
-                <!-- Stock actual -->
                 <div class="col-md-6">
                     <label class="form-label fw-semibold">Stock Actual</label>
-                    <input type="number" min="0" th:field="*{stockActual}"
-                        class="form-control form-control-sm rounded-1" required />
+                    <input th:field="*{stockActual}" type="number" min="0"
+                        class="form-control form-control-sm shadow-sm" placeholder="Ej: 20" required />
                 </div>
 
-                <!-- Fraccionable -->
+                <!-- Cuarta fila: Fraccionable -->
                 <div class="col-md-6">
                     <label class="form-label fw-semibold">Fraccionable</label>
-                    <select th:field="*{fraccionable}" class="form-select form-select-sm rounded-1" required>
+                    <select th:field="*{fraccionable}" class="form-select form-select-sm shadow-sm" required>
+                        <option value="" disabled selected>Selecciona opción</option>
                         <option value="true">Sí</option>
                         <option value="false">No</option>
                     </select>
                 </div>
 
-                <!-- Botones -->
-                <div class="col-12 mt-3 d-flex gap-2">
-                    <button type="submit" class="btn btn-success btn-sm">
-                        <i class="fa-solid fa-save me-2"></i>
+
+                <!-- Botones centrados -->
+                <div class="col-12 d-flex justify-content-center mt-3 gap-2">
+                    <button type="submit" class="btn btn-success-custom btn-sm px-4 shadow-sm">
+                        <i class="fa-solid fa-floppy-disk me-1"></i>
                         <span th:text="${producto.id == null} ? 'Guardar' : 'Actualizar'">Guardar</span>
                     </button>
-                    <a th:href="@{/admin/productos}" class="btn btn-secondary btn-sm">
-                        <i class="fa-solid fa-xmark me-2"></i> Cancelar
+                    <a th:href="@{/admin/productos}" class="btn btn-outline-secondary btn-sm px-4 shadow-sm">
+                        <i class="fa-solid fa-arrow-left me-1"></i> Cancelar
                     </a>
                 </div>
             </form>
         </div>
     </div>
 
+
     <!-- Menú Deslizable -->
-    <div th:replace="fragmentsAdmi :: menuLateral"></div>
+    <div th:replace="~{fragmentsAdmi :: menuLateral}"></div>
 </body>
 
 </html>

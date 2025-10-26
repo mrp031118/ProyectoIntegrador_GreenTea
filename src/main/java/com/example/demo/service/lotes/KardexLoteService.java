@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.dto.KardexLoteProjection;
-import com.example.demo.entity.Lote;
+import com.example.demo.entity.lotes.Lote;
 import com.example.demo.repository.lotes.LoteRepository;
 
 import lombok.RequiredArgsConstructor;

@@ -5,8 +5,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.demo.entity.Insumo;
-import com.example.demo.entity.UnidadMedida;
+import com.example.demo.entity.insumos.Insumo;
+import com.example.demo.entity.insumos.UnidadMedida;
 import com.example.demo.repository.insumos.InsumoRepository;
 
 @Service

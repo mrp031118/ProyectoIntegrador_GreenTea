@@ -14,9 +14,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.demo.dto.KardexLoteProjection;
-import com.example.demo.entity.Insumo;
-import com.example.demo.entity.Lote;
-import com.example.demo.entity.Proveedor;
+import com.example.demo.entity.insumos.Insumo;
+import com.example.demo.entity.lotes.Lote;
+import com.example.demo.entity.proveedores.Proveedor;
 import com.example.demo.service.insumos.InsumoService;
 import com.example.demo.service.lotes.KardexLoteService;
 import com.example.demo.service.lotes.LoteService;

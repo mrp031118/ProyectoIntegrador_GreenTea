@@ -1,12 +1,13 @@
 package com.example.demo.service.productos;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.demo.entity.RecetaProducto;
+import com.example.demo.entity.productos.RecetaProducto;
 import com.example.demo.repository.productos.RecetaProductoRepository;
 
 @Service
@@ -24,8 +25,6 @@ public class RecetaProductoService {
         if (receta.getDetalles() != null) {
             receta.getDetalles().forEach(d -> d.setRecetaProducto(receta));
         }
-        if (receta.getFechaCreacion() == null)
-            receta.setFechaCreacion(LocalDate.now());
         return recetaProductoRepository.save(receta);
     }
 

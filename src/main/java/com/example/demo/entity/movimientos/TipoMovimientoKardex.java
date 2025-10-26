@@ -1,6 +1,5 @@
-package com.example.demo.entity;
+package com.example.demo.entity.movimientos;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -11,15 +10,15 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
+@Table(name = "tipo_movimiento_kardex")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "categorias_proveedor")
-public class CategoriaProveedor {
+public class TipoMovimientoKardex {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
-    @Column(nullable = false)
     private String nombre;
 }

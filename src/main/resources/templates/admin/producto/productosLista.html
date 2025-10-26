@@ -20,26 +20,33 @@
 <body>
     <div th:replace="fragmentsAdmi :: header"></div>
 
-    <div class="row justify-content-center mx-0 mt-3">
+    <!-- Contenedor principal -->
+    <div class="container mt-4">
 
-        <div class="col-10 px-0 py-2">
-            <h3 class="fw-bold text-dark mb-2">Gestión de Productos</h3>
-            <hr class="border-secondary mt-0 mb-2">
+        <!-- Título con icono -->
+        <div class="d-flex align-items-center mb-3">
+            <i class="fa-solid fa-box text-success me-2" style="font-size: 1.5rem;"></i>
+            <h3 class="fw-bold text-dark mb-0">Gestión de Productos</h3>
         </div>
+        <hr class="mt-2 mb-3" style="border: 0.5px solid #000000; width: 100%;">
 
-        <div class="col-10 mb-3 px-0">
-            <a th:href="@{/admin/productos/nuevo}" class="btn btn-success btn-sm me-2">
-                <i class="fa-solid fa-plus"></i> Nuevo Producto
+        <!-- Botón Nuevo Producto -->
+        <div class="mb-3">
+            <a th:href="@{/admin/productos/nuevo}" class="btn btn-success btn-sm shadow-sm">
+                <i class="fa-solid fa-plus me-1"></i> Nuevo Producto
             </a>
         </div>
 
-        <!-- Tabla -->
-        <div class="col-10 bg-secundario rounded-2 shadow-sm p-3">
-            <h5 class="text-dark mb-3">Lista de Productos</h5>
-            <div class="table-responsive" style="max-height: 320px; overflow-y: auto;">
-                <table class="table table-hover align-middle table-borderless table-sm table-transparent">
-                    <thead style="position: sticky; top: 0; background-color: rgba(0,0,0,0.6); z-index: 10;">
-                        <tr class="text-white">
+        <!-- Tabla de productos -->
+        <div class="bg-secundario rounded-3 shadow-sm p-4 mx-auto" style="max-width: 1300px;">
+            <h5 class="titulo-seccion mb-3">
+                <i class="fa-solid fa-clipboard-list text-success me-2"></i>Lista de Productos
+            </h5>
+
+            <div class="table-responsive tabla-scroll">
+                <table class="table-modern w-100 mx-auto text-center align-middle">
+                    <thead>
+                        <tr>
                             <th>ID</th>
                             <th>Nombre</th>
                             <th>Categoría</th>
@@ -47,30 +54,34 @@
                             <th>Stock Mínimo</th>
                             <th>Fraccionable</th>
                             <th>Unidad Conversión</th>
-                            <th class="text-center">Acciones</th>
+                            <th>Acciones</th>
                         </tr>
                     </thead>
-                    <!-- 🔽 Aquí tu cuerpo dinámico -->
-                    <tbody class="text-light">
+                    <tbody>
                         <tr th:each="producto : ${productos}">
                             <td th:text="${producto.id}"></td>
                             <td th:text="${producto.nombre}"></td>
                             <td th:text="${producto.categoria.nombre}"></td>
-                            <td class="text-center" th:text="'S/ ' + ${producto.precio}"></td>
-                            <td class="text-center" th:text="${producto.stockMinimo}"></td>
-                            <td class="text-center" th:text="${producto.fraccionable} == true ? 'Sí' : 'No'"></td>
-                            <td class="text-center" th:text="${producto.unidadConversion.nombreUnidad}"></td>
-                            <td class="text-center">
+                            <td th:text="'S/ ' + ${producto.precio}"></td>
+                            <td th:text="${producto.stockMinimo}"></td>
+                            <td th:text="${producto.fraccionable} == true ? 'Sí' : 'No'"></td>
+                            <td th:text="${producto.unidadConversion.nombreUnidad}"></td>
+                            <td>
                                 <a th:href="@{'/admin/productos/editar/' + ${producto.id}}"
-                                    class="btn btn-sm btn-outline-light me-1">
+                                    class="btn btn-sm btn-outline-light me-1" title="Editar">
                                     <i class="fa-solid fa-pen"></i>
                                 </a>
                                 <a th:href="@{'/admin/productos/eliminar/' + ${producto.id}}"
                                     class="btn btn-sm btn-outline-danger"
-                                    onclick="return confirm('¿Seguro que deseas eliminar este producto?');">
+                                    onclick="return confirm('¿Seguro que deseas eliminar este producto?');"
+                                    title="Eliminar">
                                     <i class="fa-solid fa-trash"></i>
                                 </a>
                             </td>
+                        </tr>
+
+                        <tr th:if="${#lists.isEmpty(productos)}">
+                            <td colspan="8" class="text-center fst-italic">No hay productos registrados</td>
                         </tr>
                     </tbody>
                 </table>

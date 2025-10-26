@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
-import com.example.demo.entity.User;
+import com.example.demo.entity.usuarios.User;
 import com.example.demo.repository.usuarios.UserRepository;
 
 @ControllerAdvice

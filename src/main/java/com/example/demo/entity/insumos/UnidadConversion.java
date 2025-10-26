@@ -1,4 +1,4 @@
-package com.example.demo.entity;
+package com.example.demo.entity.insumos;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -14,15 +14,15 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "categorias_productos")
-public class CategoriaProducto {
+@Table(name = "unidad_conversion")
+public class UnidadConversion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "unidad_id")
     private Long id;
 
-    private String nombre;
+    @Column(name = "nombre_unidad")
+    private String nombreUnidad;
 
-    @Column(name = "tipo_control")
-    private String tipoControl;
-
+    private String descripcion;
 }

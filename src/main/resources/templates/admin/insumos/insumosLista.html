@@ -20,9 +20,8 @@
 
 <body>
     <!--Header-->
-    <div th:replace="fragmentsAdmi :: header"></div>
+    <div th:replace="~{fragmentsAdmi :: header}"></div>
 
-    <!-- Body -->
     <!-- Body -->
     <div class="container mt-4">
 
@@ -136,7 +135,7 @@
 
 
     <!--Menu Deslizable-->
-    <div th:replace="fragmentsAdmi :: menuLateral"></div>
+    <div th:replace="~{fragmentsAdmi :: menuLateral}"></div>
 
     <!-- Modal Stock -->
     <div class="modal fade" id="modalStock" tabindex="-1" aria-labelledby="modalStockLabel" aria-hidden="true">

@@ -1,6 +1,7 @@
-package com.example.demo.entity;
+package com.example.demo.entity.productos;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,7 +39,7 @@ public class RecetaProducto {
     private String nombreReceta;
 
     @Column(name = "fecha_creacion")
-    private LocalDate fechaCreacion;
+    private LocalDateTime fechaCreacion;
 
     @OneToMany(mappedBy = "recetaProducto", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DetalleRecetaProducto> detalles = new ArrayList<>();

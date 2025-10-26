@@ -7,8 +7,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.example.demo.entity.Insumo;
-import com.example.demo.entity.UnidadMedida;
+import com.example.demo.entity.insumos.Insumo;
+import com.example.demo.entity.insumos.UnidadMedida;
 import com.example.demo.service.insumos.InsumoService;
 import com.example.demo.service.insumos.UnidadMedidaService;
 import com.example.demo.service.proveedor.ProveedorService;

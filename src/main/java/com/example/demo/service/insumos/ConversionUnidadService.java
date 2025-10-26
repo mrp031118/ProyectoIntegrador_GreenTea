@@ -4,15 +4,17 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.demo.entity.ConversionUnidad;
-import com.example.demo.entity.UnidadMedida;
+import com.example.demo.entity.insumos.ConversionUnidad;
+import com.example.demo.entity.insumos.UnidadMedida;
 import com.example.demo.repository.insumos.ConversionUnidadRepository;
 
 @Service
 public class ConversionUnidadService {
 
+    @Autowired
     private ConversionUnidadRepository conversionUnidadRepository;
 
     /**

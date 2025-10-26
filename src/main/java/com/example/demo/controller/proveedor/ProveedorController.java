@@ -8,7 +8,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.example.demo.entity.Proveedor;
+import com.example.demo.entity.proveedores.Proveedor;
 import com.example.demo.repository.categorias.CategoriaProveedorRepository;
 import com.example.demo.repository.proveedor.ProveedorRepository;
 

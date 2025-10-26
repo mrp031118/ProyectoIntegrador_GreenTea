@@ -18,51 +18,67 @@
 </head>
 
 <body>
-    <!--Header-->
-    <div th:replace="fragmentsEmp :: header"></div>
+    <!-- Header -->
+    <div th:replace="~{fragmentsEmp :: header}"></div>
 
-    <div class="row justify-content-center mx-0 mt-3">
+    <!-- Contenedor principal -->
+    <div class="container mt-4">
 
-        <!-- Título -->
-        <div class="col-10 px-0 py-2">
-            <h3 class="fw-bold text-dark mb-2">Gestión de Clientes</h3>
-            <hr class="border-secondary mt-0 mb-2">
+        <!-- Título con icono -->
+        <div class="d-flex align-items-center mb-3">
+            <i class="fa-solid fa-user-group text-success me-2" style="font-size: 1.5rem;"></i>
+            <h3 class="fw-bold text-dark mb-0">Gestión de Clientes</h3>
+        </div>
+        <hr class="mt-2 mb-3" style="border: 0.5px solid #000000; width: 100%;">
+
+        <!-- Mensaje de error -->
+        <div th:if="${error}">
+            <div class="alert alert-danger py-2 px-3 text-center" th:text="${error}"></div>
         </div>
 
-        <!-- Formulario Registro / Edición Cliente -->
-        <div class="col-10 bg-secundario rounded-2 shadow-sm p-3 mb-3">
-            <form>
-                <div class="row g-2 mb-2">
-                    <div class="col-md-4">
-                        <input type="text" class="form-control form-control-sm" placeholder="Nombre">
-                    </div>
-                    <div class="col-md-4">
-                        <input type="text" class="form-control form-control-sm" placeholder="Apellido">
-                    </div>
-                    <div class="col-md-4">
-                        <input type="text" class="form-control form-control-sm" placeholder="Teléfono">
-                    </div>
+        <!-- Formulario de registro -->
+        <div class="bg-secundario rounded-3 shadow-sm p-4 mb-4 mx-auto" style="max-width: 1100px;">
+            <div class="d-flex align-items-center mb-3">
+                <i class="fa-solid fa-user-plus text-success me-2" style="font-size: 1.3rem;"></i>
+                <h5 class="text-dark fw-semibold mb-0">Registrar Nuevo Cliente</h5>
+            </div>
+
+            <form th:action="@{/empleado/cliente/guardar}" th:object="${nuevoCliente}" method="post" class="row g-3">
+                <div class="col-md-4">
+                    <input th:field="*{nombre}" type="text" class="form-control form-control-sm shadow-sm"
+                        placeholder="Nombre" required>
                 </div>
-                <div class="row g-2 mb-3">
-                    <div class="col-12">
-                        <input type="email" class="form-control form-control-sm" placeholder="Email">
-                    </div>
+                <div class="col-md-4">
+                    <input th:field="*{apellido}" type="text" class="form-control form-control-sm shadow-sm"
+                        placeholder="Apellido" required>
                 </div>
-                <div class="d-grid">
-                    <button type="submit" class="btn btn-success btn-sm">
-                        <i class="fa-solid fa-floppy-disk"></i> Guardar
+                <div class="col-md-4">
+                    <input th:field="*{telefono}" type="text" class="form-control form-control-sm shadow-sm"
+                        placeholder="Teléfono">
+                </div>
+                <div class="col-md-6">
+                    <input th:field="*{email}" type="email" class="form-control form-control-sm shadow-sm"
+                        placeholder="Correo electrónico">
+                </div>
+
+                <div class="col-12 mt-3">
+                    <button type="submit" class="btn btn-success-custom btn-sm px-4 shadow-sm">
+                        <i class="fa-solid fa-floppy-disk me-1"></i> Guardar Cliente
                     </button>
                 </div>
             </form>
         </div>
 
-        <!-- Tabla Clientes -->
-        <div class="col-10 bg-secundario rounded-2 shadow-sm p-3">
-            <h5 class="text-dark mb-3">Clientes Registrados</h5>
-            <div class="table-responsive" style="max-height: 320px; overflow-y: auto;">
-                <table class="table table-hover align-middle table-borderless table-sm table-transparent">
-                    <thead style="position: sticky; top: 0; background-color: rgba(0,0,0,0.6); z-index: 10;">
-                        <tr class="text-white">
+        <!-- Tabla de clientes -->
+        <div class="bg-secundario rounded-3 shadow-sm p-4 mx-auto" style="max-width: 1100px;">
+            <h5 class="titulo-seccion mb-3">
+                <i class="fa-solid fa-clipboard-list text-success me-2"></i>Lista de Clientes
+            </h5>
+
+            <div class="table-responsive tabla-scroll">
+                <table class="table-modern w-100 mx-auto text-center align-middle">
+                    <thead>
+                        <tr>
                             <th>Nombre</th>
                             <th>Apellido</th>
                             <th>Teléfono</th>
@@ -71,38 +87,31 @@
                             <th>Acciones</th>
                         </tr>
                     </thead>
-                    <tbody class="text-light">
-                        <tr>
-                            <td>Juan</td>
-                            <td>Pérez</td>
-                            <td>987654321</td>
-                            <td>juan.perez@email.com</td>
-                            <td>30/09/2025</td>
+                    <tbody>
+                        <tr th:each="cliente : ${clientes}">
+                            <td th:text="${cliente.nombre}"></td>
+                            <td th:text="${cliente.apellido}"></td>
+                            <td th:text="${cliente.telefono ?: '-'}"></td>
+                            <td th:text="${cliente.email ?: '-'}"></td>
+                            <td th:text="${#temporals.format(cliente.fechaRegistro, 'dd/MM/yyyy HH:mm')}"></td>
                             <td>
-                                <a th:href="@{/empleado/cliente/editar}" class="btn btn-warning btn-sm">
-                                    <i class="fa-solid fa-pen"></i> Editar
+                                <!-- Editar -->
+                                <a th:href="@{'/empleado/cliente/editar/' + ${cliente.id}}"
+                                    class="btn btn-sm btn-outline-light me-1" title="Editar cliente">
+                                    <i class="fa-solid fa-pen"></i>
                                 </a>
-
-                                <button class="btn btn-danger btn-sm">
-                                    <i class="fa-solid fa-trash"></i> Eliminar
-                                </button>
+                                <!-- Eliminar -->
+                                <a th:href="@{'/empleado/cliente/eliminar/' + ${cliente.id}}"
+                                    class="btn btn-sm btn-outline-danger"
+                                    onclick="return confirm('¿Estás seguro de eliminar este cliente?');"
+                                    title="Eliminar cliente">
+                                    <i class="fa-solid fa-trash"></i>
+                                </a>
                             </td>
                         </tr>
-                        <tr>
-                            <td>María</td>
-                            <td>López</td>
-                            <td>912345678</td>
-                            <td>maria.lopez@email.com</td>
-                            <td>29/09/2025</td>
-                            <td>
-                                <a th:href="@{/empleado/cliente/editar}" class="btn btn-warning btn-sm">
-                                    <i class="fa-solid fa-pen"></i> Editar
-                                </a>
 
-                                <button class="btn btn-danger btn-sm">
-                                    <i class="fa-solid fa-trash"></i> Eliminar
-                                </button>
-                            </td>
+                        <tr th:if="${#lists.isEmpty(clientes)}">
+                            <td colspan="6" class="text-center fst-italic">No hay clientes registrados</td>
                         </tr>
                     </tbody>
                 </table>
@@ -111,9 +120,10 @@
 
     </div>
 
-    <!--Menu Deslizable-->
-    <div th:replace="fragmentsEmp :: menuLateral"></div>
+    <!-- Menu -->
+    <div th:replace="~{fragmentsEmp :: menuLateral}"></div>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>
