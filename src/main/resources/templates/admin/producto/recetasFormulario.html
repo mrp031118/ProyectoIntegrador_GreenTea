@@ -19,7 +19,7 @@
 
 <body>
     <!--Header-->
-    <div th:replace="fragmentsAdmi :: header"></div>
+    <div th:replace="~{fragmentsAdmi :: header}"></div>
 
     <div class="container mt-4">
         <h3 th:text="${receta.id == null} ? 'Nueva Receta' : 'Editar Receta'"></h3>

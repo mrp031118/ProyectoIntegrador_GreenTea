@@ -43,19 +43,18 @@ public class VerificarDisponibilidadController {
         List<ResultadoDisponibilidad> resultados = verificarDisponibilidadService.verificarDisponibilidad(productoId,
                 cantidad);
 
-        // lista de productos para el select (otra vez, para no perderla)
+        // lista de productos para el select
         List<Producto> productos = productoRepository.findAll();
         model.addAttribute("productos", productos);
 
+        // Obtener el producto para mostrar su nombre en los modales
+        Producto producto = productoRepository.findById(productoId).orElse(null);
+        model.addAttribute("nombreProducto", producto != null ? producto.getNombre() : "Desconocido");
+        model.addAttribute("cantidadSolicitada", cantidad);
+
         if (resultados == null) {
-            // Obtener el producto por su ID (para mostrar su nombre en el modal)
-            Producto producto = productoRepository.findById(productoId).orElse(null);
-
-            // Pasar variables al modelo
-            model.addAttribute("nombreProducto", producto != null ? producto.getNombre() : "Desconocido");
-            model.addAttribute("resultados", null); // Asegura que la variable exista en el HTML
-            model.addAttribute("sinReceta", true); // Activa el modal
-
+            model.addAttribute("resultados", null);
+            model.addAttribute("sinReceta", true);
             return "empleado/venta/verificarDisponibilidad";
         }
 

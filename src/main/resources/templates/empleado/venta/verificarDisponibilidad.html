@@ -130,8 +130,8 @@
                         aria-label="Cerrar"></button>
                 </div>
                 <div class="modal-body">
-                    <p><strong>Producto:</strong> <span id="modalProductoNoDisp"></span></p>
-                    <p><strong>Cantidad solicitada:</strong> <span id="modalCantidadNoDisp"></span></p>
+                    <p><strong>Producto:</strong> <span th:text="${nombreProducto}"></span></span></p>
+                    <p><strong>Cantidad solicitada:</strong> <span th:text="${cantidadSolicitada}"></p>
                     <hr>
                     <p>Algunos insumos no tienen suficiente stock para preparar la cantidad solicitada.</p>
                     <ul th:if="${resultados != null and #lists.size(resultados.?[!disponibleFlag]) > 0}">
@@ -159,8 +159,8 @@
                         aria-label="Cerrar"></button>
                 </div>
                 <div class="modal-body">
-                    <p><strong>Producto:</strong> <span id="modalProductoDisp"></span></p>
-                    <p><strong>Cantidad solicitada:</strong> <span id="modalCantidadDisp"></span></p>
+                    <p><strong>Producto:</strong><span th:text="${nombreProducto}"></span></p>
+                    <p><strong>Cantidad solicitada:</strong> <span th:text="${cantidadSolicitada}"></p>
                     <hr>
                     Todos los insumos están disponibles para preparar la cantidad solicitada.
                 </div>
@@ -211,25 +211,55 @@
             modal.addEventListener('hidden.bs.modal', () => document.activeElement.blur());
         });
     </script>
-
-    <!-- Mostrar modales según resultado -->
-    <script th:if="${resultados != null and #lists.size(resultados.?[!disponibleFlag]) > 0}">
+    <!-- ====================== -->
+    <!-- 🧩 Script: mostrar nombre y cantidad en los modales -->
+    <script>
         document.addEventListener("DOMContentLoaded", () => {
-            new bootstrap.Modal(document.getElementById('modalNoDisponible')).show();
+            const productoSelect = document.getElementById("productoSelect");
+            const cantidadInput = document.getElementById("cantidadInput");
+
+            const modalProductoNoDisp = document.getElementById("modalProductoNoDisp");
+            const modalCantidadNoDisp = document.getElementById("modalCantidadNoDisp");
+            const modalProductoDisp = document.getElementById("modalProductoDisp");
+            const modalCantidadDisp = document.getElementById("modalCantidadDisp");
+
+            // Obtener los valores seleccionados
+            const productoNombre = productoSelect?.options[productoSelect.selectedIndex]?.text || "";
+            const cantidad = cantidadInput?.value || "";
+
+            // Mostrar valores dentro de los modales
+            if (modalProductoNoDisp) modalProductoNoDisp.textContent = productoNombre;
+            if (modalCantidadNoDisp) modalCantidadNoDisp.textContent = cantidad;
+            if (modalProductoDisp) modalProductoDisp.textContent = productoNombre;
+            if (modalCantidadDisp) modalCantidadDisp.textContent = cantidad;
         });
     </script>
 
-    <script th:if="${resultados != null and #lists.size(resultados.?[!disponibleFlag]) == 0}">
+    <!-- ====================== -->
+    <!-- 🧩 Script: mostrar el modal correcto según resultado -->
+    <script th:inline="javascript">
         document.addEventListener("DOMContentLoaded", () => {
-            new bootstrap.Modal(document.getElementById('modalDisponible')).show();
+            const resultados = /*[[${resultados != null ? true : false}]]*/ false;
+            const sinReceta = /*[[${sinReceta != null ? true : false}]]*/ false;
+
+            if (sinReceta) {
+                const modal = new bootstrap.Modal(document.getElementById('modalSinReceta'));
+                modal.show();
+            } else if (resultados) {
+                const hayNoDisponibles = /*[[${#lists.size(resultados.?[!disponibleFlag]) > 0}]]*/ false;
+                if (hayNoDisponibles) {
+                    const modal = new bootstrap.Modal(document.getElementById('modalNoDisponible'));
+                    modal.show();
+                } else {
+                    const modal = new bootstrap.Modal(document.getElementById('modalDisponible'));
+                    modal.show();
+                }
+            }
         });
     </script>
 
-    <script th:if="${sinReceta}">
-        document.addEventListener("DOMContentLoaded", () => {
-            new bootstrap.Modal(document.getElementById('modalSinReceta')).show();
-        });
-    </script>
+
+
 
 </body>
 
