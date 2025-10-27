@@ -1,6 +1,7 @@
 package com.example.demo.controller.productos;
 
 import java.beans.PropertyEditorSupport;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -12,6 +13,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.demo.entity.insumos.Insumo;
 import com.example.demo.entity.insumos.UnidadMedida;
@@ -54,20 +57,31 @@ public class RecetaController {
         return "admin/producto/recetasFormulario";
     }
 
-    @PostMapping("/guardar")
-    public String guardar(@ModelAttribute RecetaProducto receta) {
-        recetaService.guardar(receta);
-        return "redirect:/admin/recetas";
-    }
-
+    // 🟠 EDITAR RECETA
     @GetMapping("/editar/{id}")
-    public String editar(@PathVariable Long id, Model model) {
+    public String editarReceta(@PathVariable("id") Long id, Model model) {
         RecetaProducto receta = recetaService.buscarPorId(id);
+        if (receta == null) {
+            return "redirect:/admin/receta/listar";
+        }
         model.addAttribute("receta", receta);
         model.addAttribute("productos", productoService.listarProductos());
         model.addAttribute("insumos", insumoService.listarInsumos());
         model.addAttribute("unidades", unidadService.listarUnidades());
         return "admin/producto/recetasFormulario";
+    }
+
+    @PostMapping("/guardar")
+    public String guardar(@ModelAttribute RecetaProducto receta, RedirectAttributes redirectAttributes) {
+        try {
+            recetaService.guardar(receta);
+            redirectAttributes.addFlashAttribute("mensaje", "Receta guardada correctamente.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            redirectAttributes.addFlashAttribute("error", "Error al guardar la receta: " + e.getMessage());
+            return "redirect:/admin/recetas/nuevo";
+        }
+        return "redirect:/admin/recetas";
     }
 
     @GetMapping("/eliminar/{id}")

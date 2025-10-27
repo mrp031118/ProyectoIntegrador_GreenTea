@@ -1,5 +1,7 @@
 package com.example.demo.entity.movimientos;
 
+import java.time.LocalDateTime;
+
 import com.example.demo.entity.insumos.Insumo;
 import com.example.demo.entity.lotes.Lote;
 
@@ -37,7 +39,7 @@ public class Movimiento {
     @JoinColumn(name = "tipo_movimiento_id", nullable = false)
     private TipoMovimientoKardex tipoMovimiento;
 
-    private java.util.Date fecha;
+    private LocalDateTime fecha;
     private Double cantidad;
     private Double costoUnitario;
     private Double total;

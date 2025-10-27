@@ -74,7 +74,7 @@
                                             (${mov.tipoMovimiento.nombre == 'SALIDA'} ? 'table-danger' : 'table-warning')" class="text-center small">
 
                             <!-- Fecha -->
-                            <td th:text="${#dates.format(mov.fecha, 'dd/MM/yyyy')}"></td>
+                            <td th:text="${#temporals.format(mov.fecha, 'dd/MM/yyyy')}"></td>
 
                             <!-- Insumo -->
                             <td th:text="${mov.insumo.nombre}"></td>

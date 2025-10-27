@@ -1,5 +1,6 @@
 package com.example.demo.service.movimientos;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -10,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.entity.movimientos.Movimiento;
+import com.example.demo.entity.movimientos.TipoMovimientoKardex;
+import com.example.demo.entity.productos.Producto;
 import com.example.demo.repository.movimientos.MovimientoRepository;
 
 @Service
@@ -106,6 +109,38 @@ public class MovimientoService {
         LotePEPS(double cantidad, double costoUnitario) {
             this.cantidad = cantidad;
             this.costoUnitario = costoUnitario;
+        }
+    }
+
+    // 🔹 Registra una salida automática cuando el producto pertenece a una
+    // categoría de CONTROL_INSTANTANEO
+    public void registrarSalidaAutomatica(Object producto, double cantidad, String observacion) {
+        try {
+            Producto prod = new Producto();
+
+            // Verificamos tipo de control de la categoría del producto
+            String tipoControl = prod.getCategoria().getTipoControl();
+            if (!"INSTANTANEO".equalsIgnoreCase(tipoControl)) {
+                return; // si no es instantáneo, no genera salida
+            }
+
+            Movimiento movimiento = new Movimiento();
+            movimiento.setCantidad(cantidad);
+            movimiento.setFecha(LocalDateTime.now());
+            movimiento.setObservaciones(observacion);
+
+            // ⚙️ Tipo de movimiento: salida
+            TipoMovimientoKardex tipoSalida = new TipoMovimientoKardex();
+            tipoSalida.setId(2); // asegúrate que 2 sea SALIDA
+            tipoSalida.setNombre("SALIDA");
+
+            movimiento.setTipoMovimiento(tipoSalida);
+
+            movimientoRepository.save(movimiento);
+            System.out.println("✅ Movimiento de salida registrado por CONTROL_INSTANTANEO");
+        } catch (Exception e) {
+            System.err.println("❌ Error al registrar salida automática: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 

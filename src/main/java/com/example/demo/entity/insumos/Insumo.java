@@ -36,7 +36,7 @@ public class Insumo {
     @Column(nullable = false, length = 100)
     private String nombre;
 
-    private Integer stockMinimo;
+    private Double stockMinimo;
 
 
     // Relación con Unidad de Medida

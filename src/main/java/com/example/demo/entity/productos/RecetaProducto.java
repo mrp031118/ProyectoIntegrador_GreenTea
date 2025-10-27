@@ -1,6 +1,5 @@
 package com.example.demo.entity.productos;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +14,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -54,5 +54,12 @@ public class RecetaProducto {
         d.setRecetaProducto(null);
         this.detalles.remove(d);
     }
-    
+
+    @Transient
+    private List<Long> deleteDetalles;
+
+    public List<Long> getDeleteDetalles() {
+        return deleteDetalles;
+    }
+
 }

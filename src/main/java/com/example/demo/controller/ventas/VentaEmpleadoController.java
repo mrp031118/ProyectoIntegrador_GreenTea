@@ -1,18 +1,87 @@
 package com.example.demo.controller.ventas;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import java.util.List;
 
-import ch.qos.logback.core.model.Model;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import com.example.demo.entity.productos.Producto;
+import com.example.demo.entity.usuarios.User;
+import com.example.demo.entity.venta.MetodoPago;
+import com.example.demo.repository.ventaa.MetodoPagoRepository;
+import com.example.demo.service.productos.ProductoService;
+import com.example.demo.service.usuarios.CustomUserDetails;
+import com.example.demo.service.venta.MetodoPagoService;
+import com.example.demo.service.venta.VentaService;
+
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 @Controller
 @RequestMapping("/empleado/ventas")
 public class VentaEmpleadoController {
 
-    @GetMapping()
-    public String listarProductos(Model model) {
-        return "empleado/venta/ventas"; 
+    @Autowired
+    private VentaService ventaService;
+    @Autowired
+    private ProductoService productoService;
+    @Autowired
+    private MetodoPagoRepository metodoPagoRepository;
+    @Autowired
+    private MetodoPagoService metodoPagoService;
+
+    @GetMapping("/registrar")
+    public String mostrarFormulario(Model model) {
+        // Obtener usuario logueado
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        CustomUserDetails userDetails = (CustomUserDetails) auth.getPrincipal();
+        User empleado = userDetails.getUser();
+
+        // Productos y métodos de pago
+        List<Producto> productos = productoService.listarProductos();
+        List<MetodoPago> metodosPago = metodoPagoService.listarMetodos();
+
+        model.addAttribute("productos", productos);
+        model.addAttribute("metodosPago", metodosPago);
+        model.addAttribute("empleado", empleado);
+        return "empleado/venta/ventas";
+    }
+
+    @PostMapping("/registrar")
+    public String procesarVenta(
+            @RequestParam Long empleadoId, // logueado
+            @RequestParam(required = false) Integer clienteId, // ID del cliente opcional
+            @RequestParam(required = false) String clienteNombre, // nombre del cliente si no hay ID
+            @RequestParam Long metodoPagoId,
+            @RequestParam List<Long> productoIds,
+            @RequestParam List<Double> cantidades) {
+
+        MetodoPago metodoPago = metodoPagoRepository.findById(metodoPagoId).orElse(null);
+
+        // Construir lista de productos con cantidad
+        List<VentaService.ProductoCantidad> lista = new java.util.ArrayList<>();
+        for (int i = 0; i < productoIds.size(); i++) {
+            Producto p = productoService.obtenerPorId(productoIds.get(i));
+            if (p != null) {
+                lista.add(new VentaService.ProductoCantidad(p, cantidades.get(i)));
+            }
+        }
+
+        // Obtener usuario logueado real
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        CustomUserDetails userDetails = (CustomUserDetails) auth.getPrincipal();
+        User empleado = userDetails.getUser();
+
+        // Registrar venta
+        ventaService.registrarVenta(empleado, clienteId, clienteNombre, metodoPago, lista);
+
+        return "redirect:/empleado/ventas/registrar";
     }
 
 }

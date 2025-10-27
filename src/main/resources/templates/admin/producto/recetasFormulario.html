@@ -24,7 +24,10 @@
     <div class="container mt-4">
         <h3 th:text="${receta.id == null} ? 'Nueva Receta' : 'Editar Receta'"></h3>
 
-        <form th:action="@{/admin/recetas/guardar}" th:object="${receta}" method="post">
+        <!-- FORMULARIO -->
+        <form th:action="@{/admin/recetas/guardar}" th:object="${receta}" method="post"
+            onsubmit="return validarFormulario()">
+            <input type="hidden" th:field="*{id}" />
 
             <div class="row g-3">
                 <!-- Nombre -->
@@ -33,23 +36,26 @@
                     <input type="text" th:field="*{nombreReceta}" class="form-control" required />
                 </div>
 
-                <!-- PRODUCTO -->
-                <select th:field="*{producto.id}" class="form-select" required>
-                    <option value="">-- Seleccionar producto --</option>
-                    <option th:each="p : ${productos}" th:value="${p.id}" th:text="${p.nombre}"></option>
-                </select>
+                <!-- Producto -->
+                <div class="col-md-6">
+                    <label class="form-label">Producto</label>
+                    <select th:field="*{producto.id}" class="form-select" required>
+                        <option value="">-- Seleccionar producto --</option>
+                        <option th:each="p : ${productos}" th:value="${p.id}" th:text="${p.nombre}"></option>
+                    </select>
+                </div>
             </div>
 
             <hr />
-
-            <!-- DETALLES DE INSUMOS -->
             <h5 class="mt-4">Detalle de Insumos</h5>
 
+            <!-- CONTENEDOR DE DETALLES -->
             <div id="detalles">
                 <div th:each="detalle, iterStat : *{detalles}" class="row g-2 align-items-center mb-2 detalle-item">
+                    <input type="hidden" th:field="*{detalles[__${iterStat.index}__].id}" />
 
                     <!-- INSUMO -->
-                    <div class="col-md-5">
+                    <div class="col-md-4">
                         <select th:field="*{detalles[__${iterStat.index}__].insumo.insumoId}"
                             class="form-select form-select-sm" required>
                             <option value="">-- Seleccionar insumo --</option>
@@ -72,13 +78,12 @@
                         </select>
                     </div>
 
-                    <!-- ELIMINAR -->
-                    <div class="col-md-1 text-center">
+                    <!-- BOTÓN ELIMINAR -->
+                    <div class="col-md-2 text-center">
                         <button type="button" class="btn btn-outline-danger btn-sm" onclick="eliminarFila(this)">
                             <i class="fa-solid fa-trash"></i>
                         </button>
                     </div>
-
                 </div>
             </div>
 
@@ -89,21 +94,21 @@
                 </button>
             </div>
 
-
+            <!-- BOTONES -->
             <div class="col-12 mt-4">
                 <button type="submit" class="btn btn-success">Guardar</button>
-                <a th:href="@{/admin/recetas}" class="btn btn-secondary">Cancelar</a>
+                <a th:href="@{/admin/receta/listar}" class="btn btn-secondary">Cancelar</a>
             </div>
-
         </form>
+
     </div>
 
     <!--Menu Deslizable-->
     <div th:replace="fragmentsAdmi :: menuLateral"></div>
 
     <!-- JS -->
-    <script>
-        let contador = /*[[${#lists.size(receta.detalles)}]]*/ 1;
+    <script th:inline="javascript">
+        let contador = /*[[${#lists.size(receta.detalles)}]]*/ 0;
 
         function agregarFila() {
             const cont = document.getElementById('detalles');
@@ -117,10 +122,41 @@
         }
 
         function eliminarFila(btn) {
-            const items = document.querySelectorAll('.detalle-item');
-            if (items.length > 1) btn.closest('.detalle-item').remove();
+            const idInput = btn.closest('.detalle-item').querySelector('input[name*="id"]');
+            if (idInput && idInput.value) {
+                const hidden = document.createElement('input');
+                hidden.type = 'hidden';
+                hidden.name = '_deleteDetalles';
+                hidden.value = idInput.value;
+                document.querySelector('form').appendChild(hidden);
+            }
+            btn.closest('.detalle-item').remove();
+        }
+
+        // ✅ Validar antes de enviar
+        function validarFormulario() {
+            const filas = document.querySelectorAll('.detalle-item');
+            let validas = 0;
+
+            filas.forEach(fila => {
+                const insumo = fila.querySelector('select[name*="insumo"]')?.value;
+                const cantidad = fila.querySelector('input[name*="cantidad"]')?.value;
+                const unidad = fila.querySelector('select[name*="unidadMedida"]')?.value;
+
+                if (insumo && cantidad && unidad) {
+                    validas++;
+                }
+            });
+
+            if (validas === 0) {
+                alert("Debe agregar al menos un insumo con todos los campos completos.");
+                return false;
+            }
+
+            return true;
         }
     </script>
+
 
 </body>
 
