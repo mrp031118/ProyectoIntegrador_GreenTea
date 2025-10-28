@@ -27,6 +27,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Table(name = "ventas")
 public class Venta {
+    // Entidad que representa una venta, con información del cliente, empleado, método de pago y detalles.
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
