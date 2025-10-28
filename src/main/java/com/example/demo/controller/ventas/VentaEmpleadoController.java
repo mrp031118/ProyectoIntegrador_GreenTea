@@ -10,11 +10,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.example.demo.entity.cliente.Cliente;
 import com.example.demo.entity.productos.Producto;
 import com.example.demo.entity.usuarios.User;
 import com.example.demo.entity.venta.MetodoPago;
 import com.example.demo.repository.ventaa.MetodoPagoRepository;
+import com.example.demo.service.cliente.ClienteService;
 import com.example.demo.service.productos.ProductoService;
 import com.example.demo.service.usuarios.CustomUserDetails;
 import com.example.demo.service.venta.MetodoPagoService;
@@ -35,6 +38,8 @@ public class VentaEmpleadoController {
     private MetodoPagoRepository metodoPagoRepository;
     @Autowired
     private MetodoPagoService metodoPagoService;
+    @Autowired
+    private ClienteService clienteService;
 
     @GetMapping("/registrar")
     public String mostrarFormulario(Model model) {
@@ -46,10 +51,12 @@ public class VentaEmpleadoController {
         // Productos y métodos de pago
         List<Producto> productos = productoService.listarProductos();
         List<MetodoPago> metodosPago = metodoPagoService.listarMetodos();
+        List<Cliente> clientes = clienteService.listarTodos(); // Traer clientes de BD
 
         model.addAttribute("productos", productos);
         model.addAttribute("metodosPago", metodosPago);
         model.addAttribute("empleado", empleado);
+        model.addAttribute("clientes", clientes);
         return "empleado/venta/ventas";
     }
 
@@ -60,7 +67,7 @@ public class VentaEmpleadoController {
             @RequestParam(required = false) String clienteNombre, // nombre del cliente si no hay ID
             @RequestParam Long metodoPagoId,
             @RequestParam List<Long> productoIds,
-            @RequestParam List<Double> cantidades) {
+            @RequestParam List<Double> cantidades, RedirectAttributes redirectAttributes) {
 
         MetodoPago metodoPago = metodoPagoRepository.findById(metodoPagoId).orElse(null);
 
@@ -79,7 +86,15 @@ public class VentaEmpleadoController {
         User empleado = userDetails.getUser();
 
         // Registrar venta
-        ventaService.registrarVenta(empleado, clienteId, clienteNombre, metodoPago, lista);
+        ventaService.registrarVenta(
+                empleado,
+                (clienteId != null ? clienteId : null),
+                (clienteNombre != null && !clienteNombre.isBlank() ? clienteNombre : null),
+                metodoPago,
+                lista);
+
+        // 🔹 Guardar atributo flash para la siguiente petición
+        redirectAttributes.addFlashAttribute("ventaExitosa", true);
 
         return "redirect:/empleado/ventas/registrar";
     }

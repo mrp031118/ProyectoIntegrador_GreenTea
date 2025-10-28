@@ -31,33 +31,50 @@
 
         <!-- Formulario Merma -->
         <div class="col-10 bg-secundario rounded-2 shadow-sm p-3">
-            <form th:action="@{/admin/movimientos-insumos/guardar-merma}" method="post" class="row g-3">
+            <form th:action="@{/admin/movimientos/insumo/guardar-merma}" method="post" class="row g-3">
 
                 <!-- Insumo -->
                 <div class="col-md-6">
                     <label for="insumo" class="form-label text-dark fw-bold">Insumo</label>
                     <select id="insumo" name="insumoId" class="form-select form-select-sm" required>
                         <option value="" disabled selected>Selecciona un insumo</option>
-                        <option th:each="i : ${insumos}" th:value="${i.id}" th:text="${i.nombre}"></option>
+                        <option th:each="i : ${insumos}" th:value="${i.insumoId}" th:text="${i.nombre}"></option>
+                    </select>
+                </div>
+
+                <!-- Lote -->
+                <div class="col-md-6">
+                    <label for="lote" class="form-label text-dark fw-bold">Lote</label>
+                    <select id="lote" name="loteId" class="form-select form-select-sm" required>
+                        <option value="" disabled selected>Selecciona un lote</option>
                     </select>
                 </div>
 
                 <!-- Cantidad -->
                 <div class="col-md-6">
                     <label for="cantidad" class="form-label text-dark fw-bold">Cantidad</label>
-                    <input type="number" id="cantidad" name="cantidad" class="form-control form-control-sm" min="0" step="0.01" required>
+                    <div class="input-group input-group-sm">
+                        <input type="number" id="cantidad" name="cantidad" class="form-control form-control-sm" min="0"
+                            step="0.01" required>
+                        <span class="input-group-text" id="unidad-medida">--</span>
+                    </div>
                 </div>
 
-                <!-- Botones de acción -->
+                <!-- Observaciones -->
+                <div class="col-md-6">
+                    <label for="observaciones" class="form-label text-dark fw-bold">Observaciones</label>
+                    <input type="text" id="observaciones" name="observaciones" class="form-control form-control-sm">
+                </div>
+
+                <!-- Botones -->
                 <div class="col-12 d-flex justify-content-end mt-3">
                     <button type="submit" class="btn btn-success btn-sm me-2">
-                        <i class="fa-solid fa-check"></i> Agregar
+                        <i class="fa-solid fa-check"></i> Registrar Merma
                     </button>
                     <a th:href="@{/admin/movimientos/insumo}" class="btn btn-secondary btn-sm">
                         <i class="fa-solid fa-xmark"></i> Cancelar
                     </a>
                 </div>
-
             </form>
         </div>
 
@@ -65,6 +82,58 @@
 
     <!--Menu Deslizable-->
     <div th:replace="fragmentsAdmi :: menuLateral"></div>
+
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        const lotes = /*[[${lotes}]]*/[];
+        const insumoSelect = document.getElementById('insumo');
+        const loteSelect = document.getElementById('lote');
+        const unidadSpan = document.getElementById('unidad-medida');
+
+        insumoSelect.addEventListener('change', function () {
+            const lotes = /*[[${lotes}]]*/[];
+            const insumoSelect = document.getElementById('insumo');
+            const loteSelect = document.getElementById('lote');
+            const unidadSpan = document.getElementById('unidadCantidad');
+
+            // Al cambiar el insumo
+            insumoSelect.addEventListener('change', function () {
+                const insumoId = parseInt(this.value);
+                loteSelect.innerHTML = '<option value="" disabled selected>Selecciona un lote</option>';
+
+                lotes
+                    .filter(l => l.insumoId === insumoId && l.cantidadDisponible > 0)
+                    .sort((a, b) => new Date(a.fechaEntrada) - new Date(b.fechaEntrada)) // FIFO
+                    .forEach(l => {
+                        const option = document.createElement('option');
+                        option.value = l.loteId;
+                        option.text = 'Código: ' + l.loteId + ' | ' + l.cantidadDisponible + ' ' + (l.unidadMedida || '') + ' disponibles';
+                        option.setAttribute('data-unidad', l.unidadMedida); // Agregamos unidad
+                        loteSelect.appendChild(option);
+                    });
+
+                // Reiniciar unidad al cambiar insumo
+                unidadSpan.textContent = '--';
+            });
+
+            // Al cambiar el lote
+            loteSelect.addEventListener('change', function () {
+                const selectedOption = loteSelect.options[loteSelect.selectedIndex];
+                unidadSpan.textContent = selectedOption.getAttribute('data-unidad') || '--';
+            });
+
+        });
+
+        loteSelect.addEventListener('change', function () {
+            const selectedOption = this.selectedOptions[0];
+            if (selectedOption) {
+                unidadSpan.textContent = selectedOption.getAttribute('data-unidad') || '--';
+            } else {
+                unidadSpan.textContent = '--';
+            }
+        });
+        /*]]>*/
+    </script>
 
 </body>
 

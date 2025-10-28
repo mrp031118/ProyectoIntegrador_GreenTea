@@ -2,14 +2,12 @@ package com.example.demo.service.venta;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Comparator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Service;
 
-import com.example.demo.dto.StockActualProjection;
+import com.example.demo.dto.KardexLoteProjection;
 import com.example.demo.entity.cliente.Cliente;
 import com.example.demo.entity.insumos.UnidadMedida;
 import com.example.demo.entity.lotes.Lote;
@@ -23,12 +21,11 @@ import com.example.demo.entity.venta.DetalleVenta;
 import com.example.demo.entity.venta.MetodoPago;
 import com.example.demo.entity.venta.Venta;
 import com.example.demo.repository.cliente.ClienteRepository;
+import com.example.demo.repository.lotes.LoteRepository;
 import com.example.demo.repository.movimientos.MovimientoRepository;
 import com.example.demo.repository.productos.RecetaProductoRepository;
 import com.example.demo.repository.ventaa.VentaRepository;
 import com.example.demo.service.insumos.ConversionUnidadService;
-import com.example.demo.service.insumos.StockActualService;
-import com.example.demo.service.movimientos.MovimientoService;
 
 import jakarta.transaction.Transactional;
 
@@ -47,10 +44,17 @@ public class VentaService {
     private ClienteRepository clienteRepository;
 
     @Autowired
+    private LoteRepository loteRepository;
+    @Autowired
     private ConversionUnidadService conversionUnidadService;
 
     @Autowired
     private ProduccionService produccionService; // Para consultar stock si es necesario
+
+    // Método para listar todas las ventas
+    public List<Venta> listarTodasVentas() {
+        return ventaRepository.findAll();
+    }
 
     // DTO interno para pasar producto + cantidad
     public static class ProductoCantidad {
@@ -76,7 +80,6 @@ public class VentaService {
             clienteObj = clienteRepository.findById(clienteId).orElse(null);
         }
         venta.setCliente(clienteObj);
-
         venta.setMetodoPago(metodoPago);
         venta.setFecha(LocalDateTime.now());
 
@@ -90,12 +93,11 @@ public class VentaService {
             detalle.setCantidad(pc.cantidad);
             detalle.setPrecioUnidad(BigDecimal.valueOf(pc.producto.getPrecio()));
             detalle.setVenta(venta);
-            Double subtotal = pc.producto.getPrecio() * pc.cantidad;
-            detalle.setTotal(BigDecimal.valueOf(subtotal));
+            BigDecimal subtotal = BigDecimal.valueOf(pc.producto.getPrecio())
+                    .multiply(BigDecimal.valueOf(pc.cantidad));
+            detalle.setTotal(subtotal);
             venta.getDetalles().add(detalle);
-
-            totalVenta = totalVenta.add(BigDecimal.valueOf(pc.producto.getPrecio())
-                    .multiply(BigDecimal.valueOf(pc.cantidad)));
+            totalVenta = totalVenta.add(subtotal);
 
             // 2️⃣ Obtener receta del producto
             RecetaProducto receta = recetaProductoRepository.findByProducto_Id(pc.producto.getId())
@@ -106,9 +108,10 @@ public class VentaService {
             String tipoControl = pc.producto.getCategoria().getTipoControl();
 
             if ("instantaneo".equalsIgnoreCase(tipoControl)) {
-                // 🔹 Descuento directo de insumos usando FIFO por lotes
+                // 🔹 Descuento de insumos usando FIFO con vista kardex
                 for (DetalleRecetaProducto drp : receta.getDetalles()) {
-                    BigDecimal cantidadRequerida = drp.getCantidad().multiply(BigDecimal.valueOf(pc.cantidad));
+                    BigDecimal cantidadRequerida = drp.getCantidad()
+                            .multiply(BigDecimal.valueOf(pc.cantidad));
 
                     // Convertir unidades si es necesario
                     UnidadMedida unidadReceta = drp.getUnidadMedida();
@@ -124,44 +127,65 @@ public class VentaService {
                         }
                     }
 
-                    double restante = cantidadParaRestar.doubleValue();
-                    List<Lote> lotes = drp.getInsumo().getLotes();
-                    lotes.sort(Comparator.comparing(Lote::getFechaEntrada)); // FIFO
+                    BigDecimal restante = cantidadParaRestar;
 
-                    for (Lote lote : lotes) {
-                        if (restante <= 0)
+                    // 🔹 Obtener lotes disponibles desde la vista Kardex
+                    List<KardexLoteProjection> lotesDisponibles = loteRepository
+                            .findAllKardexLotePeps().stream()
+                            .filter(k -> k.getInsumoId().equals(drp.getInsumo().getInsumoId())
+                                    && k.getCantidadDisponible() > 0)
+                            .sorted((a, b) -> a.getFechaEntrada().compareTo(b.getFechaEntrada()))
+                            .toList();
+
+                    for (KardexLoteProjection loteKardex : lotesDisponibles) {
+                        if (restante.compareTo(BigDecimal.ZERO) <= 0)
                             break;
 
-                        double cantidadDesdeLote = Math.min(lote.getCantidad(), restante);
+                        BigDecimal cantidadDisponible = BigDecimal.valueOf(loteKardex.getCantidadDisponible());
+                        BigDecimal cantidadDesdeLote = cantidadDisponible.min(restante);
 
+                        // Registrar movimiento
                         Movimiento mov = new Movimiento();
                         mov.setInsumo(drp.getInsumo());
-                        mov.setCantidad(cantidadDesdeLote);
-                        mov.setCostoUnitario(lote.getCostoUnitario()); // costo real del lote
-                        mov.setTotal(lote.getCostoUnitario() * cantidadDesdeLote);
+                        mov.setCantidad(cantidadDesdeLote.doubleValue());
+                        mov.setCostoUnitario(loteKardex.getCostoUnitario());
+                        mov.setTotal(cantidadDesdeLote.multiply(BigDecimal.valueOf(loteKardex.getCostoUnitario()))
+                                .doubleValue());
                         mov.setFecha(LocalDateTime.now());
-
                         TipoMovimientoKardex tipoSalida = new TipoMovimientoKardex();
-                        tipoSalida.setId(2); // SALIDA
+                        tipoSalida.setId(2);
                         tipoSalida.setNombre("SALIDA");
                         mov.setTipoMovimiento(tipoSalida);
-                        mov.setObservaciones("Venta producto instantáneo: " + pc.producto.getNombre());
 
+                        // Asociar lote real
+                        Lote loteReal = loteRepository.findById(loteKardex.getLoteId()).orElseThrow();
+                        mov.setLote(loteReal);
+                        mov.setObservaciones("Venta producto instantáneo: " + pc.producto.getNombre());
                         movimientoRepository.save(mov);
 
-                        // Restar del lote
-                        lote.setCantidad(lote.getCantidad() - cantidadDesdeLote);
-                        restante -= cantidadDesdeLote;
+                        // Actualizar lote real
+                        BigDecimal nuevaCantidadLote = BigDecimal.valueOf(loteReal.getCantidad())
+                                .subtract(cantidadDesdeLote);
+                        loteReal.setCantidad(nuevaCantidadLote.doubleValue());
+                        loteRepository.save(loteReal);
+
+                        // Reducir restante
+                        restante = restante.subtract(cantidadDesdeLote);
+                    }
+
+                    if (restante.compareTo(BigDecimal.ZERO) > 0) {
+                        System.out.println("⚠️ Insumo " + drp.getInsumo().getNombre()
+                                + " no tiene suficiente stock. Falta: " + restante + " " + unidadStock.getNombre());
                     }
                 }
             } else if ("elaborado".equalsIgnoreCase(tipoControl)) {
-                // 🔹 Registrar producción del día y descontar insumos
                 produccionService.registrarProduccion(pc.producto, pc.cantidad);
             }
         }
 
         venta.setTotal(totalVenta);
         ventaRepository.save(venta);
+        System.out.println("✅ Venta registrada con total: " + totalVenta);
     }
 
 }

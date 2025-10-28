@@ -11,9 +11,9 @@ public interface KardexLoteProjection {
     String getUnidadMedida();
     String getProveedor();
     Double getCostoUnitario();
-    Integer getCantidadInicial();
-    Integer getCantidadUsada();
-    Integer getCantidadDisponible();
+    Double getCantidadInicial();
+    Double getCantidadUsada();
+    Double getCantidadDisponible();
     LocalDateTime getFechaEntrada();
     LocalDate getFechaVencimiento();
 }

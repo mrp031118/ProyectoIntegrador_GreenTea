@@ -33,4 +33,7 @@ public interface LoteRepository extends JpaRepository<Lote, Long> {
             "fecha_vencimiento AS fechaVencimiento " +
             "FROM kardex_lote_peps", nativeQuery = true)
     List<KardexLoteProjection> findAllKardexLotePeps();
+
+    // Obtener lotes de un insumo ordenados por fecha (FIFO)
+    List<Lote> findByInsumoInsumoIdOrderByFechaEntradaAsc(Long insumoId);
 }
