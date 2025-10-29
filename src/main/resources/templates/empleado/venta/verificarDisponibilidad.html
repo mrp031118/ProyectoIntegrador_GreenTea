@@ -130,8 +130,8 @@
                         aria-label="Cerrar"></button>
                 </div>
                 <div class="modal-body">
-                    <p><strong>Producto:</strong> <span th:text="${nombreProducto}"></span></span></p>
-                    <p><strong>Cantidad solicitada:</strong> <span th:text="${cantidadSolicitada}"></p>
+                    <p><strong>Producto:</strong> <span th:text="${nombreProducto}"></span></p>
+                    <p><strong>Cantidad solicitada:</strong> <span th:text="${cantidadSolicitada}"></span></p>
                     <hr>
                     <p>Algunos insumos no tienen suficiente stock para preparar la cantidad solicitada.</p>
                     <ul th:if="${resultados != null and #lists.size(resultados.?[!disponibleFlag]) > 0}">
@@ -160,7 +160,7 @@
                 </div>
                 <div class="modal-body">
                     <p><strong>Producto:</strong><span th:text="${nombreProducto}"></span></p>
-                    <p><strong>Cantidad solicitada:</strong> <span th:text="${cantidadSolicitada}"></p>
+                    <p><strong>Cantidad solicitada:</strong> <span th:text="${cantidadSolicitada}"></span></p>
                     <hr>
                     Todos los insumos están disponibles para preparar la cantidad solicitada.
                 </div>
@@ -239,14 +239,15 @@
     <!-- 🧩 Script: mostrar el modal correcto según resultado -->
     <script th:inline="javascript">
         document.addEventListener("DOMContentLoaded", () => {
-            const resultados = /*[[${resultados != null ? true : false}]]*/ false;
-            const sinReceta = /*[[${sinReceta != null ? true : false}]]*/ false;
+            const resultados = /*[[${resultados != null}]]*/ false;
+            const sinReceta = /*[[${sinReceta}]]*/ false;
+
 
             if (sinReceta) {
                 const modal = new bootstrap.Modal(document.getElementById('modalSinReceta'));
                 modal.show();
             } else if (resultados) {
-                const hayNoDisponibles = /*[[${#lists.size(resultados.?[!disponibleFlag]) > 0}]]*/ false;
+                const hayNoDisponibles = /*[[${resultados != null and #lists.size(resultados.?[!disponibleFlag]) > 0}]]*/ false;
                 if (hayNoDisponibles) {
                     const modal = new bootstrap.Modal(document.getElementById('modalNoDisponible'));
                     modal.show();
@@ -257,8 +258,6 @@
             }
         });
     </script>
-
-
 
 
 </body>

@@ -1,5 +1,6 @@
 package com.example.demo.controller.ventas;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,7 @@ public class VerificarDisponibilidadController {
         List<Producto> productos = productoRepository.findAll();
         model.addAttribute("productos", productos);
         model.addAttribute("resultados", null);
+         model.addAttribute("sinReceta", false);
         return "empleado/venta/verificarDisponibilidad";
     }
 
@@ -52,13 +54,23 @@ public class VerificarDisponibilidadController {
         model.addAttribute("nombreProducto", producto != null ? producto.getNombre() : "Desconocido");
         model.addAttribute("cantidadSolicitada", cantidad);
 
+        
+
+        // --- Ajuste de la lógica aquí ---
         if (resultados == null) {
+            // No hay resultados (por ejemplo, el producto no requiere receta)
             model.addAttribute("resultados", null);
             model.addAttribute("sinReceta", true);
-            return "empleado/venta/verificarDisponibilidad";
+        } else if (resultados.isEmpty()) {
+            // Si el servicio devolvió una lista vacía, lo tratamos igual que sin receta
+            model.addAttribute("resultados", new ArrayList<>());
+            model.addAttribute("sinReceta", true);
+        } else {
+            // Si hay resultados válidos
+            model.addAttribute("resultados", resultados);
+            model.addAttribute("sinReceta", false);
         }
 
-        model.addAttribute("resultados", resultados);
         return "empleado/venta/verificarDisponibilidad";
     }
 }
