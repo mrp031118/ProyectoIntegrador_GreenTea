@@ -74,9 +74,12 @@
                         <select th:field="*{detalles[__${iterStat.index}__].unidadMedida.id}"
                             class="form-select form-select-sm" required>
                             <option value="">-- Unidad --</option>
-                            <option th:each="u : ${unidades}" th:value="${u.id}" th:text="${u.nombre}"></option>
+                            <option th:each="u : ${unidades}" th:if="${u.id != 1 and u.id != 2 and u.id != 4}"
+                                th:value="${u.id}" th:text="${u.nombre}">
+                            </option>
                         </select>
                     </div>
+
 
                     <!-- BOTÓN ELIMINAR -->
                     <div class="col-md-2 text-center">

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,6 +16,7 @@
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" />
 </head>
+
 <body>
     <!--Header-->
     <div th:replace="fragmentsAdmi :: header"></div>
@@ -24,8 +26,8 @@
 
         <!-- Título -->
         <div class="col-10 px-0 py-2">
-            <h3 class="fw-bold text-dark mb-2" 
-                th:text="${insumo.insumoId != null} ? 'Editar Insumo' : 'Nuevo Insumo'"></h3>
+            <h3 class="fw-bold text-dark mb-2" th:text="${insumo.insumoId != null} ? 'Editar Insumo' : 'Nuevo Insumo'">
+            </h3>
             <hr class="border-secondary mt-0 mb-2">
         </div>
 
@@ -42,23 +44,27 @@
                 <div class="col-md-6">
                     <label for="unidadMedida" class="form-label fw-semibold">Unidad de Medida</label>
                     <select th:field="*{unidadMedida.id}" class="form-select form-select-sm rounded-1" required>
-                        <option th:each="u : ${unidades}" th:value="${u.id}" th:text="${u.nombre}"></option>
+                        <option th:each="u : ${unidades}" th:if="${u.id != 5 and u.id != 6}" th:value="${u.id}"
+                            th:text="${u.nombre}">
+                        </option>
                     </select>
+
                 </div>
 
                 <div class="col-md-6">
                     <label for="stockMinimo" class="form-label fw-semibold">Stock Mínimo</label>
-                    <input type="number" th:field="*{stockMinimo}" class="form-control form-control-sm rounded-1" min="0" step="0.01" required />
+                    <input type="number" th:field="*{stockMinimo}" class="form-control form-control-sm rounded-1"
+                        min="0" step="0.01" required />
                 </div>
 
                 <!-- Botones -->
                 <div class="col-12 mt-3 d-flex gap-2">
-                    <button type="submit" 
+                    <button type="submit"
                         class="bg-success text-white rounded-1 d-flex align-items-center justify-content-center px-3 py-2 border-0 btn-sm"
                         style="width: 20%;">
                         <i class="fa-solid fa-save me-2"></i> Guardar
                     </button>
-                    <a th:href="@{/admin/insumos}" 
+                    <a th:href="@{/admin/insumos}"
                         class="bg-secondary text-white rounded-1 d-flex align-items-center justify-content-center px-3 py-2 text-decoration-none btn-sm"
                         style="width: 20%;">
                         <i class="fa-solid fa-xmark me-2"></i> Cancelar
@@ -71,4 +77,5 @@
     <!--Menu Deslizable-->
     <div th:replace="fragmentsAdmi :: menuLateral"></div>
 </body>
+
 </html>

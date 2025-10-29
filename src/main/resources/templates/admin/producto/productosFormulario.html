@@ -55,10 +55,13 @@
                 </div>
                 <div class="col-md-6">
                     <label class="form-label fw-semibold">Categoría</label>
-                    <select th:field="*{categoria}" class="form-select form-select-sm shadow-sm">
+                    <select th:field="*{categoria}" class="form-select form-select-sm shadow-sm" id="categoriaSelect">
                         <option value="" disabled selected>Selecciona una categoría</option>
-                        <option th:each="cat : ${categorias}" th:value="${cat.id}" th:text="${cat.nombre}"></option>
+                        <option th:each="cat : ${categorias}" th:value="${cat.id}" th:text="${cat.nombre}"
+                            th:attr="data-tipo-control=${cat.tipoControl}">
+                        </option>
                     </select>
+
                 </div>
 
                 <!-- Segunda fila: Precio / Unidad de Conversión -->
@@ -76,15 +79,15 @@
                 </div>
 
                 <!-- Tercera fila: Stock mínimo / Stock actual -->
-                <div class="col-md-6">
+                <div class="col-md-6" id="campoStockMinimo">
                     <label class="form-label fw-semibold">Stock Mínimo</label>
                     <input th:field="*{stockMinimo}" type="number" min="0"
-                        class="form-control form-control-sm shadow-sm" placeholder="Ej: 5" required />
+                        class="form-control form-control-sm shadow-sm" placeholder="Ej: 5" />
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-6" id="campoStockActual">
                     <label class="form-label fw-semibold">Stock Actual</label>
                     <input th:field="*{stockActual}" type="number" min="0"
-                        class="form-control form-control-sm shadow-sm" placeholder="Ej: 20" required />
+                        class="form-control form-control-sm shadow-sm" placeholder="Ej: 20" />
                 </div>
 
                 <!-- Cuarta fila: Fraccionable -->
@@ -115,6 +118,40 @@
 
     <!-- Menú Deslizable -->
     <div th:replace="~{fragmentsAdmi :: menuLateral}"></div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const categoriaSelect = document.getElementById("categoriaSelect");
+            const stockMinimo = document.getElementById("campoStockMinimo");
+            const stockActual = document.getElementById("campoStockActual");
+
+            function actualizarVisibilidadCampos() {
+                const selectedOption = categoriaSelect.options[categoriaSelect.selectedIndex];
+                const tipoControl = selectedOption.getAttribute("data-tipo-control");
+
+                if (tipoControl === "INSTANTANEO") {
+                    // Oculta ambos
+                    stockMinimo.style.display = "none";
+                    stockActual.style.display = "none";
+                } else if (tipoControl === "ELABORADO") {
+                    // Muestra solo stock mínimo
+                    stockMinimo.style.display = "block";
+                    stockActual.style.display = "none";
+                } else {
+                    // Muestra ambos por defecto
+                    stockMinimo.style.display = "block";
+                    stockActual.style.display = "block";
+                }
+            }
+
+            // Evento de cambio
+            categoriaSelect.addEventListener("change", actualizarVisibilidadCampos);
+
+            // Ejecutar una vez al cargar por si ya hay una categoría seleccionada (modo edición)
+            actualizarVisibilidadCampos();
+        });
+    </script>
+
 </body>
 
 </html>

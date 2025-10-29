@@ -52,6 +52,7 @@
                             <th>Categoría</th>
                             <th>Precio</th>
                             <th>Stock Mínimo</th>
+                            <th>Stock Actual</th>
                             <th>Fraccionable</th>
                             <th>Unidad Conversión</th>
                             <th>Acciones</th>
@@ -63,21 +64,25 @@
                             <td th:text="${producto.nombre}"></td>
                             <td th:text="${producto.categoria.nombre}"></td>
                             <td th:text="'S/ ' + ${producto.precio}"></td>
-                            <td th:text="${producto.stockMinimo}"></td>
-                            <td th:text="${producto.fraccionable} == true ? 'Sí' : 'No'"></td>
-                            <td th:text="${producto.unidadConversion.nombreUnidad}"></td>
-                            <td>
-                                <a th:href="@{'/admin/productos/editar/' + ${producto.id}}"
-                                    class="btn btn-sm btn-outline-light me-1" title="Editar">
-                                    <i class="fa-solid fa-pen"></i>
-                                </a>
-                                <a th:href="@{'/admin/productos/eliminar/' + ${producto.id}}"
-                                    class="btn btn-sm btn-outline-danger"
-                                    onclick="return confirm('¿Seguro que deseas eliminar este producto?');"
-                                    title="Eliminar">
-                                    <i class="fa-solid fa-trash"></i>
-                                </a>
-                            </td>
+                            <!-- Stock mínimo: muestra '-' si es null -->
+                                <td th:text="${producto.stockMinimo != null} ? ${producto.stockMinimo} : '-'"></td>
+
+                                <!-- Stock actual: muestra '-' si es null -->
+                                <td th:text="${producto.stockActual != null} ? ${producto.stockActual} : '-'"></td>
+                                <td th:text="${producto.fraccionable} == true ? 'Sí' : 'No'"></td>
+                                <td th:text="${producto.unidadConversion.nombreUnidad}"></td>
+                                <td>
+                                    <a th:href="@{'/admin/productos/editar/' + ${producto.id}}"
+                                        class="btn btn-sm btn-outline-light me-1" title="Editar">
+                                        <i class="fa-solid fa-pen"></i>
+                                    </a>
+                                    <a th:href="@{'/admin/productos/eliminar/' + ${producto.id}}"
+                                        class="btn btn-sm btn-outline-danger"
+                                        onclick="return confirm('¿Seguro que deseas eliminar este producto?');"
+                                        title="Eliminar">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </a>
+                                </td>
                         </tr>
 
                         <tr th:if="${#lists.isEmpty(productos)}">
