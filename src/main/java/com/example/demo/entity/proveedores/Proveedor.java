@@ -23,8 +23,8 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "proveedores")
-@ToString(exclude = {"categoria"})
-@EqualsAndHashCode(exclude = {"categoria"})
+@ToString(exclude = { "categoria" })
+@EqualsAndHashCode(exclude = { "categoria" })
 public class Proveedor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,6 +37,11 @@ public class Proveedor {
     @NotBlank(message = "El teléfono es obligatorio")
     @Pattern(regexp = "\\d{7,15}", message = "El teléfono debe tener entre 7 y 15 dígitos")
     private String telefono;
+
+    @NotBlank(message = "El RUC es obligatorio")
+    @Pattern(regexp = "^20\\d{9}$", message = "El RUC debe tener 11 dígitos y comenzar con 20")
+    @Column(name = "ruc", unique = true, length = 11, nullable = false)
+    private String ruc;
 
     @NotBlank(message = "La dirección es obligatoria")
     private String direccion;

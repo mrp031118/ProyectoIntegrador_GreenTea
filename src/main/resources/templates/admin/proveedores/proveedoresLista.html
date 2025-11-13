@@ -85,6 +85,7 @@
                             <th>Nombre</th>
                             <th>Categoría</th>
                             <th>Teléfono</th>
+                            <th>RUC</th>
                             <th>Dirección</th>
                             <th class="text-center">Acciones</th>
                         </tr>
@@ -95,6 +96,7 @@
                             <td th:text="${p.nombre}"></td>
                             <td th:text="${p.categoria.nombre}"></td>
                             <td th:text="${p.telefono}"></td>
+                            <td th:text="${p.ruc}"></td>
                             <td th:text="${p.direccion}"></td>
                             <td class="text-center">
                                 <a th:href="@{/admin/proveedores/editar/{id}(id=${p.id})}"

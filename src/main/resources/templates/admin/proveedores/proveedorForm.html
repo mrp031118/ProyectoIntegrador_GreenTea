@@ -63,6 +63,19 @@
                            placeholder="Ej: 987654321" required>
                 </div>
 
+                <!-- RUC -->
+                <div class="mb-3">
+                    <label class="form-label fw-bold text-dark">RUC</label>
+                    <input type="text" name="ruc" th:value="${proveedor.ruc}"
+                           class="form-control form-control-sm"
+                           pattern="^20\d{9}$"
+                           maxlength="11"
+                           inputmode="numeric"
+                           placeholder="Ej: 20481234567"
+                           title="El RUC debe comenzar con 20 y tener 11 dígitos numéricos"
+                           required>
+                </div>
+
                 <!-- Dirección -->
                 <div class="mb-3">
                     <label class="form-label fw-bold text-dark">Dirección</label>

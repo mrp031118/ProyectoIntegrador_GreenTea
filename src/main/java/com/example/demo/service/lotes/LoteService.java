@@ -43,6 +43,9 @@ public class LoteService {
 
     public Lote guardarLote(Lote lote) {
 
+        if (lote == null) {
+            throw new IllegalArgumentException("El lote no puede ser nulo");
+        }
         // guardar nuevo lote
         Lote nuevoLote = loteRepository.save(lote);
 
@@ -77,16 +80,23 @@ public class LoteService {
         return loteRepository.findAll();
     }
 
-    public Lote obtenerPorId(Long id) {
-        return loteRepository.findById(id).orElse(null);
+    public Lote obtenerPorId(Long id) throws Exception {
+        if (id == null) {
+            throw new IllegalArgumentException("El ID no puede ser nulo");
+        }
+
+        return loteRepository.findById(id)
+                .orElseThrow(() -> new Exception("El lote con ID " + id + " no existe"));
     }
 
     public void eliminarLote(Long id) throws Exception {
-        Lote lote = loteRepository.findById(id)
+        if (id == null) {
+            throw new IllegalArgumentException("El ID no puede ser nulo");
+        }
 
+        Lote lote = loteRepository.findById(id)
                 .orElseThrow(() -> new Exception("El lote con ID " + id + " no existe"));
 
-        // Verificar si tiene movimientos asociados
         if (lote.getMovimientos() != null && !lote.getMovimientos().isEmpty()) {
             throw new Exception("No se puede eliminar: el lote tiene movimientos registrados.");
         }

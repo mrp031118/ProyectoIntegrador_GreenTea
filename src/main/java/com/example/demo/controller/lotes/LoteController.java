@@ -50,9 +50,9 @@ public class LoteController {
         List<Lote> lotes = loteService.buscarLotes(proveedor, insumo, nombreInsumo);
 
         model.addAttribute("lotes", lotes);
-        model.addAttribute("proveedores", proveedorService.listarProveedores()); 
-        model.addAttribute("insumos", insumoService.listarInsumos()); 
-        model.addAttribute("nombreInsumo", nombreInsumo); 
+        model.addAttribute("proveedores", proveedorService.listarProveedores());
+        model.addAttribute("insumos", insumoService.listarInsumos());
+        model.addAttribute("nombreInsumo", nombreInsumo);
 
         return "/admin/lotes/lotesLista";
     }
@@ -96,11 +96,16 @@ public class LoteController {
     // Editar lote
     @GetMapping("/editar/{id}")
     public String editar(@PathVariable Long id, Model model) {
-        Lote lote = loteService.obtenerPorId(id);
-        model.addAttribute("lote", lote);
-        model.addAttribute("insumos", insumoService.listarInsumos());
-        model.addAttribute("proveedores", proveedorService.listarProveedores());
-        return "admin/lotes/lotesFormulario";
+        try {
+            Lote lote = loteService.obtenerPorId(id);
+            model.addAttribute("lote", lote);
+            model.addAttribute("insumos", insumoService.listarInsumos());
+            model.addAttribute("proveedores", proveedorService.listarProveedores());
+            return "admin/lotes/lotesFormulario";
+        } catch (Exception e) {
+            // Maneja el error de forma elegante
+            return "redirect:/admin/lotes?error=" + e.getMessage();
+        }
     }
 
     // Eliminar lote
