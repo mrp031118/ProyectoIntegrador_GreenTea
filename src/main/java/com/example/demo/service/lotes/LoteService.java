@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.entity.insumos.Insumo;
@@ -11,9 +13,11 @@ import com.example.demo.entity.lotes.Lote;
 import com.example.demo.entity.movimientos.Movimiento;
 import com.example.demo.entity.movimientos.TipoMovimientoKardex;
 import com.example.demo.entity.proveedores.Proveedor;
+import com.example.demo.entity.usuarios.User;
 import com.example.demo.repository.lotes.LoteRepository;
 import com.example.demo.repository.movimientos.MovimientoRepository;
 import com.example.demo.service.movimientos.TipoMovimientoService;
+import com.example.demo.service.usuarios.CustomUserDetails;
 
 @Service
 public class LoteService {
@@ -69,6 +73,12 @@ public class LoteService {
         movimiento.setCostoUnitario(nuevoLote.getCostoUnitario());
         movimiento.setTotal(nuevoLote.getCantidad() * nuevoLote.getCostoUnitario());
         movimiento.setObservaciones("Registro de nuevo lote de insumo");
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        CustomUserDetails cud = (CustomUserDetails) authentication.getPrincipal();
+        User usuarioActual = cud.getUser();
+
+        movimiento.setUsuario(usuarioActual);
 
         // Guardar el movimiento
         movimientoRepository.save(movimiento);

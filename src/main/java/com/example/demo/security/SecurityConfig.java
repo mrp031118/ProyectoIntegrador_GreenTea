@@ -47,7 +47,7 @@ public class SecurityConfig {
                 .requestMatchers("/login","/prueba-login", "/public/**", "/css/**", "/js/**", "/img/**").permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .requestMatchers("/empleado/**").hasRole("USER")
-                .anyRequest().authenticated()
+                .requestMatchers("/user/**").authenticated()
                 )
                 .formLogin(form -> form
                     .loginPage("/login") // URL GET para mostrar formulario

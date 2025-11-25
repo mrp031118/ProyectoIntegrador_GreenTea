@@ -1,5 +1,6 @@
-package com.example.demo.entity.venta;
+package com.example.demo.entity.produccion;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import com.example.demo.entity.productos.Producto;
@@ -17,30 +18,34 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
 @Entity
-@NoArgsConstructor
-@AllArgsConstructor
 @Table(name = "produccion")
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Produccion {
-    // Entidad que registra la producción de un producto, incluyendo cantidad, costo y empleado responsable.
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "produccion_id")
-    private Long id;
+    private Long produccionId;
 
     @ManyToOne
-    @JoinColumn(name = "producto_id", nullable = false)
+    @JoinColumn(name = "producto_id")
     private Producto producto;
 
-    @Column(name = "fecha")
-    private LocalDateTime fechaRegistro;
+    @Column(nullable = false)
+    private LocalDateTime fecha;
 
-    @Column(name = "cantidad_producida")
-    private Double cantidad;
+    @Column(name = "cantidad_elaborada", nullable = false, precision = 8, scale = 2)
+    private BigDecimal cantidadElaborada;
 
-    @Column(name = "costo_unitario_lote")
-    private Double costoUnitarioLote;
+    @Column(name = "cantidad_producida", nullable = false, precision = 8, scale = 2)
+    private BigDecimal cantidadProducida;
+
+    @Column(name = "saldo_actual", nullable = false, precision = 8, scale = 2)
+    private BigDecimal saldoActual;
+
+    @Column(name = "costo_unitario_lote", nullable = false, precision = 10, scale = 4)
+    private BigDecimal costoUnitarioLote;
 
     @ManyToOne
     @JoinColumn(name = "empleado_id")

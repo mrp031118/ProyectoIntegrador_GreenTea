@@ -18,6 +18,7 @@ import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Entity
 @Data
@@ -33,6 +34,7 @@ public class RecetaProducto {
     // referencia al producto final
     @ManyToOne
     @JoinColumn(name = "producto_id")
+    @ToString.Exclude
     private Producto producto;
 
     @Column(name = "nombre_receta", length = 100)
@@ -42,6 +44,7 @@ public class RecetaProducto {
     private LocalDateTime fechaCreacion;
 
     @OneToMany(mappedBy = "recetaProducto", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ToString.Exclude
     private List<DetalleRecetaProducto> detalles = new ArrayList<>();
 
     // helpers

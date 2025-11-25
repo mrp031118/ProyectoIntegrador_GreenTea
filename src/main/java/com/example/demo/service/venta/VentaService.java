@@ -5,6 +5,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.dto.KardexLoteProjection;
@@ -26,6 +28,8 @@ import com.example.demo.repository.movimientos.MovimientoRepository;
 import com.example.demo.repository.productos.RecetaProductoRepository;
 import com.example.demo.repository.ventaa.VentaRepository;
 import com.example.demo.service.insumos.ConversionUnidadService;
+import com.example.demo.service.movimientos.MovimientoProductoService;
+import com.example.demo.service.usuarios.CustomUserDetails;
 
 import jakarta.transaction.Transactional;
 
@@ -49,7 +53,7 @@ public class VentaService {
     private ConversionUnidadService conversionUnidadService;
 
     @Autowired
-    private ProduccionService produccionService; // Para consultar stock si es necesario
+    private MovimientoProductoService movimientoProductoService; // Para consultar stock si es necesario
 
     // Método para listar todas las ventas
     public List<Venta> listarTodasVentas() {
@@ -161,13 +165,11 @@ public class VentaService {
                         Lote loteReal = loteRepository.findById(loteKardex.getLoteId()).orElseThrow();
                         mov.setLote(loteReal);
                         mov.setObservaciones("Venta producto instantáneo: " + pc.producto.getNombre());
+                        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+                        CustomUserDetails cud = (CustomUserDetails) auth.getPrincipal();
+                        User usuarioActual = cud.getUser();
+                        mov.setUsuario(usuarioActual);
                         movimientoRepository.save(mov);
-
-                        // Actualizar lote real
-                        BigDecimal nuevaCantidadLote = BigDecimal.valueOf(loteReal.getCantidad())
-                                .subtract(cantidadDesdeLote);
-                        loteReal.setCantidad(nuevaCantidadLote.doubleValue());
-                        loteRepository.save(loteReal);
 
                         // Reducir restante
                         restante = restante.subtract(cantidadDesdeLote);
@@ -179,7 +181,7 @@ public class VentaService {
                     }
                 }
             } else if ("elaborado".equalsIgnoreCase(tipoControl)) {
-                produccionService.registrarProduccion(pc.producto, pc.cantidad);
+                movimientoProductoService.descontarPorVenta(detalle.getProducto(), detalle.getCantidad());
             }
         }
 

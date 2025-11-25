@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 import com.example.demo.entity.insumos.Insumo;
 import com.example.demo.entity.lotes.Lote;
+import com.example.demo.entity.usuarios.User;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -49,6 +50,10 @@ public class Movimiento {
     private Lote lote;
 
     private String observaciones;
+
+    @ManyToOne
+    @JoinColumn(name = "usuario_id")
+    private User usuario;
 
     @Transient
     private Double saldoCantidad;

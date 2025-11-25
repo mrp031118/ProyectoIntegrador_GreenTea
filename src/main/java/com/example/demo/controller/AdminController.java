@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import java.security.SecureRandom;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -20,6 +21,7 @@ import com.example.demo.repository.usuarios.UserRepository;
 import jakarta.validation.Valid;
 
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
@@ -53,35 +55,133 @@ public class AdminController {
     public String listarUsuarios(Model model) {
         model.addAttribute("usuarios", userRepository.findAll());
         model.addAttribute("roles", roleRepository.findAll());
+
+        // Recuperar flash attributes para mostrar modales
+        if (model.containsAttribute("showPasswordModal")) {
+            model.addAttribute("showPasswordModal", model.getAttribute("showPasswordModal"));
+            model.addAttribute("generatedUsername", model.getAttribute("generatedUsername"));
+            model.addAttribute("generatedPassword", model.getAttribute("generatedPassword"));
+        }
+        if (model.containsAttribute("showErrorModal")) {
+            model.addAttribute("showErrorModal", model.getAttribute("showErrorModal"));
+            model.addAttribute("errorMessage", model.getAttribute("errorMessage"));
+        }
+        if (model.containsAttribute("successMessage")) {
+            model.addAttribute("successMessage", model.getAttribute("successMessage"));
+        }
+
         return "admin/usuario/usuariosAdmi";
     }
 
     // agregar nuevo usuario
     @PostMapping("/usuarios/agregar")
-    public String agregarUsuario(@RequestParam String username,
-            @RequestParam String contra,
-            @RequestParam String nombre,
+    public String agregarUsuario(@RequestParam String nombre,
             @RequestParam String apellido,
             @RequestParam String telefono,
-            @RequestParam String rol) {
+            @RequestParam String rol,
+            RedirectAttributes redirectAttributes) {
 
-        User user = new User();
+        try {
+            // Validar que nombre y apellido no estén vacíos o solo espacios
+            if (nombre == null || nombre.trim().isEmpty()) {
+                throw new RuntimeException("El nombre es requerido.");
+            }
+            if (apellido == null || apellido.trim().isEmpty()) {
+                throw new RuntimeException("El apellido es requerido.");
+            }
 
-        user.setUsername(username);
-        user.setContra(passwordEncoder.encode(contra));
-        user.setNombre(nombre);
-        user.setApellido(apellido);
-        user.setTelefono(telefono);
-        user.setEnabled(true);
+            // Generar username automáticamente (mejorado: primer nombre + primeros 3 chars
+            // de cada apellido)
+            String[] nombreParts = nombre.trim().split("\\s+");
+            String[] apellidoParts = apellido.trim().split("\\s+");
 
-        Role roleEntity = roleRepository.findByNombre(rol)
-                .orElseThrow(() -> new RuntimeException("Rol no encontrado: " + rol));
-        user.setRoles(new HashSet<>());
-        user.getRoles().add(roleEntity);
+            // Normalizar primer nombre
+            String primerNombre = normalize(nombreParts[0]);
 
-        userRepository.save(user);
+            // Normalizar y acortar apellidos
+            StringBuilder apellidoShort = new StringBuilder();
+            for (String ap : apellidoParts) {
+                String apNorm = normalize(ap);
+                if (apNorm.length() >= 3) {
+                    apellidoShort.append(apNorm.substring(0, 3));
+                } else {
+                    apellidoShort.append(apNorm);
+                }
+            }
 
+            // Crear username base
+            String baseUsername = primerNombre + "." + apellidoShort.toString() + "@gtcoffee.com";
+
+            // Evitar duplicados
+            String username = baseUsername;
+            int counter = 1;
+            while (userRepository.findByUsername(username).isPresent()) {
+                username = primerNombre + "." + apellidoShort.toString() + counter + "@gtcoffee.com";
+                counter++;
+            }
+
+            // Generar contraseña aleatoria (8 caracteres alfanuméricos con símbolos)
+            String generatedPassword = generateRandomPassword(8);
+
+            // Crear usuario
+            User user = new User();
+            user.setUsername(username);
+            user.setContra(passwordEncoder.encode(generatedPassword));
+            user.setNombre(nombre);
+            user.setApellido(apellido);
+            user.setTelefono(telefono);
+            user.setEnabled(true);
+
+            Role roleEntity = roleRepository.findByNombre(rol)
+                    .orElseThrow(() -> new RuntimeException("Rol no encontrado: " + rol));
+            user.setRoles(new HashSet<>());
+            user.getRoles().add(roleEntity);
+
+            userRepository.save(user);
+
+            // Agregar flash attributes para mostrar modal de contraseña
+            redirectAttributes.addFlashAttribute("showPasswordModal", true);
+            redirectAttributes.addFlashAttribute("generatedUsername", username);
+            redirectAttributes.addFlashAttribute("generatedPassword", generatedPassword);
+
+        } catch (Exception e) {
+            // Agregar flash attributes para mostrar modal de error
+            redirectAttributes.addFlashAttribute("showErrorModal", true);
+            redirectAttributes.addFlashAttribute("errorMessage", "Error al crear el usuario: " + e.getMessage());
+        }
+
+        // Redirigir a GET /admin/usuarios (PRG)
         return "redirect:/admin/usuarios";
+    }
+
+    // Método auxiliar para generar contraseña aleatoria
+    private String generateRandomPassword(int length) {
+        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*";
+        SecureRandom random = new SecureRandom();
+        StringBuilder sb = new StringBuilder(length);
+        for (int i = 0; i < length; i++) {
+            sb.append(chars.charAt(random.nextInt(chars.length())));
+        }
+        return sb.toString();
+    }
+
+    // normalizar caracteres
+    private String normalize(String input) {
+        if (input == null)
+            return "";
+        // Convertir a minúsculas
+        String normalized = input.toLowerCase()
+                // Reemplazar caracteres con tilde
+                .replaceAll("[áàäâ]", "a")
+                .replaceAll("[éèëê]", "e")
+                .replaceAll("[íìïî]", "i")
+                .replaceAll("[óòöô]", "o")
+                .replaceAll("[úùüû]", "u")
+                // Reemplazar ñ por n
+                .replaceAll("ñ", "n")
+                // Eliminar caracteres no alfanuméricos
+                .replaceAll("[^a-z0-9]", "");
+        return normalized;
     }
 
     @PostMapping("/usuarios/toggleEstado/{id}")
@@ -131,9 +231,8 @@ public class AdminController {
         usuario.setNombre(usuarioForm.getNombre());
         usuario.setApellido(usuarioForm.getApellido());
         usuario.setTelefono(usuarioForm.getTelefono());
-        usuario.setUsername(usuarioForm.getUsername());
 
-        //Obtener el rol seleccionado
+        // Obtener el rol seleccionado
         Role rolSeleccionado = roleRepository.findByNombre(rolNombre)
                 .orElseThrow(() -> new IllegalArgumentException("Rol no encontrado"));
 
@@ -148,6 +247,7 @@ public class AdminController {
         return "redirect:/admin/usuarios";
     }
 
+    /* 
     // Mostrar el formulario de cambio de contraseña
     @GetMapping("/usuarios/cambiarPassword/{id}")
     public String mostrarFormularioCambioContrasena(@PathVariable Long id, Model model) {
@@ -170,6 +270,6 @@ public class AdminController {
 
         userRepository.save(usuario);
         return "redirect:/admin/usuarios";
-    }
+    }*/
 
 }

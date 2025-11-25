@@ -24,102 +24,105 @@
     <div th:fragment="menuLateral">
         <div class="offcanvas offcanvas-start bg-principal" data-bs-backdrop="static" tabindex="-1" id="staticBackdrop"
             aria-labelledby="staticBackdropLabel">
+
+            <!-- Header del offcanvas -->
             <div class="offcanvas-header shadow-sm">
                 <div class="col-auto">
                     <i class="fa-solid fa-circle-user fa-2x c-white"></i>
                 </div>
                 <div class="col px-1">
-                    <!-- Aquí va el nombre dinámico -->
                     <p class="mb-0 fw-bold fs-6 c-white" th:text="${nombreCompleto}"></p>
                     <p class="mb-0 text-rol c-white">Administrador</p>
                 </div>
                 <button type="button" class="btn-close c-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
             </div>
 
-            <div class="offcanvas-body">
-                <div class="row h-100">
-                    <div class="col-12 pt-3" style="height: 90%;">
+            <!-- Contenedor flex vertical -->
+            <div class="offcanvas-body d-flex flex-column p-0">
 
-                        <!-- Gestión de Usuarios -->
-                        <a th:href="@{/admin/dashboard}" class="module-a d-flex align-items-center row mx-0 mt-3">
-                            <div class="col-2"><i class="fa-solid fa-house c-white"></i></div>
-                            <div class="col-10 c-white"><span>Inicio</span></div>
-                        </a>
+                <!-- Contenido scrollable -->
+                <div class="flex-grow-1 overflow-auto pt-3">
 
-                        <!-- Gestión de Usuarios -->
-                        <a th:href="@{/admin/usuarios}" class="module-a d-flex align-items-center row mx-0 mt-3">
-                            <div class="col-2"><i class="fa-solid fa-users c-white"></i></div>
-                            <div class="col-10 c-white"><span>Gestión de Usuarios</span></div>
-                        </a>
+                    <!-- Menú principal -->
+                    <a th:href="@{/admin/dashboard}" class="module-a d-flex align-items-center row mx-0 mt-3">
+                        <div class="col-2"><i class="fa-solid fa-house c-white"></i></div>
+                        <div class="col-10 c-white"><span>Inicio</span></div>
+                    </a>
 
-                        <!-- Gestión de Inventario (submenú) -->
-                        <a class="module-a d-flex align-items-center row mx-0 mt-3" data-bs-toggle="collapse"
-                            href="#submenuInventario" role="button" aria-expanded="false"
-                            aria-controls="submenuInventario">
-                            <div class="col-2"><i class="fa-solid fa-boxes-stacked c-white"></i></div>
-                            <div class="col-10 c-white d-flex justify-content-between">
-                                <span>Gestión de Inventario</span>
-                                <i class="fa-solid fa-caret-down"></i>
-                            </div>
-                        </a>
-                        <div class="collapse submenu" id="submenuInventario">
-                            <a th:href="@{/admin/insumos}" class="submenu-item">Insumos</a>
-                            <a th:href="@{/admin/productos}" class="submenu-item">Productos</a>
-                            <a th:href="@{/admin/recetas}" class="submenu-item">Recetas</a>
+                    <a th:href="@{/admin/usuarios}" class="module-a d-flex align-items-center row mx-0 mt-3">
+                        <div class="col-2"><i class="fa-solid fa-users c-white"></i></div>
+                        <div class="col-10 c-white"><span>Gestión de Usuarios</span></div>
+                    </a>
+
+                    <!-- Inventario (submenú) -->
+                    <a class="module-a d-flex align-items-center row mx-0 mt-3" data-bs-toggle="collapse"
+                        href="#submenuInventario" role="button" aria-expanded="false" aria-controls="submenuInventario">
+                        <div class="col-2"><i class="fa-solid fa-boxes-stacked c-white"></i></div>
+                        <div class="col-10 c-white d-flex justify-content-between">
+                            <span>Gestión de Inventario</span>
+                            <i class="fa-solid fa-caret-down"></i>
                         </div>
-
-                        <!-- Ventas -->
-                        <a th:href="@{/admin/ventas}" class="module-a d-flex align-items-center row mx-0 mt-3">
-                            <div class="col-2"><i class="fa-solid fa-cash-register c-white"></i></div>
-                            <div class="col-10 c-white"><span>Ventas</span></div>
-                        </a>
-
-                        <!-- Movimientos (submenú) -->
-                        <a class="module-a d-flex align-items-center row mx-0 mt-3" data-bs-toggle="collapse"
-                            href="#submenuMovimientos" role="button" aria-expanded="false"
-                            aria-controls="submenuMovimientos">
-                            <div class="col-2"><i class="fa-solid fa-right-left c-white"></i></div>
-                            <div class="col-10 c-white d-flex justify-content-between">
-                                <span>Movimientos</span>
-                                <i class="fa-solid fa-caret-down"></i>
-                            </div>
-                        </a>
-                        <div class="collapse submenu" id="submenuMovimientos">
-                            <a th:href="@{/admin/movimientos/producto}" class="submenu-item">Productos</a>
-                            <a th:href="@{/admin/movimientos/insumo}" class="submenu-item">Insumos</a>
-                        </div>
-
-                        <!-- Reportes (sección aparte) -->
-                        <a th:href="@{/admin/reportes}" class="module-a d-flex align-items-center row mx-0 mt-3">
-                            <div class="col-2"><i class="fa-solid fa-chart-line c-white"></i></div>
-                            <div class="col-10 c-white"><span>Reportes</span></div>
-                        </a>
-
-                        <!-- Control Lotes -->
-                        <a th:href="@{/admin/lotes}" class="module-a d-flex align-items-center row mx-0 mt-3">
-                            <div class="col-2"><i class="fa-solid fa-layer-group c-white"></i></div>
-                            <div class="col-10 c-white"><span>Control Lotes</span></div>
-                        </a>
-
-                        <!-- Gestión de Proveedores -->
-                        <a th:href="@{/admin/proveedores}" class="module-a d-flex align-items-center row mx-0 mt-3">
-                            <div class="col-2"><i class="fa-solid fa-truck c-white"></i></div>
-                            <div class="col-10 c-white"><span>Gestión de Proveedores</span></div>
-                        </a>
+                    </a>
+                    <div class="collapse submenu" id="submenuInventario">
+                        <a th:href="@{/admin/insumos}" class="submenu-item">Insumos</a>
+                        <a th:href="@{/admin/productos}" class="submenu-item">Productos</a>
+                        <a th:href="@{/admin/recetas}" class="submenu-item">Recetas</a>
                     </div>
 
-                    <!-- Cerrar Sesión -->
-                    <div class="col-12 mt-4">
-                        <a th:href="@{/logout}" class="module-a d-flex align-items-center row mx-0 btn-logout">
-                            <div class="col-2"><i class="fa-solid fa-door-open c-white"></i></div>
-                            <div class="col-10 c-white"><span>Cerrar Sesión</span></div>
-                        </a>
+                    <a th:href="@{/admin/ventas}" class="module-a d-flex align-items-center row mx-0 mt-3">
+                        <div class="col-2"><i class="fa-solid fa-cash-register c-white"></i></div>
+                        <div class="col-10 c-white"><span>Ventas</span></div>
+                    </a>
+
+                    <!-- Movimientos (submenú) -->
+                    <a class="module-a d-flex align-items-center row mx-0 mt-3" data-bs-toggle="collapse"
+                        href="#submenuMovimientos" role="button" aria-expanded="false"
+                        aria-controls="submenuMovimientos">
+                        <div class="col-2"><i class="fa-solid fa-right-left c-white"></i></div>
+                        <div class="col-10 c-white d-flex justify-content-between">
+                            <span>Movimientos</span>
+                            <i class="fa-solid fa-caret-down"></i>
+                        </div>
+                    </a>
+                    <div class="collapse submenu" id="submenuMovimientos">
+                        <a th:href="@{/admin/movimientos/movimientos-productos}" class="submenu-item">Productos</a>
+                        <a th:href="@{/admin/movimientos/insumo}" class="submenu-item">Insumos</a>
                     </div>
+
+                    <a th:href="@{/admin/reportes}" class="module-a d-flex align-items-center row mx-0 mt-3">
+                        <div class="col-2"><i class="fa-solid fa-chart-line c-white"></i></div>
+                        <div class="col-10 c-white"><span>Reportes</span></div>
+                    </a>
+
+                    <a th:href="@{/admin/lotes}" class="module-a d-flex align-items-center row mx-0 mt-3">
+                        <div class="col-2"><i class="fa-solid fa-layer-group c-white"></i></div>
+                        <div class="col-10 c-white"><span>Control Lotes</span></div>
+                    </a>
+
+                    <a th:href="@{/admin/proveedores}" class="module-a d-flex align-items-center row mx-0 mt-3">
+                        <div class="col-2"><i class="fa-solid fa-truck c-white"></i></div>
+                        <div class="col-10 c-white"><span>Gestión de Proveedores</span></div>
+                    </a>
 
                 </div>
+
+                <!-- Footer fijo abajo -->
+                <div class="p-3 border-top">
+                    <a href="#" class="module-a d-flex align-items-center row mx-0 mb-2" data-bs-toggle="modal"
+                        data-bs-target="#passwordChangeModal">
+                        <div class="col-2"><i class="fa-solid fa-key c-white"></i></div>
+                        <div class="col-10 c-white"><span>Cambiar Contraseña</span></div>
+                    </a>
+                    <a th:href="@{/logout}" class="module-a d-flex align-items-center row mx-0">
+                        <div class="col-2"><i class="fa-solid fa-door-open c-white"></i></div>
+                        <div class="col-10 c-white"><span>Cerrar Sesión</span></div>
+                    </a>
+                </div>
+
             </div>
         </div>
     </div>
+
 
 </body>
 

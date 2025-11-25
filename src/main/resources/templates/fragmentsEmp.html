@@ -36,65 +36,65 @@
                 <button type="button" class="btn-close c-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
             </div>
 
-            <div class="offcanvas-body">
-                <div class="row h-100">
-                    <div class="col-12 pt-3" style="height: 90%;">
+            <!-- Contenedor flex vertical -->
+            <div class="offcanvas-body d-flex flex-column p-0">
 
-                        <!-- Inicio -->
-                        <a th:href="@{/empleado/dashboard}" class="module-a d-flex align-items-center row mx-0 mt-3">
-                            <div class="col-2"><i class="fa-solid fa-house c-white"></i></div>
-                            <div class="col-10 c-white"><span>Inicio</span></div>
-                        </a>
+                <!-- Contenido scrollable -->
+                <div class="flex-grow-1 overflow-auto pt-3">
 
-                        <!-- Clientes -->
-                        <a th:href="@{/empleado/cliente}" class="module-a d-flex align-items-center row mx-0 mt-3">
-                            <div class="col-2"><i class="fa-solid fa-house c-white"></i></div>
-                            <div class="col-10 c-white"><span>Clientes</span></div>
-                        </a>
+                    <!-- Menú principal -->
+                    <a th:href="@{/empleado/dashboard}" class="module-a d-flex align-items-center row mx-0 mt-3">
+                        <div class="col-2"><i class="fa-solid fa-house c-white"></i></div>
+                        <div class="col-10 c-white"><span>Inicio</span></div>
+                    </a>
 
-                        <!-- Registrar Venta -->
-                        <a th:href="@{/empleado/ventas/registrar}" class="module-a d-flex align-items-center row mx-0 mt-3">
-                            <div class="col-2"><i class="fa-solid fa-cart-plus c-white"></i></div>
-                            <div class="col-10 c-white"><span>Registrar Venta</span></div>
-                        </a>
+                    <a th:href="@{/empleado/cliente}" class="module-a d-flex align-items-center row mx-0 mt-3">
+                        <div class="col-2"><i class="fa-solid fa-house c-white"></i></div>
+                        <div class="col-10 c-white"><span>Clientes</span></div>
+                    </a>
 
-                        <!-- Producción -->
-                        <a th:href="@{/empleado/produccion}" class="module-a d-flex align-items-center row mx-0 mt-3">
-                            <div class="col-2"><i class="fa-solid fa-industry c-white"></i></div>
-                            <div class="col-10 c-white"><span>Producción</span></div>
-                        </a>
+                    <a th:href="@{/empleado/ventas/registrar}" class="module-a d-flex align-items-center row mx-0 mt-3">
+                        <div class="col-2"><i class="fa-solid fa-cart-plus c-white"></i></div>
+                        <div class="col-10 c-white"><span>Registrar Venta</span></div>
+                    </a>
 
-                        <!-- Mermas y Desperdicios -->
-                        <a th:href="@{/empleado/registrarMerma}" class="module-a d-flex align-items-center row mx-0 mt-3">
-                            <div class="col-2"><i class="fa-solid fa-trash-arrow-up c-white"></i></div>
-                            <div class="col-10 c-white"><span>Mermas y Desperdicios</span></div>
-                        </a>
+                    <a th:href="@{/empleado/produccion}" class="module-a d-flex align-items-center row mx-0 mt-3">
+                        <div class="col-2"><i class="fa-solid fa-industry c-white"></i></div>
+                        <div class="col-10 c-white"><span>Producción</span></div>
+                    </a>
 
-                        <!-- Verificar Disponibilidad -->
-                        <a th:href="@{/empleado/disponibilidad}" class="module-a d-flex align-items-center row mx-0 mt-3">
-                            <div class="col-2"><i class="fa-solid fa-box-open c-white"></i></div>
-                            <div class="col-10 c-white"><span>Verificar Disponibilidad</span></div>
-                        </a>
+                    <a th:href="@{/empleado/registrarMerma}" class="module-a d-flex align-items-center row mx-0 mt-3">
+                        <div class="col-2"><i class="fa-solid fa-trash-arrow-up c-white"></i></div>
+                        <div class="col-10 c-white"><span>Mermas y Desperdicios</span></div>
+                    </a>
 
-                        <!-- Reportes -->
-                        <a th:href="@{/empleado/reportes}" class="module-a d-flex align-items-center row mx-0 mt-3">
-                            <div class="col-2"><i class="fa-solid fa-chart-line c-white"></i></div>
-                            <div class="col-10 c-white"><span>Reportes</span></div>
-                        </a>
+                    <a th:href="@{/empleado/disponibilidad}" class="module-a d-flex align-items-center row mx-0 mt-3">
+                        <div class="col-2"><i class="fa-solid fa-box-open c-white"></i></div>
+                        <div class="col-10 c-white"><span>Verificar Disponibilidad</span></div>
+                    </a>
 
-                    </div>
-
-
-                    <!-- Cerrar Sesión -->
-                    <div class="col-12 mt-4">
-                        <a th:href="@{/logout}" class="module-a d-flex align-items-center row mx-0 btn-logout">
-                            <div class="col-2"><i class="fa-solid fa-door-open c-white"></i></div>
-                            <div class="col-10 c-white"><span>Cerrar Sesión</span></div>
-                        </a>
-                    </div>
+                    <a th:href="@{/empleado/reportes}" class="module-a d-flex align-items-center row mx-0 mt-3">
+                        <div class="col-2"><i class="fa-solid fa-chart-line c-white"></i></div>
+                        <div class="col-10 c-white"><span>Reportes</span></div>
+                    </a>
 
                 </div>
+
+                <!-- Footer fijo abajo -->
+                <div class="p-3 border-top">
+                    <a href="#" class="module-a d-flex align-items-center row mx-0 mb-2" data-bs-toggle="modal"
+                        data-bs-target="#passwordChangeModal">
+                        <div class="col-2"><i class="fa-solid fa-key c-white"></i></div>
+                        <div class="col-10 c-white"><span>Cambiar Contraseña</span></div>
+                    </a>
+                    <a th:href="@{/logout}" class="module-a d-flex align-items-center row mx-0">
+                        <div class="col-2"><i class="fa-solid fa-door-open c-white"></i></div>
+                        <div class="col-10 c-white"><span>Cerrar Sesión</span></div>
+                    </a>
+                </div>
+
             </div>
+
         </div>
     </div>
 
