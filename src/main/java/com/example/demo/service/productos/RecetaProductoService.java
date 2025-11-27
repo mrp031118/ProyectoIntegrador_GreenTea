@@ -92,4 +92,8 @@ public class RecetaProductoService {
         recetaProductoRepository.deleteById(id);
     }
 
+    public List<RecetaProducto> buscarPorNombreProducto(String nombre) {
+        return recetaProductoRepository.buscarPorNombreProducto(nombre);
+    }
+
 }

@@ -2,13 +2,19 @@ package com.example.demo.service.venta;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.entity.lotes.Lote;
 import com.example.demo.entity.produccion.Produccion;
+import com.example.demo.entity.productos.DetalleRecetaProducto;
 import com.example.demo.entity.productos.Producto;
+import com.example.demo.entity.productos.RecetaProducto;
 import com.example.demo.entity.usuarios.User;
+import com.example.demo.repository.lotes.LoteRepository;
+import com.example.demo.repository.productos.RecetaProductoRepository;
 import com.example.demo.repository.ventaa.ProduccionRepository;
 import com.example.demo.service.movimientos.MermaProductoService;
 import com.example.demo.service.movimientos.MovimientoProductoService;
@@ -35,6 +41,12 @@ public class ProduccionService {
     @Autowired
     private ProductoService productoService;
 
+    @Autowired
+    private LoteRepository loteRepository;
+
+    @Autowired
+    private RecetaProductoRepository recetaProductoRepository;
+
     private static final int PORCIONES_POR_UNIDAD = 10; // 🔹 Valor fijo para fraccionables
 
     @PostConstruct
@@ -44,14 +56,26 @@ public class ProduccionService {
 
     @Transactional
     public void registrarProduccion(Producto producto, double cantidadElaborada, User empleado) {
-        // 🔹 DEPURACIÓN: verificar que los objetos no sean null
         System.out.println("➡️ INICIO registrarProduccion()");
+        // 🔹 NUEVA VALIDACIÓN: Verificar fechas de vencimiento de lotes antes de
+        // proceder
+        RecetaProducto receta = recetaProductoRepository.findByProducto_Id(producto.getId()).orElse(null);
+        if (receta == null) {
+            throw new RuntimeException("El producto '" + producto.getNombre()
+                    + "' no tiene una receta asociada. No se puede registrar producción.");
+        }
+        for (DetalleRecetaProducto drp : receta.getDetalles()) {
+            // Verificar si hay lotes NO vencidos para este insumo
+            List<Lote> lotesDisponibles = loteRepository.findByInsumo_InsumoIdAndFechaVencimientoGreaterThanEqual(
+                    drp.getInsumo().getInsumoId(), LocalDateTime.now().toLocalDate()); // Asumiendo fecha_vencimiento es
+                                                                                       // LocalDate
+            if (lotesDisponibles.isEmpty()) {
+                throw new RuntimeException("El insumo '" + drp.getInsumo().getNombre()
+                        + "' solo tiene lotes vencidos o ninguno disponible. No se puede registrar producción.");
+            }
+        }
+        // Si pasa la validación, proceder con el resto del método
         System.out.println("Producto recibido: " + producto);
-        System.out.println("Empleado recibido: " + empleado);
-        System.out.println("Fraccionable producto: " + producto.getFraccionable());
-
-        System.out.println("Producto: " + producto.getId() + " - " + producto.getNombre());
-        System.out.println("Cantidad elaborada: " + cantidadElaborada);
 
         double cantidadProducida = producto.getFraccionable()
                 ? cantidadElaborada * PORCIONES_POR_UNIDAD

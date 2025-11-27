@@ -1,0 +1,42 @@
+<!-- templates/fragments/modalConfirmacion.html -->
+<div th:fragment="modal-confirmacion">
+    <div class="modal fade" id="confirmModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content rounded-4 shadow">
+
+                <div class="modal-header bg-danger text-white rounded-top">
+                    <h5 class="modal-title">
+                        <i class="fa-solid fa-trash-can me-2"></i>
+                        Confirmar eliminación
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body text-center">
+                    <p class="fs-6 mb-1">¿Estás seguro que deseas eliminar este registro?</p>
+                    <small class="text-muted">Esta acción no se puede deshacer.</small>
+                </div>
+
+                <div class="modal-footer justify-content-center">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+
+                    <!-- Form dinámico: action se asigna por JS antes de mostrar el modal -->
+                    <form id="confirmDeleteForm" method="post" th:action="@{__PLACEHOLDER__}">
+                        <!-- CSRF token (Thymeleaf) -->
+                        <button type="submit" class="btn btn-danger px-4">Eliminar</button>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <script th:inline="javascript">
+        function confirmarEliminacion(url) {
+            let form = document.getElementById('confirmDeleteForm');
+            form.setAttribute('action', url);
+
+            let modal = new bootstrap.Modal(document.getElementById('confirmModal'));
+            modal.show();
+        }
+    </script>
+</div>

@@ -17,11 +17,6 @@ public class StockActualController {
     @Autowired
     private StockActualService stockActualService;
 
-    
-    public StockActualController(StockActualService stockActualService) {
-        this.stockActualService = stockActualService;
-    }
-
     @GetMapping("/actual")
     public List<StockActualProjection> getStockActual() {
         return stockActualService.obtenerStockActual();

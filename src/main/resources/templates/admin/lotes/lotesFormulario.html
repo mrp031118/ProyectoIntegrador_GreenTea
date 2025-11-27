@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -38,6 +39,7 @@
         }
     </style>
 </head>
+
 <body>
     <!--Header-->
     <div th:replace="fragmentsAdmi :: header"></div>
@@ -47,8 +49,7 @@
 
         <!-- Título -->
         <div class="col-10 px-0 py-2">
-            <h3 class="fw-bold text-dark mb-2" 
-                th:text="${lote.loteId != null} ? 'Editar Lote' : 'Nuevo Lote'"></h3>
+            <h3 class="fw-bold text-dark mb-2" th:text="${lote.loteId != null} ? 'Editar Lote' : 'Nuevo Lote'"></h3>
             <hr class="border-secondary mt-0 mb-2">
         </div>
 
@@ -62,9 +63,7 @@
                     <label class="form-label fw-semibold">Insumo</label>
                     <select th:field="*{insumo.insumoId}" class="form-select form-select-sm rounded-1" required>
                         <option value="" disabled selected>-- Selecciona un insumo --</option>
-                        <option th:each="insumo : ${insumos}" 
-                                th:value="${insumo.insumoId}" 
-                                th:text="${insumo.nombre}">
+                        <option th:each="insumo : ${insumos}" th:value="${insumo.insumoId}" th:text="${insumo.nombre}">
                         </option>
                     </select>
                 </div>
@@ -74,9 +73,7 @@
                     <label class="form-label fw-semibold">Proveedor</label>
                     <select th:field="*{proveedor.id}" class="form-select form-select-sm rounded-1" required>
                         <option value="" disabled selected>-- Selecciona un proveedor --</option>
-                        <option th:each="prov : ${proveedores}" 
-                                th:value="${prov.id}" 
-                                th:text="${prov.nombre}">
+                        <option th:each="prov : ${proveedores}" th:value="${prov.id}" th:text="${prov.nombre}">
                         </option>
                     </select>
                 </div>
@@ -84,38 +81,40 @@
                 <!-- Fecha de Vencimiento -->
                 <div class="col-md-6">
                     <label class="form-label fw-semibold">Fecha de Vencimiento</label>
-                    <input type="date" class="form-control form-control-sm rounded-1" th:field="*{fechaVencimiento}" required />
+                    <input type="date" class="form-control form-control-sm rounded-1" th:field="*{fechaVencimiento}"
+                        required />
                 </div>
 
                 <!-- Cantidad -->
                 <div class="col-md-6">
                     <label class="form-label fw-semibold">Cantidad</label>
-                    <input type="number" class="form-control form-control-sm rounded-1" th:field="*{cantidad}" min="1" required />
+                    <input type="number" class="form-control form-control-sm rounded-1" th:field="*{cantidad}" min="1"
+                        required />
                 </div>
 
                 <!-- Costo Unitario -->
                 <div class="col-md-6">
                     <label class="form-label fw-semibold">Costo Unitario</label>
-                    <input type="number" step="0.01" class="form-control form-control-sm rounded-1" th:field="*{costoUnitario}" required />
+                    <input type="number" step="0.01" class="form-control form-control-sm rounded-1"
+                        th:field="*{costoUnitario}" required />
                 </div>
 
                 <!-- Observaciones -->
                 <div class="col-12">
                     <label class="form-label fw-semibold">Observaciones</label>
-                    <textarea th:field="*{observaciones}" 
-                              class="form-control form-control-sm rounded-1" 
-                              rows="3" maxlength="255"
-                              placeholder="Opcional: notas sobre el lote (ej: condición, detalle extra)"></textarea>
+                    <textarea th:field="*{observaciones}" class="form-control form-control-sm rounded-1" rows="3"
+                        maxlength="255"
+                        placeholder="Opcional: notas sobre el lote (ej: condición, detalle extra)"></textarea>
                 </div>
-                
+
                 <!-- Botones -->
                 <div class="col-12 mt-3 d-flex gap-2">
-                    <button type="submit" 
+                    <button type="submit"
                         class="bg-success text-white rounded-1 d-flex align-items-center justify-content-center px-3 py-2 border-0 btn-sm"
                         style="width: 20%;">
                         <i class="fa-solid fa-save me-2"></i> Guardar
                     </button>
-                    <a th:href="@{/admin/lotes}" 
+                    <a th:href="@{/admin/lotes}"
                         class="bg-secondary text-white rounded-1 d-flex align-items-center justify-content-center px-3 py-2 text-decoration-none btn-sm"
                         style="width: 20%;">
                         <i class="fa-solid fa-xmark me-2"></i> Cancelar
@@ -126,7 +125,9 @@
     </div>
 
     <!--Menu Deslizable-->
-    <div th:replace="fragmentsAdmi :: menuLateral"></div>
+    <div th:replace="~{fragmentsAdmi :: menuLateral}"></div>
+    <div th:replace="~{mensajeModal :: modal-mensaje}"></div>
+
 
     <div class="modal fade" id="passwordChangeModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
@@ -254,4 +255,5 @@
         }
     </script>
 </body>
+
 </html>

@@ -4,6 +4,7 @@ import java.security.SecureRandom;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,6 +18,7 @@ import com.example.demo.entity.usuarios.Role;
 import com.example.demo.entity.usuarios.User;
 import com.example.demo.repository.usuarios.RoleRepository;
 import com.example.demo.repository.usuarios.UserRepository;
+import com.example.demo.service.DashboardAdminService;
 
 import jakarta.validation.Valid;
 
@@ -28,20 +30,28 @@ import org.springframework.web.bind.annotation.PostMapping;
 @RequestMapping("/admin")
 public class AdminController {
 
-    private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
-    private final PasswordEncoder passwordEncoder;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private RoleRepository roleRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
-    public AdminController(UserRepository userRepository,
-            RoleRepository roleRepository,
-            PasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
+    @Autowired
+    private DashboardAdminService dashboardService;
 
     @GetMapping("/dashboard")
-    public String adminDashboard() {
+    public String adminDashboard(Model model) {
+
+        model.addAttribute("ventasHoy", dashboardService.getVentasHoy());
+        model.addAttribute("costoHoy", dashboardService.getCostoVentasHoy());
+        model.addAttribute("margenHoy", dashboardService.getMargenBrutoHoy());
+        model.addAttribute("stockCritico", dashboardService.getStockCritico());
+
+        model.addAttribute("topProductos", dashboardService.getTopProductos());
+        model.addAttribute("ventasSemana", dashboardService.getVentasUltimaSemana());  
+        model.addAttribute("vencimientos", dashboardService.getProximosVencimientos());
+
         return "admin/dashboardAdmi";
     }
 
@@ -82,7 +92,7 @@ public class AdminController {
             RedirectAttributes redirectAttributes) {
 
         try {
-            // Validar que nombre y apellido no estén vacíos o solo espacios
+
             if (nombre == null || nombre.trim().isEmpty()) {
                 throw new RuntimeException("El nombre es requerido.");
             }
@@ -90,37 +100,28 @@ public class AdminController {
                 throw new RuntimeException("El apellido es requerido.");
             }
 
-            // Generar username automáticamente (mejorado: primer nombre + primeros 3 chars
-            // de cada apellido)
+            // Generar username
             String[] nombreParts = nombre.trim().split("\\s+");
             String[] apellidoParts = apellido.trim().split("\\s+");
 
-            // Normalizar primer nombre
             String primerNombre = normalize(nombreParts[0]);
 
-            // Normalizar y acortar apellidos
             StringBuilder apellidoShort = new StringBuilder();
             for (String ap : apellidoParts) {
                 String apNorm = normalize(ap);
-                if (apNorm.length() >= 3) {
-                    apellidoShort.append(apNorm.substring(0, 3));
-                } else {
-                    apellidoShort.append(apNorm);
-                }
+                apellidoShort.append(apNorm.length() >= 3 ? apNorm.substring(0, 3) : apNorm);
             }
 
-            // Crear username base
             String baseUsername = primerNombre + "." + apellidoShort.toString() + "@gtcoffee.com";
-
-            // Evitar duplicados
             String username = baseUsername;
+
             int counter = 1;
             while (userRepository.findByUsername(username).isPresent()) {
                 username = primerNombre + "." + apellidoShort.toString() + counter + "@gtcoffee.com";
                 counter++;
             }
 
-            // Generar contraseña aleatoria (8 caracteres alfanuméricos con símbolos)
+            // Generar contraseña
             String generatedPassword = generateRandomPassword(8);
 
             // Crear usuario
@@ -134,23 +135,30 @@ public class AdminController {
 
             Role roleEntity = roleRepository.findByNombre(rol)
                     .orElseThrow(() -> new RuntimeException("Rol no encontrado: " + rol));
-            user.setRoles(new HashSet<>());
-            user.getRoles().add(roleEntity);
+
+            Set<Role> roles = new HashSet<>();
+            roles.add(roleEntity);
+            user.setRoles(roles);
 
             userRepository.save(user);
 
-            // Agregar flash attributes para mostrar modal de contraseña
+            // Modal de creación con contraseña
             redirectAttributes.addFlashAttribute("showPasswordModal", true);
             redirectAttributes.addFlashAttribute("generatedUsername", username);
             redirectAttributes.addFlashAttribute("generatedPassword", generatedPassword);
 
+            redirectAttributes.addFlashAttribute("mensaje", "Usuario creado correctamente.");
+            redirectAttributes.addFlashAttribute("tipo", "success");
+
         } catch (Exception e) {
-            // Agregar flash attributes para mostrar modal de error
+
             redirectAttributes.addFlashAttribute("showErrorModal", true);
             redirectAttributes.addFlashAttribute("errorMessage", "Error al crear el usuario: " + e.getMessage());
+
+            redirectAttributes.addFlashAttribute("mensaje", "Error al crear usuario.");
+            redirectAttributes.addFlashAttribute("tipo", "error");
         }
 
-        // Redirigir a GET /admin/usuarios (PRG)
         return "redirect:/admin/usuarios";
     }
 
@@ -184,29 +192,44 @@ public class AdminController {
         return normalized;
     }
 
+    // Activar / desactivar usuario
     @PostMapping("/usuarios/toggleEstado/{id}")
-    public String toggleEstado(@PathVariable Long id) {
+    public String toggleEstado(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+
         User user = userRepository.findById(id).orElseThrow();
+
         user.setEnabled(!user.isEnabled());
         userRepository.save(user);
+
+        redirectAttributes.addFlashAttribute("mensaje",
+                user.isEnabled() ? "Usuario activado correctamente." : "Usuario desactivado correctamente.");
+        redirectAttributes.addFlashAttribute("tipo", "success");
 
         return "redirect:/admin/usuarios";
     }
 
     // Eliminar usuario
     @PostMapping("/usuarios/eliminar/{id}")
-    public String eliminarUsuario(@PathVariable Long id) {
+    public String eliminarUsuario(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+
         userRepository.deleteById(id);
+
+        redirectAttributes.addFlashAttribute("mensaje", "Usuario eliminado correctamente.");
+        redirectAttributes.addFlashAttribute("tipo", "success");
+
         return "redirect:/admin/usuarios";
     }
 
     // Editar Usuario
     @GetMapping("/usuarios/editar/{id}")
     public String editarUsuarioForm(@PathVariable Long id, Model model) {
+
         User usuario = userRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
+
         model.addAttribute("usuario", usuario);
         model.addAttribute("roles", roleRepository.findAll());
+
         return "admin/usuario/editarUsuario";
     }
 
@@ -215,61 +238,34 @@ public class AdminController {
             @Valid @ModelAttribute("usuario") User usuarioForm,
             BindingResult result,
             @RequestParam("rol") String rolNombre,
-            Model model) {
+            Model model,
+            RedirectAttributes redirectAttributes) {
 
         if (result.hasErrors()) {
-            // Si hay errores de validación, recargar el formulario con los roles
             model.addAttribute("roles", roleRepository.findAll());
             return "admin/usuario/editarUsuario";
         }
 
-        // Cargar el usuario original desde la BD
         User usuario = userRepository.findById(usuarioForm.getId())
                 .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
 
-        // Actualizar campos
         usuario.setNombre(usuarioForm.getNombre());
         usuario.setApellido(usuarioForm.getApellido());
         usuario.setTelefono(usuarioForm.getTelefono());
 
-        // Obtener el rol seleccionado
         Role rolSeleccionado = roleRepository.findByNombre(rolNombre)
                 .orElseThrow(() -> new IllegalArgumentException("Rol no encontrado"));
 
-        // Asignar rol en un Set mutable
         Set<Role> roles = new HashSet<>();
         roles.add(rolSeleccionado);
         usuario.setRoles(roles);
 
-        // Guardar usuario actualizado
         userRepository.save(usuario);
+
+        redirectAttributes.addFlashAttribute("mensaje", "Usuario actualizado correctamente.");
+        redirectAttributes.addFlashAttribute("tipo", "success");
 
         return "redirect:/admin/usuarios";
     }
-
-    /* 
-    // Mostrar el formulario de cambio de contraseña
-    @GetMapping("/usuarios/cambiarPassword/{id}")
-    public String mostrarFormularioCambioContrasena(@PathVariable Long id, Model model) {
-        User usuario = userRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
-        model.addAttribute("usuario", usuario);
-        return "admin/usuario/cambiarContrasena"; // nueva plantilla HTML
-    }
-
-    // Guardar la nueva contraseña
-    @PostMapping("/usuarios/cambiarPassword")
-    public String guardarNuevaContrasena(@RequestParam Long id,
-            @RequestParam String nuevaContrasena) {
-        User usuario = userRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
-
-        // Encriptar con BCrypt
-        String passEncriptada = passwordEncoder.encode(nuevaContrasena);
-        usuario.setContra(passEncriptada);
-
-        userRepository.save(usuario);
-        return "redirect:/admin/usuarios";
-    }*/
 
 }

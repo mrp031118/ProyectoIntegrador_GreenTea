@@ -5,12 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Merma de Insumos - Green Tea</title>
-
-    <!-- CSS propio -->
-    <link rel="stylesheet" th:href="@{/css/estilos.css}">
-
     <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- CSS propio -->
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 
     <!-- FontAwesome -->
@@ -91,10 +89,10 @@
 
                 <!-- Botones -->
                 <div class="col-12 d-flex justify-content-end mt-3">
-                    <button type="submit" class="btn btn-success btn-sm me-2">
+                    <button type="submit" class="btn btn-success btn-sm me-2 py-2">
                         <i class="fa-solid fa-check"></i> Registrar Merma
                     </button>
-                    <a th:href="@{/admin/movimientos/insumo}" class="btn btn-secondary btn-sm">
+                    <a th:href="@{/admin/movimientos/insumo}" class="btn btn-secondary btn-sm py-2">
                         <i class="fa-solid fa-xmark"></i> Cancelar
                     </a>
                 </div>
@@ -104,7 +102,9 @@
     </div>
 
     <!--Menu Deslizable-->
-    <div th:replace="fragmentsAdmi :: menuLateral"></div>
+    <div th:replace="~{fragmentsAdmi :: menuLateral}"></div>
+    <div th:replace="~{mensajeModal :: modal-mensaje}"></div>
+
 
     <div class="modal fade" id="passwordChangeModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">

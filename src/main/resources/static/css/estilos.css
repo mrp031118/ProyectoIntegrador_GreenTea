@@ -6,7 +6,7 @@
 }
 
 .c-white {
-    color: white !important;
+    color: white;
 }
 
 .c-primary {
@@ -14,11 +14,11 @@
 }
 
 .bg-principal {
-    background-color: #2d4d1e !important;
+    background-color: #2d4d1e;
 }
 
 .bg-secundario {
-    background-color: #f8f9fa !important;
+    background-color: #f8f9fa;
     /* gris claro */
 }
 
@@ -123,7 +123,7 @@
 
 /* Encabezado */
 .table-modern thead th {
-    background-color: #2d4d1e !important;
+    background-color: #2d4d1e;
     color: #fff;
     text-align: center;
     padding: 12px;
@@ -174,13 +174,14 @@
 
 /* Botón editar */
 .table-modern .btn-outline-light {
-    color: #2d4d1e !important;
-    border-color: #2d4d1e !important;
+    color: #2d4d1e;
+    border-color: #2d4d1e;
+    background-color: white;
 }
 
 .table-modern .btn-outline-light:hover {
-    background-color: #2d4d1e !important;
-    color: #fff !important;
+    background-color: #2d4d1e;
+    color: #fff;
 }
 
 /* Botón eliminar */
@@ -194,9 +195,51 @@
     color: #fff !important;
 }
 
+/* Estilo para botón Activar (cuando está Inactivo) */
+.table-modern .btn-outline-success {
+    color: #ffffff !important;
+    /* Hacemos que el ícono sea BLANCO */
+    background-color: #3f6c2a !important;
+    /* Le damos un fondo VERDE sólido */
+    border-color: #3f6c2a !important;
+}
+
+.table-modern .btn-outline-success:hover {
+    background-color: #4a753a !important;
+    border-color: #4a753a !important;
+    color: #fff !important;
+}
+
+/* Botón Desactivar (cuando el usuario está Activo) */
+.table-modern .btn-accion-desactivar {
+    /* Fondo rojo sólido de la imagen */
+    background-color: #b02a37 !important;
+    border-color: #b02a37 !important;
+    /* Fuerza el ícono/texto a blanco para que resalte */
+    color: #ffffff !important;
+}
+
+.table-modern .btn-accion-desactivar:hover {
+    /* Oscurecer un poco al hacer hover */
+    background-color: #8b202a !important;
+    border-color: #8b202a !important;
+}
+
+/* Botón Activar (cuando el usuario está Inactivo) */
+.table-modern .btn-accion-activar {
+    background-color: #34c9c7 !important;
+    border-color: #34c9c7 !important;
+    color: #ffffff !important;
+}
+
+.table-modern .btn-accion-activar:hover {
+    background-color: #279e9f !important;
+    border-color: #279e9f !important;
+}
+
 .table-modern td.proveedor,
 .table-modern td.observaciones {
-    white-space: normal !important;
+    white-space: normal;
     word-wrap: break-word;
     text-align: left;
     max-width: 250px;
@@ -207,15 +250,15 @@
 /* BOTONES Y UTILIDADES */
 /* ============================= */
 .btn-success-custom {
-    background-color: #3f6c2a !important;
-    border-color: #3f6c2a !important;
-    color: #fff !important;
+    background-color: #3f6c2a;
+    border-color: #3f6c2a;
+    color: #fff;
     transition: background-color 0.3s ease;
 }
 
 .btn-success-custom:hover {
-    background-color: #3a5f27 !important;
-    border-color: #3a5f27 !important;
+    background-color: #3a5f27;
+    border-color: #3a5f27;
 }
 
 /* ============================= */
@@ -239,14 +282,10 @@
 /* ============================= */
 /* TABLA KARDEX PEPS */
 /* ============================= */
-.bg-secundario {
-    background-color: #f4f6f3 !important;
-}
-
 /* Título del Kardex */
 h5.text-dark {
     font-weight: 700;
-    color: #2d4d1e !important;
+    color: #2d4d1e;
     border-left: 6px solid #2d4d1e;
     padding-left: 10px;
 }
@@ -260,8 +299,8 @@ h5.text-dark {
 
 /* Encabezado principal */
 .table thead th {
-    background-color: #2d4d1e !important;
-    color: #ffffff !important;
+    background-color: #2d4d1e;
+    color: #ffffff;
     text-align: center;
     font-size: 13px;
     padding: 10px;
@@ -291,7 +330,7 @@ h5.text-dark {
 
 /* Hover */
 .table tbody tr:hover {
-    background-color: #eef7ea !important;
+    background-color: #eef7ea;
     transform: translateY(-1px);
 }
 
@@ -308,17 +347,17 @@ h5.text-dark {
 
 /* Entradas (verde claro) */
 .table-success {
-    background-color: #e9f7ec !important;
+    background-color: #e9f7ec;
 }
 
 /* Salidas (rojo muy claro) */
 .table-danger {
-    background-color: #fdeaea !important;
+    background-color: #fdeaea;
 }
 
 /* Neutro (amarillo muy suave, PEPS) */
 .table-warning {
-    background-color: #fff9e6 !important;
+    background-color: #fff9e6;
 }
 
 /* ============================= */
@@ -354,10 +393,6 @@ h5.text-dark {
     }
 }
 
-.modal-content {
-    border-radius: 1rem;
-}
-
 .modal-header i {
     margin-right: 0.5rem;
 }
@@ -367,12 +402,356 @@ h5.text-dark {
 }
 
 .btn-outline-light-custom {
-    color: #2d4d1e !important;
-    border-color: #2d4d1e !important;
+    color: #2d4d1e;
+    border-color: #2d4d1e;
     transition: all 0.2s ease;
 }
 
 .btn-outline-light-custom:hover {
-    background-color: #2d4d1e !important;
-    color: #fff !important;
+    background-color: #2d4d1e;
+    color: #fff;
+}
+
+/* ============================= */
+/* DISEÑO PREMIUM – REGISTRO DE VENTA */
+/* ============================= */
+
+/* Título principal */
+.contenedor-venta-titulo h3 {
+    font-weight: 800;
+    font-size: 1.6rem;
+    color: #2d4d1e;
+    letter-spacing: -0.5px;
+}
+
+/* Contenedor principal */
+.contenedor-venta {
+    background: #ffffff;
+    border-radius: 14px;
+    padding: 1.8rem;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+    border: 1px solid #e7e7e7;
+}
+
+/* Selects y campos */
+.form-select-sm,
+.form-control-sm {
+    border-radius: 8px;
+    padding: 6px 10px;
+    border: 1px solid #cdd5ce;
+    transition: all 0.2s ease;
+}
+
+.form-select-sm:focus,
+.form-control-sm:focus {
+    border-color: #2d4d1e;
+    box-shadow: 0 0 0 0.15rem rgba(45, 77, 30, 0.25);
+}
+
+/* Botón Agregar */
+#agregarProducto {
+    background-color: #2d4d1e;
+    border-radius: 10px;
+    font-weight: 600;
+    transition: transform 0.15s ease;
+}
+
+#agregarProducto:hover {
+    transform: translateY(-2px);
+    background-color: #3f6c2a;
+}
+
+/* Tabla */
+#detalleTabla {
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+#detalleTabla thead tr {
+    background: #2d4d1e !important;
+}
+
+#detalleTabla tbody tr {
+    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    transition: background 0.2s ease, transform 0.15s ease;
+}
+
+#detalleTabla tbody tr:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateX(3px);
+}
+
+/* Botón eliminar */
+.btnEliminar {
+    border-radius: 8px;
+    padding: 3px 8px;
+}
+
+/* Resumen precio */
+#totalPago {
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: #2d4d1e;
+}
+
+/* Botón Registrar Venta */
+button[type="submit"] {
+    border-radius: 12px;
+    padding: 10px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    background-color: #2d4d1e;
+}
+
+button[type="submit"]:hover {
+    background-color: #3f6c2a;
+}
+
+/* Scroll tabla */
+#detalleTabla::-webkit-scrollbar {
+    width: 8px;
+}
+
+#detalleTabla::-webkit-scrollbar-thumb {
+    background: #a4bca0;
+    border-radius: 10px;
+}
+
+/* ============================= */
+/* MODALS PERSONALIZADOS */
+/* ============================= */
+.modal-content {
+    border-radius: 1rem;
+    border: none !important;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+}
+
+.modal-header {
+    background-color: #2d4d1e;
+    color: white;
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
+}
+
+.modal-title {
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+.btn-modal-confirm {
+    background-color: #2d4d1e;
+    border-color: #2d4d1e;
+    color: white;
+    font-weight: 400;
+    border-radius: 10px;
+    padding: 15px;
+}
+
+.btn-modal-confirm:hover {
+    background-color: #3b6b2c;
+}
+
+.btn-modal-cancel {
+    border-radius: 10px;
+    padding: 10px;
+    font-weight: 600;
+}
+
+.btn-registrar-produccion {
+    background-color: #2d4d1e;
+    border: 2px solid #2d4d1e;
+    color: white;
+    padding: 10px;
+    font-weight: 600;
+    border-radius: 12px;
+    transition: all 0.25s ease;
+    letter-spacing: 0.3px;
+}
+
+.btn-registrar-produccion:hover {
+    background-color: #3f6c2a;
+    border-color: #3f6c2a;
+    transform: translateY(-2px);
+}
+
+.btn-secondary {
+    color: #fff;
+    background-color: #6c757d;
+    border-color: #6c757d;
+    border-radius: 10px;
+}
+
+.btn-secondary:hover {
+    color: #fff;
+    background-color: #5c636a;
+    border-color: #565e64;
+}
+
+/* Contenedor del formulario */
+.formulario-merma {
+    background-color: #f8f9fa;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Botón verde oscuro (para "Registrar Merma") */
+.btn-green-dark {
+    background-color: #2d4d1e;
+    border-color: #2d4d1e;
+    color: white;
+    transition: all 0.25s ease;
+}
+
+.btn-green-dark:hover {
+    background-color: #4a753a;
+    border-color: #4a753a;
+}
+
+.btn-green-dark:focus {
+    box-shadow: 0 0 0 0.25rem rgba(45, 77, 30, 0.5);
+}
+
+/* Labels del formulario */
+.formulario-merma .form-label {
+    font-weight: 600;
+    color: #2d4d1e;
+}
+
+/* Selects e inputs dentro del formulario */
+.formulario-merma .form-select,
+.formulario-merma .form-control {
+    border-radius: 8px;
+    border: 1px solid #cdd5ce;
+    transition: all 0.2s ease;
+}
+
+.formulario-merma .form-select:focus,
+.formulario-merma .form-control:focus {
+    border-color: #2d4d1e;
+    box-shadow: 0 0 0 0.15rem rgba(45, 77, 30, 0.25);
+}
+
+.btn-success {
+    background-color: #2d4d1e;
+    border-color: #2d4d1e;
+    color: #fff;
+}
+
+.btn-success:hover {
+    background-color: #4a753a;
+    border-color: #4a753a;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    border-color: #6c757d;
+    color: #fff;
+}
+
+.btn-secondary:hover {
+    background-color: #5c636a;
+    border-color: #565e64;
+}
+
+/* ============================= */
+/* DASHBOARD ADMIN - DISEÑO MODERNO */
+/* ============================= */
+
+/* Contenedor principal para una vista más centrada */
+.container-fluid {
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+/* CARDS DE INDICADORES */
+.indicator-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.indicator-card {
+    background-color: #ffffff;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: transform 0.2s, box-shadow 0.2s;
+    border-left: 5px solid #2d4d1e;
+    /* Toque elegante */
+}
+
+.indicator-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.indicator-card h4 {
+    font-size: 1rem;
+    color: #6c757d;
+    margin-bottom: 0.2rem;
+}
+
+.indicator-card span {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #2d4d1e;
+}
+
+.indicator-card .icon-circle {
+    background-color: #eef7ea;
+    /* Verde muy claro */
+    color: #2d4d1e;
+    padding: 15px;
+    border-radius: 50%;
+    font-size: 1.2rem;
+}
+
+
+/* CONTENEDORES DE GRÁFICOS Y TABLAS */
+.chart-container,
+.table-container {
+    background-color: #ffffff;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    height: 350px;
+    /* Altura fija para consistencia en charts */
+    margin-bottom: 1.5rem;
+}
+
+.table-container {
+    height: auto;
+    /* La tabla puede tener altura variable */
+    min-height: 350px;
+}
+
+
+.chart-container h5,
+.table-container h5 {
+    color: #2d4d1e;
+    border-left: 4px solid #4a753a;
+    /* Detalle de color secundario */
+    padding-left: 10px;
+    margin-bottom: 1rem;
+}
+
+/* Corrección para que los gráficos usen el 100% de su contenedor */
+.chart-container canvas {
+    height: calc(100% - 30px) !important;
+    /* -30px para el título/padding */
+    width: 100% !important;
+}
+
+/* Estilo para las filas de stock crítico (dentro de la tabla) */
+.table-danger td {
+    color: #b02a37 !important;
+    /* Texto rojo para alertar */
+    font-weight: 600;
 }

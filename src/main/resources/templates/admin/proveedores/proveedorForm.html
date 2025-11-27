@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -38,6 +39,7 @@
         }
     </style>
 </head>
+
 <body>
 
     <!-- Header -->
@@ -55,25 +57,24 @@
 
         <!-- Formulario -->
         <div class="col-10 bg-secundario rounded-2 shadow-sm p-4 mb-3">
-            <form th:action="@{${proveedor.id == null} ? '/admin/proveedores/agregar' : '/admin/proveedores/editar'}" method="post">
+            <form th:action="@{${proveedor.id == null} ? '/admin/proveedores/agregar' : '/admin/proveedores/editar'}"
+                method="post">
 
                 <input type="hidden" name="id" th:value="${proveedor.id}" />
 
                 <!-- Nombre -->
                 <div class="mb-3">
                     <label class="form-label fw-bold text-dark">Nombre</label>
-                    <input type="text" name="nombre" th:value="${proveedor.nombre}"
-                           class="form-control form-control-sm" required>
+                    <input type="text" name="nombre" th:value="${proveedor.nombre}" class="form-control form-control-sm"
+                        required>
                 </div>
 
                 <!-- Categoría -->
                 <div class="mb-3">
                     <label class="form-label fw-bold text-dark">Categoría</label>
                     <select name="categoria.id" class="form-select form-select-sm" required>
-                        <option th:each="c : ${categorias}"
-                                th:value="${c.id}"
-                                th:text="${c.nombre}"
-                                th:selected="${proveedor.categoria != null and proveedor.categoria.id == c.id}">
+                        <option th:each="c : ${categorias}" th:value="${c.id}" th:text="${c.nombre}"
+                            th:selected="${proveedor.categoria != null and proveedor.categoria.id == c.id}">
                         </option>
                     </select>
                 </div>
@@ -82,36 +83,31 @@
                 <div class="mb-3">
                     <label class="form-label fw-bold text-dark">Teléfono</label>
                     <input type="text" name="telefono" th:value="${proveedor.telefono}"
-                           class="form-control form-control-sm" maxlength="9" pattern="\d{9}"
-                           placeholder="Ej: 987654321" required>
+                        class="form-control form-control-sm" maxlength="9" pattern="\d{9}" placeholder="Ej: 987654321"
+                        required>
                 </div>
 
                 <!-- RUC -->
                 <div class="mb-3">
                     <label class="form-label fw-bold text-dark">RUC</label>
-                    <input type="text" name="ruc" th:value="${proveedor.ruc}"
-                           class="form-control form-control-sm"
-                           pattern="^20\d{9}$"
-                           maxlength="11"
-                           inputmode="numeric"
-                           placeholder="Ej: 20481234567"
-                           title="El RUC debe comenzar con 20 y tener 11 dígitos numéricos"
-                           required>
+                    <input type="text" name="ruc" th:value="${proveedor.ruc}" class="form-control form-control-sm"
+                        pattern="^20\d{9}$" maxlength="11" inputmode="numeric" placeholder="Ej: 20481234567"
+                        title="El RUC debe comenzar con 20 y tener 11 dígitos numéricos" required>
                 </div>
 
                 <!-- Dirección -->
                 <div class="mb-3">
                     <label class="form-label fw-bold text-dark">Dirección</label>
                     <input type="text" name="direccion" th:value="${proveedor.direccion}"
-                           class="form-control form-control-sm" required>
+                        class="form-control form-control-sm" required>
                 </div>
 
                 <!-- Botones -->
                 <div class="d-flex gap-2 mt-4">
-                    <button type="submit" class="btn btn-sm btn-success">
+                    <button type="submit" class="btn btn-sm btn-success py-2">
                         <i class="fa-solid fa-save"></i> Guardar
                     </button>
-                    <a th:href="@{/admin/proveedores}" class="btn btn-sm btn-secondary">
+                    <a th:href="@{/admin/proveedores}" class="btn btn-sm btn-secondary py-2">
                         <i class="fa-solid fa-xmark"></i> Cancelar
                     </a>
                 </div>
@@ -120,7 +116,9 @@
     </div>
 
     <!--Menu Deslizable-->
-    <div th:replace="fragmentsAdmi :: menuLateral"></div>
+    <div th:replace="~{fragmentsAdmi :: menuLateral}"></div>
+    <div th:replace="~{mensajeModal :: modal-mensaje}"></div>
+
 
     <div class="modal fade" id="passwordChangeModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
@@ -249,4 +247,5 @@
     </script>
 
 </body>
+
 </html>

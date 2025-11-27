@@ -69,54 +69,80 @@ public class LoteController {
     // Guardar lote
     @PostMapping("/guardar")
     public String guardar(@ModelAttribute("lote") Lote lote, RedirectAttributes ra) {
-        // Validar insumo
-        if (lote.getInsumo() != null && lote.getInsumo().getInsumoId() != null) {
-            Insumo ins = insumoService.obtenerInsumosPorId(lote.getInsumo().getInsumoId());
-            lote.setInsumo(ins);
-        } else {
-            ra.addFlashAttribute("error", "Selecciona un insumo válido.");
+
+        boolean esEdicion = lote.getLoteId() != null; // o el nombre exacto de tu ID
+
+        // --- Validaciones ---
+        if (lote.getInsumo() == null || lote.getInsumo().getInsumoId() == null) {
+            ra.addFlashAttribute("mensaje", "Selecciona un insumo válido.");
+            ra.addFlashAttribute("tipo", "error");
             return "redirect:/admin/lotes/nuevo";
         }
 
-        // Validar proveedor
-        if (lote.getProveedor() != null && lote.getProveedor().getId() != null) {
-            Proveedor prov = proveedorService.obtenerPorId(lote.getProveedor().getId());
-            lote.setProveedor(prov);
-        } else {
-            ra.addFlashAttribute("error", "Selecciona un proveedor válido.");
+        Insumo ins = insumoService.obtenerInsumosPorId(lote.getInsumo().getInsumoId());
+        lote.setInsumo(ins);
+
+        if (lote.getProveedor() == null || lote.getProveedor().getId() == null) {
+            ra.addFlashAttribute("mensaje", "Selecciona un proveedor válido.");
+            ra.addFlashAttribute("tipo", "error");
             return "redirect:/admin/lotes/nuevo";
         }
 
-        // Guardar
-        loteService.guardarLote(lote);
-        ra.addFlashAttribute("mensaje", "Lote registrado y movimiento de entrada creado correctamente.");
+        Proveedor prov = proveedorService.obtenerPorId(lote.getProveedor().getId());
+        lote.setProveedor(prov);
+
+        // --- Guardar ---
+        try {
+            loteService.guardarLote(lote);
+
+            if (esEdicion) {
+                ra.addFlashAttribute("mensaje", "Lote actualizado correctamente.");
+            } else {
+                ra.addFlashAttribute("mensaje", "Lote registrado exitosamente.");
+            }
+
+            ra.addFlashAttribute("tipo", "success");
+
+        } catch (Exception e) {
+            ra.addFlashAttribute("mensaje", "Error al guardar el lote: " + e.getMessage());
+            ra.addFlashAttribute("tipo", "error");
+        }
+
         return "redirect:/admin/lotes";
     }
 
     // Editar lote
     @GetMapping("/editar/{id}")
-    public String editar(@PathVariable Long id, Model model) {
+    public String editar(@PathVariable Long id, Model model, RedirectAttributes ra) {
         try {
             Lote lote = loteService.obtenerPorId(id);
+
             model.addAttribute("lote", lote);
             model.addAttribute("insumos", insumoService.listarInsumos());
             model.addAttribute("proveedores", proveedorService.listarProveedores());
+
             return "admin/lotes/lotesFormulario";
+
         } catch (Exception e) {
-            // Maneja el error de forma elegante
-            return "redirect:/admin/lotes?error=" + e.getMessage();
+            ra.addFlashAttribute("mensaje", "Error: " + e.getMessage());
+            ra.addFlashAttribute("tipo", "error");
+            return "redirect:/admin/lotes";
         }
     }
 
-    // Eliminar lote
+    // ELIMINAR LOTE
     @GetMapping("/eliminar/{id}")
     public String eliminar(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+
         try {
             loteService.eliminarLote(id);
-            redirectAttributes.addAttribute("success", "Lote eliminado correctamente.");
+            redirectAttributes.addFlashAttribute("mensaje", "Lote eliminado correctamente.");
+            redirectAttributes.addFlashAttribute("tipo", "success");
         } catch (Exception e) {
-            redirectAttributes.addAttribute("error", e.getMessage());
+            redirectAttributes.addFlashAttribute("mensaje", "Error al eliminar lote: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("tipo", "error");
         }
+
         return "redirect:/admin/lotes";
     }
 

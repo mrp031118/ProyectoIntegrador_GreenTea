@@ -5,39 +5,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Movimientos Productos - Green Tea</title>
-
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- CSS propio -->
     <link rel="stylesheet" th:href="@{/css/estilos.css}">
 
-    <!-- Bootstrap -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
-
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" />
-    <style>
-        /* Color principal personalizado: #2d4d1e */
-        .bg-green-dark {
-            background-color: #2d4d1e !important;
-        }
 
-        .btn-green-dark {
-            background-color: #2d4d1e;
-            border-color: #2d4d1e;
-            color: white;
-        }
-
-        .btn-green-dark:hover {
-            background-color: #4a753a;
-            /* Un poco más claro al pasar el ratón */
-            border-color: #4a753a;
-        }
-
-        .btn-green-dark:focus {
-            box-shadow: 0 0 0 0.25rem rgba(45, 77, 30, 0.5);
-            /* Sombra para el focus */
-        }
-    </style>
 </head>
 
 <body>
@@ -52,33 +27,37 @@
             <hr class="border-secondary mt-0 mb-2">
         </div>
 
-        <!-- Filtros -->
+        <!-- Filtro solo por fecha -->
         <div class="col-10 bg-secundario rounded-2 shadow-sm p-3 mb-3">
-            <h5 class="text-dark mb-3">Filtros</h5>
-            <form th:action="@{/admin/movimientos}" method="get" class="row g-2">
-                <div class="col-md-6">
-                    <input type="text" name="producto" placeholder="Buscar por producto"
-                        class="form-control form-control-sm">
-                </div>
-                <div class="col-md-2">
-                    <input type="date" name="fecha" class="form-control form-control-sm">
+            <h5 class="text-dark mb-3">Filtrar por Fecha</h5>
+            <form th:action="@{/admin/movimientos/movimientos-productos}" method="get"
+                class="row g-2 d-flex align-items-center">
+                <div class="col-md-3">
+                    <input type="date" name="fecha" class="form-control py-2">
                 </div>
                 <div class="col-md-2 d-grid">
-                    <button type="submit" class="btn btn-sm btn-primary">
+                    <button type="submit" class="btn btn-success-custom w-100 py-2">
                         <i class="fa-solid fa-filter"></i> Filtrar
                     </button>
+                </div>
+                <div class="col-md-2 d-grid">
+                    <a th:href="@{/admin/movimientos/movimientos-productos}" class="btn btn-secondary w-100 py-2">
+                        <i class="fa-solid fa-rotate-left"></i> Resetear
+                    </a>
                 </div>
             </form>
         </div>
 
+
         <!-- Tabla Kardex PEPS para Productos -->
         <div class="col-10 bg-secundario rounded-2 shadow-sm p-3">
             <h5 class="text-dark mb-3">Kardex Histórico de Productos</h5>
-            <div class="table-responsive" style="max-height: 320px; overflow-y: auto;">
-                <table class="table table-hover align-middle table-borderless table-sm table-transparent">
+            <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                <table class="table table-hover align-middle table-borderless table-sm">
                     <thead style="position: sticky; top: 0; background-color: rgba(0,0,0,0.6); z-index: 10;">
                         <!-- Encabezados principales -->
                         <tr class="text-white text-center">
+                            <th rowspan="2">ID Produccion</th>
                             <th rowspan="2">Producto</th>
                             <th rowspan="2">Empleado</th>
                             <th rowspan="2">Fecha</th>
@@ -96,21 +75,53 @@
                             <th>Valor Total</th>
                         </tr>
                     </thead>
-                    <tbody class="text-light">
-                        <tr th:each="mov : ${movimientos}">
+                    <tbody>
+                        <tr th:each="mov : ${movimientos}" th:classappend="
+            ${mov.tipoMovimientoId.id == 1} ? 'table-success' : 
+            (${mov.tipoMovimientoId.id == 2} ? 'table-danger' : 
+            (${mov.tipoMovimientoId.id == 4} ? 'table-warning' : 'table-light'))
+        ">
+
+                            <!-- Produccion -->
+                            <td th:text="${mov.produccion != null ? mov.produccion.produccionId : '-'}"></td>
+                            <!-- Producto -->
                             <td th:text="${mov.producto.nombre}"></td>
-                            <td th:text="${mov.empleado.nombre}"></td> <!-- Asumiendo que User tiene 'nombre' -->
-                            <td th:text="${#temporals.format(mov.fecha, 'yyyy-MM-dd HH:mm')}"></td>
-                            <td th:if="${mov.tipoMovimientoId.id == 1}"
-                                th:text="'S/ ' + ${#numbers.formatDecimal(mov.costoUnitario, 1, 2)}"></td>
-                            <td th:if="${mov.tipoMovimientoId.id == 1}" th:text="${mov.cantidad}"></td>
-                            <td th:if="${mov.tipoMovimientoId.id != 1}"
-                                th:text="'S/ ' + ${#numbers.formatDecimal(mov.costoUnitario, 1, 2)}"></td>
-                            <td th:if="${mov.tipoMovimientoId.id != 1}" th:text="${mov.cantidad}"></td>
-                            <td th:text="${mov.saldoCantidad}"></td>
-                            <td th:text="'S/ ' + ${#numbers.formatDecimal(mov.saldoValor, 1, 2)}"></td>
+
+                            <!-- Empleado -->
+                            <td th:text="${mov.empleado.nombre}"></td>
+
+                            <!-- Fecha -->
+                            <td th:text="${#temporals.format(mov.fecha, 'dd/MM/yyyy HH:mm')}"></td>
+
+                            <!-- ENTRADAS -->
+                            <td
+                                th:text="${mov.tipoMovimientoId.id == 1 ? 'S/ ' + #numbers.formatDecimal(mov.costoUnitario, 2, 'COMMA', 2, 'POINT') : '-'}">
+                            </td>
+                            <td
+                                th:text="${mov.tipoMovimientoId.id == 1 ? #numbers.formatDecimal(mov.cantidad, 1, 'POINT', 2, 'POINT') : '-'}">
+                            </td>
+
+                            <!-- SALIDAS y MERMA -->
+                            <td
+                                th:text="${mov.tipoMovimientoId.id == 2 or mov.tipoMovimientoId.id == 4 ? 'S/ ' + #numbers.formatDecimal(mov.costoUnitario, 2, 'COMMA', 2, 'POINT') : '-'}">
+                            </td>
+                            <td
+                                th:text="${mov.tipoMovimientoId.id == 2 or mov.tipoMovimientoId.id == 4 ? #numbers.formatDecimal(mov.cantidad, 1, 'POINT', 2, 'POINT') : '-'}">
+                            </td>
+
+                            <!-- SALDO -->
+                            <td th:text="${#numbers.formatDecimal(mov.saldoCantidad, 1, 'POINT', 2, 'POINT')}"></td>
+                            <td th:text="'S/ ' + ${#numbers.formatDecimal(mov.saldoValor, 2, 'COMMA', 2, 'POINT')}">
+                            </td>
+                        </tr>
+
+                        <!-- Mensaje si no hay datos -->
+                        <tr th:if="${#lists.isEmpty(movimientos)}" class="text-center">
+                            <td colspan="9" class="text-muted py-3">No hay movimientos registrados</td>
                         </tr>
                     </tbody>
+
+
                 </table>
             </div>
         </div>
@@ -118,8 +129,12 @@
 
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+
     <!--Menu Deslizable-->
-    <div th:replace="fragmentsAdmi :: menuLateral"></div>
+    <div th:replace="~{fragmentsAdmi :: menuLateral}"></div>
+    <div th:replace="~{mensajeModal :: modal-mensaje}"></div>
+
 
     <div class="modal fade" id="passwordChangeModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">

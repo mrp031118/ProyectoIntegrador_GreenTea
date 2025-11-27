@@ -6,38 +6,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión de Usuarios - Green Tee</title>
 
-    <!-- CSS propio -->
-    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+
 
     <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
 
+    <!-- CSS propio -->
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" />
 
-    <style>
-        /* Color principal personalizado: #2d4d1e */
-        .bg-green-dark {
-            background-color: #2d4d1e !important;
-        }
-
-        .btn-green-dark {
-            background-color: #2d4d1e;
-            border-color: #2d4d1e;
-            color: white;
-        }
-
-        .btn-green-dark:hover {
-            background-color: #4a753a;
-            /* Un poco más claro al pasar el ratón */
-            border-color: #4a753a;
-        }
-
-        .btn-green-dark:focus {
-            box-shadow: 0 0 0 0.25rem rgba(45, 77, 30, 0.5);
-            /* Sombra para el focus */
-        }
-    </style>
 </head>
 
 <body>
@@ -81,7 +60,7 @@
                         </select>
                     </div>
                 </div>
-                <button type="submit" class="btn btn-success btn-sm">
+                <button type="submit" class="btn btn-success-custom btn-sm">
                     <i class="fa-solid fa-user-plus"></i> Guardar Usuario
                 </button>
             </form>
@@ -90,8 +69,8 @@
         <!-- Tabla de usuarios -->
         <div class="col-10 bg-secundario rounded-2 shadow-sm p-4">
             <h5 class="text-dark mb-3">Lista de Usuarios</h5>
-            <div class="table-responsive" style="max-height: 320px; overflow-y: auto;">
-                <table class="table table-hover align-middle table-borderless table-sm table-transparent">
+            <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                <table class="table-modern w-100 mx-auto">
                     <thead style="position: sticky; top: 0; background-color: rgba(0,0,0,0.6); z-index: 10;">
                         <tr class="text-white">
                             <th>ID</th>
@@ -129,8 +108,8 @@
                                 <!-- Activar/Desactivar -->
                                 <form th:action="@{/admin/usuarios/toggleEstado/{id}(id=${usuario.id})}" method="post"
                                     class="d-inline">
-                                    <button type="submit" class="btn btn-sm"
-                                        th:classappend="${usuario.enabled ? 'btn-outline-danger' : 'btn-outline-success'}"
+                                    <button type="submit" class="btn btn-sm border-0"
+                                        th:classappend="${usuario.enabled ? 'btn-accion-desactivar' : 'btn-accion-activar'}"
                                         th:title="${usuario.enabled ? 'Desactivar usuario' : 'Activar usuario'}">
                                         <i
                                             th:class="${usuario.enabled ? 'fa-solid fa-user-slash' : 'fa-solid fa-user-check'}"></i>
@@ -140,7 +119,7 @@
                                 <!-- Editar -->
                                 <form th:action="@{/admin/usuarios/editar/{id}(id=${usuario.id})}" method="get"
                                     class="d-inline">
-                                    <button type="submit" class="btn btn-sm btn-outline-light-custom"
+                                    <button type="submit" class="btn btn-sm btn-outline-light me-1"
                                         title="Editar usuario">
                                         <i class="fa-solid fa-pen"></i>
                                     </button>
@@ -254,6 +233,9 @@
             </div>
         </div>
     </div>
+
+    <div th:replace="~{mensajeModal :: modal-mensaje}"></div>
+
 
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>

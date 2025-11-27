@@ -58,7 +58,9 @@
     </div>
 
     <!--Menu Deslizable-->
-    <div th:replace="fragmentsEmp :: menuLateral"></div>
+    <div th:replace="~{fragmentsEmp :: menuLateral}"></div>
+    <div th:replace="~{mensajeModal :: modal-mensaje}"></div>
+
 
     <div class="modal fade" id="passwordChangeModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">

@@ -61,44 +61,70 @@ public class InsumoController {
     }
 
     // guardar o actualizar insumo
-    @PostMapping("guardar")
-    public String guardar(@ModelAttribute Insumo insumo, Model model) {
+    @PostMapping("/guardar")
+    public String guardar(@ModelAttribute Insumo insumo, RedirectAttributes redirectAttributes) {
 
-        insumoService.guardarInsumo(insumo);
+        boolean esEdicion = (insumo.getInsumoId() != null); // verificar si viene con ID
+
+        try {
+            insumoService.guardarInsumo(insumo);
+
+            if (esEdicion) {
+                redirectAttributes.addFlashAttribute("mensaje", "Insumo actualizado correctamente.");
+            } else {
+                redirectAttributes.addFlashAttribute("mensaje", "Insumo registrado exitosamente.");
+            }
+
+            redirectAttributes.addFlashAttribute("tipo", "success");
+
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("mensaje", "Error al guardar el insumo.");
+            redirectAttributes.addFlashAttribute("tipo", "error");
+        }
         return "redirect:/admin/insumos";
     }
 
     // mostrar formulario de edicion
     @GetMapping("/editar/{id}")
-    public String editar(@PathVariable Long id, Model model) {
-        Insumo insumo = insumoService.obtenerInsumosPorId(id);
+    public String editar(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes) {
 
-        model.addAttribute("insumo", insumo);
-        model.addAttribute("proveedores", proveedorService.listarProveedores());
-        model.addAttribute("unidades", unidadMedidaService.listarUnidades());
+        try {
+            Insumo insumo = insumoService.obtenerInsumosPorId(id);
 
-        return "/admin/insumos/insumosFormulario";
+            if (insumo == null) {
+                redirectAttributes.addFlashAttribute("mensaje", "El insumo no existe o fue eliminado.");
+                redirectAttributes.addFlashAttribute("tipo", "error");
+                return "redirect:/admin/insumos";
+            }
+
+            model.addAttribute("insumo", insumo);
+            model.addAttribute("proveedores", proveedorService.listarProveedores());
+            model.addAttribute("unidades", unidadMedidaService.listarUnidades());
+
+            return "/admin/insumos/insumosFormulario";
+
+        } catch (Exception e) {
+
+            redirectAttributes.addFlashAttribute("mensaje",
+                    "Ocurrió un error al cargar la información: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("tipo", "error");
+
+            return "redirect:/admin/insumos";
+        }
     }
 
     // Eliminar insumo
     @GetMapping("/eliminar/{id}")
-    public String eliminarInsumo(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes) {
+    public String eliminarInsumo(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
             insumoService.eliminarInsumo(id);
-            redirectAttributes.addFlashAttribute("exito", "Insumo eliminado correctamente.");
-            return "redirect:/admin/insumos";
+            redirectAttributes.addFlashAttribute("mensaje", "Insumo eliminado correctamente.");
+            redirectAttributes.addFlashAttribute("tipo", "success");
         } catch (Exception e) {
-            // Mensaje de error en la misma vista
-            model.addAttribute("error", e.getMessage());
-
-            // Recargar lista de insumos y filtros
-            List<Insumo> insumos = insumoService.listarInsumos();
-            model.addAttribute("insumos", insumos);
-            model.addAttribute("proveedores", proveedorService.listarProveedores());
-            model.addAttribute("unidades", unidadMedidaService.listarUnidades());
-
-            return "/admin/insumos/insumosLista"; // se mantiene en la misma vista para mostrar el error
+            redirectAttributes.addFlashAttribute("mensaje", "Error al eliminar el insumo: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("tipo", "error");
         }
+        return "redirect:/admin/insumos";
     }
 
 }

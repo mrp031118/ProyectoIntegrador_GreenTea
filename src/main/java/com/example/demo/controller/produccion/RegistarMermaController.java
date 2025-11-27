@@ -20,7 +20,6 @@ import com.example.demo.service.movimientos.MermaService;
 import com.example.demo.service.usuarios.CustomUserDetails;
 import com.example.demo.service.venta.ProduccionService;
 
-
 @Controller
 @RequestMapping("/empleado/registrarMerma")
 public class RegistarMermaController {
@@ -35,49 +34,70 @@ public class RegistarMermaController {
     private MermaService mermaService;
 
     // REGISTRAR MERMA
-    // En RegistarMermaController.java
     @PostMapping("/guardar")
     public String guardarMerma(
             @RequestParam("productoId") Long productoId,
             @RequestParam("cantidadMerma") double cantidadMerma,
-            @RequestParam("motivo") String motivo, // Ya lo tienes
+            @RequestParam("motivo") String motivo,
             Model model) {
 
         try {
-            // Obtener producto
+
+            User usuarioActual = obtenerUsuarioActual();
+            if (usuarioActual == null) {
+                model.addAttribute("tipo", "error");
+                model.addAttribute("mensaje", "No se pudo obtener el usuario autenticado.");
+                return cargarVista(model, usuarioActual);
+            }
+
             Producto producto = productoRepository.findById(productoId)
                     .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
 
-            // Obtener empleado logueado
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            if (authentication == null || !authentication.isAuthenticated()
-                    || authentication.getPrincipal() instanceof String) {
-                throw new RuntimeException("Empleado no autenticado.");
-            }
-            CustomUserDetails cud = (CustomUserDetails) authentication.getPrincipal();
-            User usuarioActual = cud.getUser();
-
             produccionService.registrarMermaProducto(producto, cantidadMerma, motivo, usuarioActual);
 
-            model.addAttribute("success", "Merma registrada correctamente.");
+            model.addAttribute("tipo", "success");
+            model.addAttribute("mensaje", "Merma registrada correctamente.");
+
         } catch (Exception ex) {
-            model.addAttribute("error", "Error: " + ex.getMessage());
-            ex.printStackTrace(); // Para depurar
+            ex.printStackTrace();
+            model.addAttribute("tipo", "error");
+            model.addAttribute("mensaje", "Error: " + ex.getMessage());
         }
-        return "redirect:/empleado/registrarMerma";
+
+        return cargarVista(model, obtenerUsuarioActual());
     }
 
+    // CARGAR VISTA
     @GetMapping
     public String listarMermas(Model model) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        CustomUserDetails cud = (CustomUserDetails) auth.getPrincipal();
-        User empleado = cud.getUser();
-        List<MermaDTO> mermas = mermaService.listarMermasPorEmpleado(empleado);
-        model.addAttribute("mermas", mermas);
-        // 2️⃣ Listar todos los productos para el select
+
+        User empleado = obtenerUsuarioActual();
+
+        return cargarVista(model, empleado);
+    }
+
+    // MÉTODO UTILITARIO PARA CARGAR LISTAS Y VISTA
+    private String cargarVista(Model model, User empleado) {
+
+        if (empleado != null) {
+            List<MermaDTO> mermas = mermaService.listarMermasPorEmpleado(empleado);
+            model.addAttribute("mermas", mermas);
+        }
+
         List<Producto> productos = productoRepository.findAll();
         model.addAttribute("productos", productos);
+
         return "empleado/produccion/registrarMerma";
     }
 
+    // OBTENER USUARIO AUTENTICADO
+    private User obtenerUsuarioActual() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        if (auth == null || !auth.isAuthenticated() || auth.getPrincipal() instanceof String) {
+            return null;
+        }
+
+        return ((CustomUserDetails) auth.getPrincipal()).getUser();
+    }
 }

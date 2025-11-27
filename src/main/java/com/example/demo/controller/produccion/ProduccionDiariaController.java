@@ -36,19 +36,25 @@ public class ProduccionDiariaController {
     // Vista principal de producción
     @GetMapping("/produccion")
     public String listarProduccion(Model model) {
-        // Obtener historial de producción
-        List<Produccion> producciones = produccionRepository.findAll();
 
-        // Obtener productos para el select (solo aquellos con categoria.tipoControl ==
-        // "ELABORADOS")
-        List<Producto> productos = productoRepository.findAll().stream()
-                .filter(p -> "ELABORADO".equalsIgnoreCase(p.getCategoria().getTipoControl()))
-                .collect(Collectors.toList());
+        try {
+            // Obtener historial
+            List<Produccion> producciones = produccionRepository.findAll();
 
-        model.addAttribute("producciones", producciones);
-        model.addAttribute("productos", productos);
+            // Obtener productos ELABORADOS
+            List<Producto> productos = productoRepository.findAll().stream()
+                    .filter(p -> "ELABORADO".equalsIgnoreCase(p.getCategoria().getTipoControl()))
+                    .collect(Collectors.toList());
 
-        return "empleado/produccion/produccionDiaria"; // Vista en templates/produccion.html
+            model.addAttribute("producciones", producciones);
+            model.addAttribute("productos", productos);
+
+        } catch (Exception e) {
+            model.addAttribute("mensaje", "Error al cargar la producción.");
+            model.addAttribute("tipo", "error");
+        }
+
+        return "empleado/produccion/produccionDiaria";
     }
 
     // Registrar producción (desde el modal)
@@ -59,24 +65,21 @@ public class ProduccionDiariaController {
             RedirectAttributes redirectAttributes) {
 
         try {
-            System.out.println("🟦 ENTRO AL MÉTODO DEL CONTROLLER");
-            System.out.println("Service inyectado: " + produccionService.getClass());
 
-            Producto producto = productoRepository.findById(productoId).orElseThrow();
+            Producto producto = productoRepository.findById(productoId)
+                    .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+
             User empleado = getCurrentUser();
 
             produccionService.registrarProduccion(producto, cantidadElaborada, empleado);
 
-            System.out.println("🟨 DESPUÉS DE LLAMAR AL SERVICE");
+            redirectAttributes.addFlashAttribute("mensaje", "Producción registrada exitosamente.");
+            redirectAttributes.addFlashAttribute("tipo", "success");
 
-            redirectAttributes.addFlashAttribute("successMessage", "Producción registrada exitosamente.");
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Error al registrar producción: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("mensaje", "Error al registrar producción: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("tipo", "error");
         }
-
-        System.out.println("🚀 LLEGÓ AL POST DE PRODUCCIÓN");
-        System.out.println("Producto: " + productoId);
-        System.out.println("Cantidad: " + cantidadElaborada);
 
         return "redirect:/empleado/produccion";
     }
@@ -88,7 +91,7 @@ public class ProduccionDiariaController {
         Object principal = auth.getPrincipal();
 
         if (principal instanceof CustomUserDetails) {
-            return ((CustomUserDetails) principal).getUser(); // ✅ Devuelve tu entidad User real
+            return ((CustomUserDetails) principal).getUser();
         } else {
             System.out.println("⚠ Principal NO es CustomUserDetails, es: " + principal.getClass());
             throw new IllegalStateException("Usuario no autenticado correctamente");

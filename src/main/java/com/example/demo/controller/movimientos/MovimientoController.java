@@ -1,7 +1,9 @@
 package com.example.demo.controller.movimientos;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.demo.entity.lotes.Lote;
 import com.example.demo.entity.movimientos.Movimiento;
@@ -35,17 +38,38 @@ public class MovimientoController {
     private InsumoService insumoService;
 
     @GetMapping()
-    public String listarMovimientos(Model model) {
-        List<Movimiento> movimientos = movimientoService.listarMovimientosPEPS();
-        model.addAttribute("movimientos", movimientos);
+    public String listarMovimientos(@RequestParam(value = "fecha", required = false) LocalDate fechaFiltro, Model model,
+            RedirectAttributes redirectAttributes) {
+        try {
+            List<Movimiento> movimientos = movimientoService.listarMovimientosPEPS();
+            // Filtro por fecha
+            if (fechaFiltro != null) {
+                movimientos = movimientos.stream()
+                        .filter(m -> m.getFecha().toLocalDate().equals(fechaFiltro))
+                        .collect(Collectors.toList());
+            }
+            model.addAttribute("movimientos", movimientos);
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("mensaje", "Error al cargar los movimientos: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("tipo", "error");
+            return "redirect:/admin/movimientos/insumo";
+        }
+
         return "/admin/movimientos/movimientosLista";
     }
 
     // Mostrar formulario de nuevo producto
     @GetMapping("/merma")
-    public String mostrarFormularioMerma(Model model) {
-        model.addAttribute("insumos", insumoService.listarInsumos());
-        model.addAttribute("lotes", kardexLoteService.obtenerKardexLotes()); // Vista KardexLoteProjection
+    public String mostrarFormularioMerma(Model model, RedirectAttributes redirectAttributes) {
+        try {
+            model.addAttribute("insumos", insumoService.listarInsumos());
+            model.addAttribute("lotes", kardexLoteService.obtenerKardexLotes());
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("mensaje", "Error al cargar el formulario de merma.");
+            redirectAttributes.addFlashAttribute("tipo", "error");
+            return "redirect:/admin/movimientos/insumo";
+        }
+
         return "admin/movimientos/movimientoFormulario";
     }
 
@@ -55,7 +79,7 @@ public class MovimientoController {
             @RequestParam("loteId") Long loteId,
             @RequestParam("cantidad") Double cantidad,
             @RequestParam(value = "observaciones", required = false) String observaciones,
-            Model model) {
+            RedirectAttributes redirectAttributes) {
 
         try {
             Movimiento mov = new Movimiento();
@@ -63,7 +87,7 @@ public class MovimientoController {
             // Asociar insumo
             mov.setInsumo(insumoService.obtenerInsumosPorId(insumoId));
 
-            // Tipo de movimiento MERMA (id = 4)
+            // Tipo MERMA
             mov.setTipoMovimiento(tipoMovimientoService.obtenerPorId(4));
 
             // Asociar lote
@@ -81,17 +105,17 @@ public class MovimientoController {
             // Fecha actual
             mov.setFecha(LocalDateTime.now());
 
-            // Guardar en la BD
+            // Guardar
             movimientoService.registrarMovimiento(mov);
 
-            model.addAttribute("exito", "Merma registrada correctamente.");
+            redirectAttributes.addFlashAttribute("mensaje", "Merma registrada correctamente.");
+            redirectAttributes.addFlashAttribute("tipo", "success");
 
         } catch (Exception e) {
-            model.addAttribute("error", "Ocurrió un error al registrar la merma.");
-            e.printStackTrace();
+            redirectAttributes.addFlashAttribute("mensaje", "Error al registrar merma: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("tipo", "error");
         }
 
         return "redirect:/admin/movimientos/insumo";
     }
-
 }

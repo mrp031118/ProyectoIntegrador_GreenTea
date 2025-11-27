@@ -6,38 +6,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lista de Proveedores - Green Tee</title>
 
-    <!-- CSS propio -->
-    <link rel="stylesheet" th:href="@{/css/estilos.css}">
-
     <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 
+    <!-- CSS propio -->
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+    
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" />
-    <style>
-        /* Color principal personalizado: #2d4d1e */
-        .bg-green-dark {
-            background-color: #2d4d1e !important;
-        }
-
-        .btn-green-dark {
-            background-color: #2d4d1e;
-            border-color: #2d4d1e;
-            color: white;
-        }
-
-        .btn-green-dark:hover {
-            background-color: #4a753a;
-            /* Un poco más claro al pasar el ratón */
-            border-color: #4a753a;
-        }
-
-        .btn-green-dark:focus {
-            box-shadow: 0 0 0 0.25rem rgba(45, 77, 30, 0.5);
-            /* Sombra para el focus */
-        }
-    </style>
 </head>
 
 <body>
@@ -81,15 +57,15 @@
 
                 <!-- Botones -->
                 <div class="col-md-7 d-flex justify-content-end gap-2">
-                    <button type="submit" class="btn btn-sm btn-success px-3">
+                    <button type="submit" class="btn btn-sm btn-success px-3 py-2">
                         <i class="fa-solid fa-magnifying-glass"></i> Filtrar
                     </button>
 
-                    <a th:href="@{/admin/proveedores}" class="btn btn-sm btn-outline-secondary px-3">
+                    <a th:href="@{/admin/proveedores}" class="btn btn-sm btn-outline-secondary px-3 py-2">
                         <i class="fa-solid fa-rotate-right"></i> Limpiar
                     </a>
 
-                    <a th:href="@{/admin/proveedores/agregar}" class="btn btn-success btn-sm shadow-sm">
+                    <a th:href="@{/admin/proveedores/agregar}" class="btn btn-success btn-sm shadow-sm py-2">
                         <i class="fa-solid fa-plus"></i> Nuevo Proveedor
                     </a>
                 </div>
@@ -146,9 +122,12 @@
 
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 
     <!-- Menú Desplegable -->
     <div th:replace="~{fragmentsAdmi :: menuLateral}"></div>
+    <div th:replace="~{mensajeModal :: modal-mensaje}"></div>
+
 
     <div class="modal fade" id="passwordChangeModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">

@@ -6,4 +6,5 @@ import com.example.demo.entity.venta.Venta;
 
 public interface VentaRepository extends JpaRepository<Venta, Long> {
 
+    Venta findTopByOrderByIdDesc();
 }

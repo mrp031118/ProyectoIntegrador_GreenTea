@@ -36,14 +36,14 @@
 
                 <div class="mb-3">
                     <label class="form-label text-dark">Nueva Contraseña:</label>
-                    <input type="password" name="nuevaContrasena" class="form-control form-control-sm" 
-                        required minlength="6">
+                    <input type="password" name="nuevaContrasena" class="form-control form-control-sm" required
+                        minlength="6">
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label text-dark">Confirmar Contraseña:</label>
-                    <input type="password" name="confirmarContrasena" class="form-control form-control-sm" 
-                        required minlength="6">
+                    <input type="password" name="confirmarContrasena" class="form-control form-control-sm" required
+                        minlength="6">
                 </div>
 
                 <!-- Botones -->
@@ -60,7 +60,9 @@
     </div>
 
     <!-- Menú Lateral -->
-    <div th:replace="fragmentsAdmi :: menuLateral"></div>
+    <div th:replace="~{fragmentsAdmi :: menuLateral}"></div>
+    <div th:replace="~{mensajeModal :: modal-mensaje}"></div>
+
 
     <!-- Script validación -->
     <script>
@@ -75,4 +77,5 @@
     </script>
 
 </body>
+
 </html>

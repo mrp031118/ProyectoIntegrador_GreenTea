@@ -1,5 +1,6 @@
 package com.example.demo.repository.lotes;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -36,4 +37,6 @@ public interface LoteRepository extends JpaRepository<Lote, Long> {
 
     // Obtener lotes de un insumo ordenados por fecha (FIFO)
     List<Lote> findByInsumoInsumoIdOrderByFechaEntradaAsc(Long insumoId);
+
+    List<Lote> findByInsumo_InsumoIdAndFechaVencimientoGreaterThanEqual(Long insumoId, LocalDate fecha);
 }

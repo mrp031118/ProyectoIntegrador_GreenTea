@@ -112,10 +112,10 @@
 
                 <!-- Botones Guardar y Cancelar -->
                 <div class="d-flex gap-2">
-                    <button type="submit" class="btn btn-success btn-sm">
+                    <button type="submit" class="btn btn-success-custom btn-sm py-2">
                         <i class="fa-solid fa-save"></i> Guardar Cambios
                     </button>
-                    <a th:href="@{/admin/usuarios}" class="btn btn-secondary btn-sm">
+                    <a th:href="@{/admin/usuarios}" class="btn btn-secondary btn-sm py-2">
                         Cancelar
                     </a>
                 </div>
@@ -128,6 +128,8 @@
 
     <!-- Menú Desplegable -->
     <div th:replace="~{fragmentsAdmi :: menuLateral}"></div>
+    <div th:replace="~{mensajeModal :: modal-mensaje}"></div>
+
 
     <div class="modal fade" id="passwordChangeModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">

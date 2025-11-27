@@ -45,31 +45,78 @@ public class ProductoController {
 
     // Guardar producto nuevo
     @PostMapping("/guardar")
-    public String guardar(@ModelAttribute Producto producto) {
-        productoService.guardar(producto);
-        return "redirect:/admin/productos";
+    public String guardar(@ModelAttribute Producto producto, Model model) {
+
+        try {
+            productoService.guardar(producto);
+            model.addAttribute("tipo", "success");
+            model.addAttribute("mensaje", "Producto registrado correctamente.");
+        } catch (Exception e) {
+            model.addAttribute("tipo", "error");
+            model.addAttribute("mensaje", "Error al guardar producto: " + e.getMessage());
+        }
+
+        model.addAttribute("productos", productoService.listarProductos());
+        return "admin/producto/productosLista";
     }
 
     // Formulario de edición
     @GetMapping("/editar/{id}")
     public String editar(@PathVariable Long id, Model model) {
-        model.addAttribute("producto", productoService.obtenerPorId(id));
-        model.addAttribute("categorias", categoriaProductoRepository.findAll());
-        model.addAttribute("unidades", unidadConversionRepository.findAll());
+
+        try {
+            model.addAttribute("producto", productoService.obtenerPorId(id));
+            cargarListas(model);
+        } catch (Exception e) {
+            model.addAttribute("tipo", "error");
+            model.addAttribute("mensaje", "Producto no encontrado.");
+            model.addAttribute("productos", productoService.listarProductos());
+            return "admin/producto/productosLista";
+        }
+
         return "admin/producto/productosFormulario";
     }
 
     // Actualizar producto existente
     @PostMapping("/actualizar")
-    public String actualizar(@ModelAttribute Producto producto) {
-        productoService.guardar(producto); // usar el mismo método guardar(), detecta si tiene ID
-        return "redirect:/admin/productos";
+    public String actualizar(@ModelAttribute Producto producto, Model model) {
+
+        try {
+            productoService.guardar(producto);
+            model.addAttribute("tipo", "success");
+            model.addAttribute("mensaje", "Producto actualizado correctamente.");
+        } catch (Exception e) {
+            model.addAttribute("tipo", "error");
+            model.addAttribute("mensaje", "Error al actualizar producto: " + e.getMessage());
+
+            cargarListas(model);
+            model.addAttribute("producto", producto);
+            return "admin/producto/productosFormulario";
+        }
+
+        model.addAttribute("productos", productoService.listarProductos());
+        return "admin/producto/productosLista";
     }
 
     // Eliminar producto
     @GetMapping("/eliminar/{id}")
-    public String eliminar(@PathVariable Long id) {
-        productoService.eliminar(id);
-        return "redirect:/admin/productos";
+    public String eliminar(@PathVariable Long id, Model model) {
+
+        try {
+            productoService.eliminar(id);
+            model.addAttribute("tipo", "success");
+            model.addAttribute("mensaje", "Producto eliminado correctamente.");
+        } catch (Exception e) {
+            model.addAttribute("tipo", "error");
+            model.addAttribute("mensaje", "No se pudo eliminar el producto: " + e.getMessage());
+        }
+
+        model.addAttribute("productos", productoService.listarProductos());
+        return "admin/producto/productosLista";
+    }
+
+    private void cargarListas(Model model) {
+        model.addAttribute("categorias", categoriaProductoRepository.findAll());
+        model.addAttribute("unidades", unidadConversionRepository.findAll());
     }
 }

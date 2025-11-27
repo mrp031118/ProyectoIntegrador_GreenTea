@@ -2,11 +2,13 @@ package com.example.demo.controller.proveedor;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.demo.entity.proveedores.Proveedor;
 import com.example.demo.repository.categorias.CategoriaProveedorRepository;
@@ -22,14 +24,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 @Controller
 @RequestMapping("/admin/proveedores")
 public class ProveedorController {
-    private final ProveedorRepository proveedorRepository;
-    private final CategoriaProveedorRepository categoriaProveedorRepository;
 
-    public ProveedorController(ProveedorRepository proveedorRepository,
-            CategoriaProveedorRepository categoriaProveedorRepository) {
-        this.proveedorRepository = proveedorRepository;
-        this.categoriaProveedorRepository = categoriaProveedorRepository;
-    }
+    @Autowired
+    private ProveedorRepository proveedorRepository;
+
+    @Autowired
+    private CategoriaProveedorRepository categoriaProveedorRepository;
 
     // Listar proveedores
     @GetMapping
@@ -62,14 +62,20 @@ public class ProveedorController {
     // Guardar nuevo proveedor
     @PostMapping("/agregar")
     public String guardarProveedor(@Valid @ModelAttribute("proveedor") Proveedor proveedor,
-                                        BindingResult result,
-                                        Model model) {
+            BindingResult result,
+            Model model,
+            RedirectAttributes redirectAttributes) {
+
         if (result.hasErrors()) {
-        model.addAttribute("categorias", categoriaProveedorRepository.findAll());
-        return "admin/proveedorForm"; // vuelve al formulario si hay error
-    }
-        
+            model.addAttribute("categorias", categoriaProveedorRepository.findAll());
+            return "admin/proveedores/proveedorForm";
+        }
+
         proveedorRepository.save(proveedor);
+
+        redirectAttributes.addFlashAttribute("mensaje", "Proveedor registrado exitosamente.");
+        redirectAttributes.addFlashAttribute("tipo", "success");
+
         return "redirect:/admin/proveedores";
     }
 
@@ -77,7 +83,7 @@ public class ProveedorController {
     @GetMapping("/editar/{id}")
     public String mostrarFormularioEditar(@PathVariable Long id, Model model) {
         Proveedor proveedor = proveedorRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Provvedor no encontrado"));
+                .orElseThrow(() -> new IllegalArgumentException("Proveedor no encontrado"));
         model.addAttribute("proveedor", proveedor);
         model.addAttribute("categorias", categoriaProveedorRepository.findAll());
         return "admin/proveedores/proveedorForm";
@@ -85,15 +91,27 @@ public class ProveedorController {
 
     // Guardar canbios de proveedor editado
     @PostMapping("/editar")
-    public String guardarProveedorEditado(@ModelAttribute Proveedor proveedor) {
+    public String guardarProveedorEditado(@ModelAttribute Proveedor proveedor,
+            RedirectAttributes redirectAttributes) {
+
         proveedorRepository.save(proveedor);
+
+        redirectAttributes.addFlashAttribute("mensaje", "Proveedor actualizado correctamente.");
+        redirectAttributes.addFlashAttribute("tipo", "success");
+
         return "redirect:/admin/proveedores";
     }
 
     // Eliminar proveedor
     @PostMapping("/eliminar/{id}")
-    public String EliminarProveedor(@PathVariable Long id) {
+    public String EliminarProveedor(@PathVariable Long id,
+            RedirectAttributes redirectAttributes) {
+
         proveedorRepository.deleteById(id);
+
+        redirectAttributes.addFlashAttribute("mensaje", "Proveedor eliminado correctamente.");
+        redirectAttributes.addFlashAttribute("tipo", "success");
+
         return "redirect:/admin/proveedores";
     }
 
