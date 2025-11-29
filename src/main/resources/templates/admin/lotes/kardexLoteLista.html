@@ -184,48 +184,6 @@
         </div>
     </div>
 
-    <!-- Modal de mensajes (éxito / error) -->
-    <div class="modal fade" id="messageModal" tabindex="-1">
-        <div class="modal-dialog modal-sm modal-dialog-centered">
-            <div class="modal-content rounded-4 shadow-xl border-0">
-
-                <div class="modal-header rounded-top-4 text-white p-3"
-                    th:classappend="${isSuccess != null ? (isSuccess ? 'bg-success' : 'bg-danger') : 'bg-info'}">
-                    <h5 class="modal-title fw-bold fs-5">
-                        <i class="bi me-2"
-                            th:classappend="${isSuccess != null ? (isSuccess ? 'bi-check-circle-fill' : 'bi-x-circle-fill') : 'bi-info-circle-fill'}"></i>
-                        <span
-                            th:text="${isSuccess != null ? (isSuccess ? 'Operación Exitosa' : 'Ha Ocurrido un Error') : 'Información'}"></span>
-                    </h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                        aria-label="Cerrar"></button>
-                </div>
-
-                <div class="modal-body p-4 text-center">
-
-                    <div class="mb-3">
-                        <i class="bi display-4"
-                            th:classappend="${isSuccess != null ? (isSuccess ? 'bi-check-lg text-success' : 'bi-x-lg text-danger') : 'bi-info-lg text-info'}"></i>
-                    </div>
-
-                    <p class="fs-6 fw-normal mb-4" th:text="${passwordModalMessage}"></p>
-
-                    <div class="d-flex justify-content-center">
-                        <button type="button" class="btn btn-secondary px-4 py-2 fw-semibold"
-                            data-bs-dismiss="modal">Entendido</button>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </div>
-
-    <!-- Script para abrir automáticamente el modal de mensajes -->
-    <script th:if="${showPasswordModal != null}" th:inline="javascript">
-        var msgModal = new bootstrap.Modal(document.getElementById('messageModal'));
-        msgModal.show();
-    </script>
-
     <!-- Script para togglear el ojo -->
     <script>
         function togglePassword(inputId, icon) {

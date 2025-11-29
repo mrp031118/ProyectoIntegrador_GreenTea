@@ -143,49 +143,6 @@
 
     </div>
 
-    <!-- Modal genérico para mensajes de éxito/error -->
-    <!-- Modal genérico para mensajes -->
-    <div class="modal fade" id="messageModal" tabindex="-1" th:if="${showErrorModal != null or successMessage != null}"
-        th:attr="data-bs-show=${showErrorModal != null or successMessage != null ? 'true' : 'false'}">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content rounded-4 shadow-lg border-0">
-
-                <!-- Header -->
-                <div class="modal-header text-white rounded-top-4"
-                    th:classappend="${showErrorModal != null ? 'bg-danger' : 'bg-success'}">
-                    <h5 class="modal-title fw-bold" th:text="${showErrorModal != null ? 'Error' : 'Éxito'}"></h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
-
-                <!-- Body -->
-                <div class="modal-body">
-                    <div class="d-flex align-items-start gap-3">
-
-                        <!-- Icono -->
-                        <div>
-                            <i class="bi"
-                                th:classappend="${showErrorModal != null ? 'bi-x-circle text-danger' : 'bi-check-circle text-success'}"
-                                style="font-size: 40px;"></i>
-                        </div>
-
-                        <p class="fs-5 mb-0" th:text="${showErrorModal != null ? errorMessage : successMessage}">
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Footer -->
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">
-                        Cerrar
-                    </button>
-                </div>
-
-            </div>
-        </div>
-    </div>
-
-
-    <!-- Modal para mostrar contraseña generada -->
     <!-- Modal contraseña generada -->
     <div class="modal fade" id="passwordModal" tabindex="-1" th:if="${showPasswordModal != null}"
         th:attr="data-bs-show=${showPasswordModal != null ? 'true' : 'false'}">
@@ -234,11 +191,8 @@
         </div>
     </div>
 
-    <div th:replace="~{mensajeModal :: modal-mensaje}"></div>
-
-
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <div th:replace="~{mensajeModal :: modal-mensaje}"></div>
 
     <!--Menu Deslizable-->
     <div th:replace="~{fragmentsAdmi :: menuLateral}"></div>
@@ -314,48 +268,6 @@
         </div>
     </div>
 
-    <!-- Modal de mensajes (éxito / error) -->
-    <div class="modal fade" id="messageModal" tabindex="-1">
-        <div class="modal-dialog modal-sm modal-dialog-centered">
-            <div class="modal-content rounded-4 shadow-xl border-0">
-
-                <div class="modal-header rounded-top-4 text-white p-3"
-                    th:classappend="${isSuccess != null ? (isSuccess ? 'bg-success' : 'bg-danger') : 'bg-info'}">
-                    <h5 class="modal-title fw-bold fs-5">
-                        <i class="bi me-2"
-                            th:classappend="${isSuccess != null ? (isSuccess ? 'bi-check-circle-fill' : 'bi-x-circle-fill') : 'bi-info-circle-fill'}"></i>
-                        <span
-                            th:text="${isSuccess != null ? (isSuccess ? 'Operación Exitosa' : 'Ha Ocurrido un Error') : 'Información'}"></span>
-                    </h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                        aria-label="Cerrar"></button>
-                </div>
-
-                <div class="modal-body p-4 text-center">
-
-                    <div class="mb-3">
-                        <i class="bi display-4"
-                            th:classappend="${isSuccess != null ? (isSuccess ? 'bi-check-lg text-success' : 'bi-x-lg text-danger') : 'bi-info-lg text-info'}"></i>
-                    </div>
-
-                    <p class="fs-6 fw-normal mb-4" th:text="${passwordModalMessage}"></p>
-
-                    <div class="d-flex justify-content-center">
-                        <button type="button" class="btn btn-secondary px-4 py-2 fw-semibold"
-                            data-bs-dismiss="modal">Entendido</button>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </div>
-
-    <!-- Script para abrir automáticamente el modal de mensajes -->
-    <script th:if="${showPasswordModal != null}" th:inline="javascript">
-        var msgModal = new bootstrap.Modal(document.getElementById('messageModal'));
-        msgModal.show();
-    </script>
-
     <!-- Script para togglear el ojo -->
     <script>
         function togglePassword(inputId, icon) {
@@ -372,6 +284,11 @@
         }
     </script>
 
+    <!-- Mostrar modal de contraseña generada -->
+    <script th:if="${showPasswordModal != null}" th:inline="javascript">
+        var passModal = new bootstrap.Modal(document.getElementById('passwordModal'));
+        passModal.show();
+    </script>
 
 
 </body>

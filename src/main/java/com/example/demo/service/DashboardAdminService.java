@@ -44,6 +44,7 @@ public class DashboardAdminService {
         return repo.getProximosVencimientos();
     }
 
+    // PARTE PARA REPORTES
     public List<Map<String, Object>> getReporteStockCritico() {
         return repo.getReporteStockCritico();
     }
@@ -59,6 +60,10 @@ public class DashboardAdminService {
             int cantidad = r[3] != null ? ((Number) r[3]).intValue() : 0;
             double margenUnitario = precioVenta - costoUnitario;
             double margenTotal = margenUnitario * cantidad;
+            double rentabilidadPorcentaje = 0;
+            if (precioVenta > 0) {
+                rentabilidadPorcentaje = (margenUnitario / precioVenta) * 100;
+            }
 
             return Map.of(
                     "producto", r[0],
@@ -66,7 +71,8 @@ public class DashboardAdminService {
                     "costo_unitario", costoUnitario,
                     "margen_unitario", margenUnitario,
                     "margen_total", margenTotal,
-                    "cantidad_vendida", cantidad);
+                    "cantidad_vendida", cantidad,
+                    "rentabilidad_porcentaje", rentabilidadPorcentaje);
         }).collect(Collectors.toList());
     }
 
@@ -75,4 +81,5 @@ public class DashboardAdminService {
                 "producto", r[0],
                 "cantidad_total", r[1] != null ? ((Number) r[1]).doubleValue() : 0)).collect(Collectors.toList());
     }
+
 }

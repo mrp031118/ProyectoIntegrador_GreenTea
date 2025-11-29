@@ -81,6 +81,89 @@
     <div th:replace="~{fragmentsAdmi :: menuLateral}"></div>
     <div th:replace="~{mensajeModal :: modal-mensaje}"></div>
 
+    <div class="modal fade" id="passwordChangeModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content rounded-4 shadow-xl border-0">
+
+                <div class="modal-header rounded-top-4 bg-green-dark text-white p-4">
+                    <h5 class="modal-title fw-bold fs-5">
+                        <i class="bi bi-key me-3"></i>
+                        Actualizar Contraseña
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Cerrar"></button>
+                </div>
+
+                <div class="modal-body p-4">
+                    <form th:action="@{/user/cambiarPassword}" method="post">
+
+                        <div class="mb-3">
+                            <label for="contrasenaActual" class="form-label text-muted fw-semibold">Contraseña
+                                Actual:</label>
+                            <div class="input-group">
+                                <input type="password" id="contrasenaActual" name="contrasenaActual"
+                                    class="form-control" required placeholder="Ingresa tu contraseña actual">
+                                <button type="button" class="btn btn-outline-secondary"
+                                    onclick="togglePassword('contrasenaActual', this)">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="nuevaContrasena" class="form-label text-muted fw-semibold">Nueva
+                                Contraseña:</label>
+                            <div class="input-group">
+                                <input type="password" id="nuevaContrasena" name="nuevaContrasena" class="form-control"
+                                    required minlength="8" placeholder="Mínimo 8 caracteres">
+                                <button type="button" class="btn btn-outline-secondary"
+                                    onclick="togglePassword('nuevaContrasena', this)">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="confirmarContrasena" class="form-label text-muted fw-semibold">Confirmar Nueva
+                                Contraseña:</label>
+                            <div class="input-group">
+                                <input type="password" id="confirmarContrasena" name="confirmarContrasena"
+                                    class="form-control" required minlength="8"
+                                    placeholder="Repite la nueva contraseña">
+                                <button type="button" class="btn btn-outline-secondary"
+                                    onclick="togglePassword('confirmarContrasena', this)">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+
+
+                        <button type="submit" class="btn btn-green-dark w-100 fw-bold mt-3 py-2">
+                            <i class="bi bi-shield-lock me-2"></i>
+                            Cambiar Contraseña
+                        </button>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Script para togglear el ojo -->
+    <script>
+        function togglePassword(inputId, icon) {
+            const input = document.getElementById(inputId);
+            if (input.type === "password") {
+                input.type = "text";
+                icon.classList.remove("fa-eye");
+                icon.classList.add("fa-eye-slash");
+            } else {
+                input.type = "password";
+                icon.classList.remove("fa-eye-slash");
+                icon.classList.add("fa-eye");
+            }
+        }
+    </script>
 </body>
 
 </html>

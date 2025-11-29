@@ -71,9 +71,7 @@ public interface DashboardAdminRepository extends JpaRepository<Venta, Long> {
             """, nativeQuery = true)
     List<Map<String, Object>> getProximosVencimientos();
 
-    // ... (código existente)
-
-    // ... (código existente)
+    // DESDE AQUI ES PARA REPORTES
 
     // 7. Reporte de Inventario y Stock Crítico
     @Query(value = """
@@ -97,27 +95,50 @@ public interface DashboardAdminRepository extends JpaRepository<Venta, Long> {
     List<Map<String, Object>> getReporteKardex(@Param("fechaInicio") String fechaInicio,
             @Param("fechaFin") String fechaFin);
 
-    // Rentabilidad por producto
+    // Rentabilidad por producto (usando tipo_control y movimientos)
     @Query(value = """
-                SELECT
-                    p.nombre AS producto,
-                    p.precio AS precio_venta,
-                    (
-                        SELECT SUM(drp.cantidad * m.costo_unitario)
-                        FROM recetas_producto rp
-                        JOIN detalle_receta_producto drp ON drp.receta_producto_id = rp.id
-                        JOIN movimientos m ON m.insumo_id = drp.insumo_id AND m.tipo_movimiento_id IN (1,3)
-                        WHERE rp.producto_id = p.id
-                        ORDER BY m.fecha ASC LIMIT 1
-                    ) AS costo_unitario,
-                    COALESCE(SUM(dv.cantidad),0) AS cantidad_vendida
-                FROM productos p
-                LEFT JOIN detalle_venta dv ON dv.producto_id = p.id
-                LEFT JOIN ventas v ON v.id = dv.venta_id
-                WHERE (:fechaInicio IS NULL OR v.fecha >= :fechaInicio)
-                  AND (:fechaFin IS NULL OR v.fecha <= :fechaFin)
-                GROUP BY p.id
-                ORDER BY p.nombre ASC
+            SELECT
+                p.nombre AS producto,
+                p.precio AS precio_venta,
+
+                -- Costo unitario calculado según el tipo de control
+                CASE
+                    WHEN cp.tipo_control = 'ELABORADO' THEN (
+                        -- Para elaborados tomamos el costo_unitario promedio de producción
+                        SELECT COALESCE(AVG(mp.costo_unitario), 0)
+                        FROM movimientos_productos mp
+                        WHERE mp.producto_id = p.id
+                          AND mp.tipo_movimiento_id = 1  -- ENTRADA por producción
+                    )
+                    WHEN cp.tipo_control = 'INSTANTANEO' THEN (
+                        -- Para instantáneos usamos los movimientos de insumos PEPS de las ventas
+                        SELECT
+                            COALESCE(SUM(m.total), 0) / NULLIF(SUM(dv.cantidad), 0)
+                        FROM detalle_venta dv
+                        JOIN ventas v ON v.id = dv.venta_id
+                        JOIN movimientos m
+                            ON m.tipo_movimiento_id = 2
+                           AND m.observaciones LIKE CONCAT('Venta producto instantáneo: ', p.nombre, '%')
+                        WHERE dv.producto_id = p.id
+                          AND (:fechaInicio IS NULL OR v.fecha >= :fechaInicio)
+                          AND (:fechaFin IS NULL OR v.fecha <= :fechaFin)
+                    )
+                    ELSE 0
+                END AS costo_unitario,
+
+                -- Cantidad vendida en el rango
+                COALESCE((
+                    SELECT SUM(dv.cantidad)
+                    FROM detalle_venta dv
+                    JOIN ventas v2 ON v2.id = dv.venta_id
+                    WHERE dv.producto_id = p.id
+                      AND (:fechaInicio IS NULL OR v2.fecha >= :fechaInicio)
+                      AND (:fechaFin IS NULL OR v2.fecha <= :fechaFin)
+                ), 0) AS cantidad_vendida
+
+            FROM productos p
+            LEFT JOIN categorias_productos cp ON cp.id = p.categoria_id
+            ORDER BY p.nombre ASC
             """, nativeQuery = true)
     List<Object[]> getRentabilidadProductos(@Param("fechaInicio") String fechaInicio,
             @Param("fechaFin") String fechaFin);

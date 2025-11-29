@@ -139,16 +139,6 @@
         <!-- ... (código del modal, sin cambios) -->
     </div>
 
-    <div class="modal fade" id="messageModal" tabindex="-1">
-        <!-- ... (código del modal, sin cambios) -->
-    </div>
-
-    <!-- Scripts -->
-    <script th:if="${showPasswordModal != null}" th:inline="javascript">
-        var msgModal = new bootstrap.Modal(document.getElementById('messageModal'));
-        msgModal.show();
-    </script>
-
     <script>
         function togglePassword(inputId, icon) {
             const input = document.getElementById(inputId);
