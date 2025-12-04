@@ -87,14 +87,14 @@
                 </div>
 
                 <!-- Cuarta fila: Fraccionable -->
-                <div class="col-md-6">
+                <div class="col-md-6" id="campoFraccionable">
                     <label class="form-label fw-semibold">Fraccionable</label>
-                    <select th:field="*{fraccionable}" class="form-select form-select-sm shadow-sm" required>
-                        <option value="" disabled selected>Selecciona opción</option>
+                    <select th:field="*{fraccionable}" class="form-select form-select-sm shadow-sm">
                         <option value="true">Sí</option>
                         <option value="false">No</option>
                     </select>
                 </div>
+
 
 
                 <!-- Botones centrados -->
@@ -123,33 +123,46 @@
             const categoriaSelect = document.getElementById("categoriaSelect");
             const stockMinimo = document.getElementById("campoStockMinimo");
             const stockActual = document.getElementById("campoStockActual");
+            const campoFraccionable = document.getElementById("campoFraccionable");
+            const fraccionableSelect = document.querySelector("select[name='fraccionable']");
 
             function actualizarVisibilidadCampos() {
                 const selectedOption = categoriaSelect.options[categoriaSelect.selectedIndex];
+                if (!selectedOption) return;
+
                 const tipoControl = selectedOption.getAttribute("data-tipo-control");
 
                 if (tipoControl === "INSTANTANEO") {
-                    // Oculta ambos
+                    // Ocultar fraccionable y stock
+                    campoFraccionable.style.display = "none";
+                    fraccionableSelect.value = "false";
+
                     stockMinimo.style.display = "none";
                     stockActual.style.display = "none";
+
                 } else if (tipoControl === "ELABORADO") {
-                    // Muestra solo stock mínimo
+                    // Mostrar fraccionable y stock mínimo
+                    campoFraccionable.style.display = "block";
+
                     stockMinimo.style.display = "block";
                     stockActual.style.display = "none";
+
                 } else {
-                    // Muestra ambos por defecto
+                    // Categoría normal
+                    campoFraccionable.style.display = "block";
                     stockMinimo.style.display = "block";
                     stockActual.style.display = "block";
                 }
             }
 
-            // Evento de cambio
-            categoriaSelect.addEventListener("change", actualizarVisibilidadCampos);
-
-            // Ejecutar una vez al cargar por si ya hay una categoría seleccionada (modo edición)
+            // Ejecutar al iniciar (modo edición)
             actualizarVisibilidadCampos();
+
+            // Cambios de categoría
+            categoriaSelect.addEventListener("change", actualizarVisibilidadCampos);
         });
     </script>
+
 
     <div class="modal fade" id="passwordChangeModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">

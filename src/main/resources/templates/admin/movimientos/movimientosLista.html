@@ -72,6 +72,7 @@
                             <th rowspan="2" class="py-2 small">Fecha</th>
                             <th rowspan="2" class="py-2 small">Insumo</th>
                             <th rowspan="2" class="py-2 small">Lote</th>
+                            <th rowspan="2" class="py-2 small">Observa.</th>
                             <th colspan="2" class="py-2 small">ENTRADAS</th>
                             <th colspan="2" class="py-2 small">SALIDAS</th>
                             <th colspan="2" class="py-2 small">SALDO (PEPS)</th>
@@ -101,6 +102,9 @@
 
                             <!-- Lote -->
                             <td th:text="${mov.lote.loteId}"></td>
+
+                            <!-- Observaciones -->
+                            <td class="text-wrap" th:text="${mov.observaciones}"></td>
 
                             <!-- ENTRADAS -->
                             <td

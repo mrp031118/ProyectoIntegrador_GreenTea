@@ -1,5 +1,6 @@
 package com.example.demo.service.lotes;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -50,6 +51,13 @@ public class LoteService {
         if (lote == null) {
             throw new IllegalArgumentException("El lote no puede ser nulo");
         }
+        // VALIDAR FECHA DE VENCIMIENTO
+        if (lote.getFechaVencimiento() != null &&
+                lote.getFechaVencimiento().isBefore(LocalDate.now())) {
+
+            throw new IllegalArgumentException("La fecha de vencimiento no puede ser anterior a hoy.");
+        }
+
         // guardar nuevo lote
         Lote nuevoLote = loteRepository.save(lote);
 
@@ -107,10 +115,16 @@ public class LoteService {
         Lote lote = loteRepository.findById(id)
                 .orElseThrow(() -> new Exception("El lote con ID " + id + " no existe"));
 
-        if (lote.getMovimientos() != null && !lote.getMovimientos().isEmpty()) {
-            throw new Exception("No se puede eliminar: el lote tiene movimientos registrados.");
+        // --- FILTRAR SOLO MOVIMIENTOS NO PERMITIDOS PARA ELIMINAR ---
+        boolean tieneMovimientosProhibidos = lote.getMovimientos().stream()
+                .anyMatch(mov -> mov.getTipoMovimiento().getId() == 2
+                        || mov.getTipoMovimiento().getId() == 4);
+
+        if (tieneMovimientosProhibidos) {
+            throw new Exception("No se puede eliminar: el lote tiene movimientos de SALIDA o MERMAS.");
         }
 
+        // Si solo tiene ENTRADAS → Sí permite eliminar
         loteRepository.delete(lote);
     }
 

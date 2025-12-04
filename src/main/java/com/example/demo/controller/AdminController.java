@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,6 +21,7 @@ import com.example.demo.entity.usuarios.User;
 import com.example.demo.repository.usuarios.RoleRepository;
 import com.example.demo.repository.usuarios.UserRepository;
 import com.example.demo.service.DashboardAdminService;
+import com.example.demo.service.usuarios.CustomUserDetails;
 
 import jakarta.validation.Valid;
 
@@ -49,7 +52,7 @@ public class AdminController {
         model.addAttribute("stockCritico", dashboardService.getStockCritico());
 
         model.addAttribute("topProductos", dashboardService.getTopProductos());
-        model.addAttribute("ventasSemana", dashboardService.getVentasUltimaSemana());  
+        model.addAttribute("ventasSemana", dashboardService.getVentasUltimaSemana());
         model.addAttribute("vencimientos", dashboardService.getProximosVencimientos());
 
         return "admin/dashboardAdmi";
@@ -196,7 +199,20 @@ public class AdminController {
     @PostMapping("/usuarios/toggleEstado/{id}")
     public String toggleEstado(@PathVariable Long id, RedirectAttributes redirectAttributes) {
 
-        User user = userRepository.findById(id).orElseThrow();
+        // Obtener usuario autenticado
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        CustomUserDetails loggedUser = (CustomUserDetails) auth.getPrincipal();
+        Long loggedUserId = loggedUser.getUser().getId();
+
+        // Evitar desactivar usuario logueado
+        if (id.equals(loggedUserId)) {
+            redirectAttributes.addFlashAttribute("mensaje", "No puedes desactivar tu propio usuario.");
+            redirectAttributes.addFlashAttribute("tipo", "error");
+            return "redirect:/admin/usuarios";
+        }
+
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
         user.setEnabled(!user.isEnabled());
         userRepository.save(user);

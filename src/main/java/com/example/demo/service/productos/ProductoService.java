@@ -26,6 +26,12 @@ public class ProductoService {
     }
 
     public Producto guardar(Producto producto) {
+        // Si categoría NO es ELABORADO → forzamos fraccionable = false
+        if (producto.getCategoria() != null
+                && !producto.getCategoria().getTipoControl().equalsIgnoreCase("ELABORADO")) {
+
+            producto.setFraccionable(false); // 0 en BD
+        }
         return productoRepository.save(producto);
     }
 

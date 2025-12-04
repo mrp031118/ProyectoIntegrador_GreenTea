@@ -63,9 +63,17 @@ public interface DashboardAdminRepository extends JpaRepository<Venta, Long> {
 
     // 6. Próximos vencimientos
     @Query(value = """
-                SELECT l.lote_id, i.nombre AS insumo, l.fecha_vencimiento
+                SELECT
+                    l.lote_id,
+                    i.nombre AS insumo,
+                    l.fecha_vencimiento,
+                    k.cantidad_disponible
                 FROM lotes l
                 JOIN insumos i ON l.insumo_id = i.insumo_id
+                JOIN kardex_lote_peps k ON k.lote_id = l.lote_id
+                WHERE
+                    l.fecha_vencimiento >= CURDATE()
+                    OR (l.fecha_vencimiento < CURDATE() AND k.cantidad_disponible > 0)
                 ORDER BY l.fecha_vencimiento ASC
                 LIMIT 5
             """, nativeQuery = true)

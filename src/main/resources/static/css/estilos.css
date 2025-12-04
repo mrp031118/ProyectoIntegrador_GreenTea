@@ -831,6 +831,7 @@ button[type="submit"]:hover {
     font-weight: 700;
     color: #2d4d1e !important;
 }
+
 .table-responsive {
     background: transparent !important;
     padding-top: 0 !important;
@@ -839,6 +840,7 @@ button[type="submit"]:hover {
 .table-responsive table {
     margin-top: 0 !important;
 }
+
 .detalle-producto span {
     font-weight: 600;
     color: #2d4d1e;
@@ -855,7 +857,7 @@ button[type="submit"]:hover {
 }
 
 .detalle-producto {
-    box-shadow: inset 0 0 8px rgba(0,0,0,0.04);
+    box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.04);
 }
 
 
@@ -889,6 +891,7 @@ button[type="submit"]:hover {
 .tabla-rentabilidad {
     background: white !important;
 }
+
 /* Centrar columnas numéricas de rentabilidad */
 .tabla-rentabilidad td.text-center,
 .tabla-rentabilidad th.text-center {
@@ -906,4 +909,11 @@ button[type="submit"]:hover {
 .btn-limpiar:hover {
     background: #6c757d;
     color: #fff;
+}
+
+.text-wrap {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    min-height: 20px;
 }

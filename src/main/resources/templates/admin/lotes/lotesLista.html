@@ -130,7 +130,7 @@
                                         <i class="fa-solid fa-pen"></i>
                                     </button>
                                 </form>
-                                <form th:action="@{/admin/lotes/eliminar/{id}(id=${lote.loteId})}" method="post"
+                                <form th:action="@{/admin/lotes/eliminar/{id}(id=${lote.loteId})}" method="get"
                                     class="d-inline">
                                     <button type="submit" class="btn btn-sm btn-accion-desactivar"
                                         onclick="return confirm('¿Seguro que deseas eliminar este lote?');"
@@ -138,6 +138,7 @@
                                         <i class="fa-solid fa-trash"></i>
                                     </button>
                                 </form>
+
                             </td>
                         </tr>
 

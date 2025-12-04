@@ -28,21 +28,21 @@
                 <div class="indicator-card">
                     <div>
                         <h4>Ventas Hoy</h4>
-                        <span>S/. <span th:text="${ventasHoy}">0.00</span></span>
+                        <span>S/. <span th:text="${#numbers.formatDecimal(ventasHoy, 2, 2)}"></span></span>
                     </div>
                     <div class="icon-circle"><i class="fas fa-sack-dollar"></i></div>
                 </div>
                 <div class="indicator-card">
                     <div>
                         <h4>Costo Hoy</h4>
-                        <span>S/. <span th:text="${costoHoy}">0.00</span></span>
+                        <span>S/. <span th:text="${#numbers.formatDecimal(costoHoy, 2, 2)}"></span></span>
                     </div>
                     <div class="icon-circle"><i class="fas fa-hand-holding-dollar"></i></div>
                 </div>
                 <div class="indicator-card">
                     <div>
                         <h4>Margen Bruto</h4>
-                        <span>S/. <span th:text="${margenHoy}">0.00</span></span>
+                        <span>S/. <span th:text="${#numbers.formatDecimal(margenHoy, 2, 2)}"></span></span>
                     </div>
                     <div class="icon-circle"><i class="fas fa-chart-line"></i></div>
                 </div>

@@ -70,42 +70,29 @@ public class LoteController {
     @PostMapping("/guardar")
     public String guardar(@ModelAttribute("lote") Lote lote, RedirectAttributes ra) {
 
-        boolean esEdicion = lote.getLoteId() != null; // o el nombre exacto de tu ID
+        boolean esEdicion = lote.getLoteId() != null;
 
-        // --- Validaciones ---
-        if (lote.getInsumo() == null || lote.getInsumo().getInsumoId() == null) {
-            ra.addFlashAttribute("mensaje", "Selecciona un insumo válido.");
-            ra.addFlashAttribute("tipo", "error");
-            return "redirect:/admin/lotes/nuevo";
-        }
-
-        Insumo ins = insumoService.obtenerInsumosPorId(lote.getInsumo().getInsumoId());
-        lote.setInsumo(ins);
-
-        if (lote.getProveedor() == null || lote.getProveedor().getId() == null) {
-            ra.addFlashAttribute("mensaje", "Selecciona un proveedor válido.");
-            ra.addFlashAttribute("tipo", "error");
-            return "redirect:/admin/lotes/nuevo";
-        }
-
-        Proveedor prov = proveedorService.obtenerPorId(lote.getProveedor().getId());
-        lote.setProveedor(prov);
-
-        // --- Guardar ---
         try {
             loteService.guardarLote(lote);
 
-            if (esEdicion) {
-                ra.addFlashAttribute("mensaje", "Lote actualizado correctamente.");
-            } else {
-                ra.addFlashAttribute("mensaje", "Lote registrado exitosamente.");
-            }
-
+            ra.addFlashAttribute("mensaje",
+                    esEdicion ? "Lote actualizado correctamente." : "Lote registrado exitosamente.");
             ra.addFlashAttribute("tipo", "success");
 
+        } catch (IllegalArgumentException e) {
+            // ❗ Error previsto → validar fecha, proveedor, insumo
+            ra.addFlashAttribute("mensaje", e.getMessage());
+            ra.addFlashAttribute("tipo", "error");
+
+            return esEdicion
+                    ? "redirect:/admin/lotes/editar/" + lote.getLoteId()
+                    : "redirect:/admin/lotes/nuevo";
         } catch (Exception e) {
+            // ❗ Error inesperado
             ra.addFlashAttribute("mensaje", "Error al guardar el lote: " + e.getMessage());
             ra.addFlashAttribute("tipo", "error");
+
+            return "redirect:/admin/lotes";
         }
 
         return "redirect:/admin/lotes";

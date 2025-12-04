@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,11 +18,13 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.demo.entity.lotes.Lote;
 import com.example.demo.entity.movimientos.Movimiento;
+import com.example.demo.entity.usuarios.User;
 import com.example.demo.service.insumos.InsumoService;
 import com.example.demo.service.lotes.KardexLoteService;
 import com.example.demo.service.lotes.LoteService;
 import com.example.demo.service.movimientos.MovimientoService;
 import com.example.demo.service.movimientos.TipoMovimientoService;
+import com.example.demo.service.usuarios.CustomUserDetails;
 
 @Controller
 @RequestMapping("/admin/movimientos/insumo")
@@ -82,30 +86,44 @@ public class MovimientoController {
             RedirectAttributes redirectAttributes) {
 
         try {
+
+            // 1. VALIDAR CONTRA STOCK TOTAL PEPS
+            double stockTotal = kardexLoteService.obtenerKardexLotes().stream()
+                    .filter(k -> k.getInsumoId().equals(insumoId))
+                    .mapToDouble(k -> k.getCantidadDisponible().doubleValue())
+                    .sum();
+
+            if (cantidad > stockTotal) {
+                redirectAttributes.addFlashAttribute("mensaje",
+                        "La merma ingresada (" + cantidad +
+                                ") excede el stock total disponible del insumo (" + stockTotal + ").");
+                redirectAttributes.addFlashAttribute("tipo", "error");
+                return "redirect:/admin/movimientos/insumo/merma";
+            }
+
+            // 2. CONTINUAR REGISTRO NORMAL
             Movimiento mov = new Movimiento();
 
-            // Asociar insumo
-            mov.setInsumo(insumoService.obtenerInsumosPorId(insumoId));
+            User usuarioActual = obtenerUsuarioActual();
+            if (usuarioActual == null) {
+                redirectAttributes.addFlashAttribute("mensaje", "No se pudo identificar al usuario autenticado.");
+                redirectAttributes.addFlashAttribute("tipo", "error");
+                return "redirect:/admin/movimientos/insumo";
+            }
 
-            // Tipo MERMA
+            mov.setUsuario(usuarioActual);
+            mov.setInsumo(insumoService.obtenerInsumosPorId(insumoId));
             mov.setTipoMovimiento(tipoMovimientoService.obtenerPorId(4));
 
-            // Asociar lote
             Lote lote = loteService.obtenerPorId(loteId);
             mov.setLote(lote);
 
-            // Cantidad y costos
             mov.setCantidad(cantidad);
             mov.setCostoUnitario(lote.getCostoUnitario());
             mov.setTotal(cantidad * lote.getCostoUnitario());
-
-            // Observaciones
             mov.setObservaciones(observaciones);
-
-            // Fecha actual
             mov.setFecha(LocalDateTime.now());
 
-            // Guardar
             movimientoService.registrarMovimiento(mov);
 
             redirectAttributes.addFlashAttribute("mensaje", "Merma registrada correctamente.");
@@ -117,5 +135,16 @@ public class MovimientoController {
         }
 
         return "redirect:/admin/movimientos/insumo";
+    }
+
+    // OBTENER USUARIO AUTENTICADO
+    private User obtenerUsuarioActual() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        if (auth == null || !auth.isAuthenticated() || auth.getPrincipal() instanceof String) {
+            return null;
+        }
+
+        return ((CustomUserDetails) auth.getPrincipal()).getUser();
     }
 }
