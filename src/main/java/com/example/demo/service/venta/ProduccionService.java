@@ -165,5 +165,45 @@ public class ProduccionService {
         }
 
         System.out.println("✔️ registrarMermaProducto finalizado para producto=" + producto.getNombre());
+
     }
+
+    public boolean tieneReceta(Producto producto) {
+        return recetaProductoRepository.existsByProducto(producto);
+    }
+
+    public double obtenerStockActualProducto(Producto producto) {
+        return produccionRepository.sumSaldoActualByProductoId(producto.getId());
+    }
+
+    public double obtenerStockDisponibleInstantaneo(Producto producto) {
+
+        RecetaProducto receta = recetaProductoRepository
+                .findByProducto_Id(producto.getId())
+                .orElse(null);
+
+        if (receta == null)
+            return 0;
+
+        double minimo = Double.MAX_VALUE;
+
+        for (DetalleRecetaProducto det : receta.getDetalles()) {
+
+            double stockInsumo = movimientoInsumoService.obtenerStockActualInsumo(
+                    det.getInsumo().getInsumoId());
+
+            if (stockInsumo <= 0)
+                return 0;
+
+            // Cantidad requerida por unidad (BigDecimal → double)
+            double cantidadNecesaria = det.getCantidad().doubleValue();
+
+            double unidades = stockInsumo / cantidadNecesaria;
+
+            minimo = Math.min(minimo, unidades);
+        }
+
+        return minimo == Double.MAX_VALUE ? 0 : minimo;
+    }
+
 }

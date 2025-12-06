@@ -17,6 +17,7 @@ public class DashboardAdminService {
     private final DashboardAdminRepository repo;
 
     public Double getVentasHoy() {
+        
         return repo.getVentasHoy();
     }
 

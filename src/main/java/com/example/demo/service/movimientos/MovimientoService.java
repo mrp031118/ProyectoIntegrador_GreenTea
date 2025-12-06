@@ -421,4 +421,68 @@ public class MovimientoService {
         }
     }
 
+    public double obtenerStockActualInsumo(Long insumoId) {
+
+        List<Movimiento> movimientos = movimientoRepository.findByInsumo_InsumoId(insumoId);
+
+        double stock = 0;
+
+        for (Movimiento mov : movimientos) {
+            if (mov.getTipoMovimiento().getNombre().equalsIgnoreCase("ENTRADA")) {
+                stock += mov.getCantidad();
+            } else {
+                stock -= mov.getCantidad();
+            }
+        }
+
+        return stock < 0 ? 0 : stock;
+    }
+
+    public double obtenerStockDisponiblePorReceta(Producto producto) {
+
+        RecetaProducto receta = recetaProductoRepository.findByProducto(producto)
+                .orElse(null);
+
+        if (receta == null)
+            return 0;
+
+        double minimo = Double.MAX_VALUE;
+
+        for (DetalleRecetaProducto det : receta.getDetalles()) {
+
+            Long insumoId = det.getInsumo().getInsumoId();
+
+            // Obtener LOTES REALES PEPS
+            List<KardexLoteProjection> lotes = loteRepository.findAllKardexLotePeps().stream()
+                    .filter(k -> k.getInsumoId().equals(insumoId) && k.getCantidadDisponible() > 0)
+                    .sorted((a, b) -> a.getFechaEntrada().compareTo(b.getFechaEntrada()))
+                    .toList();
+
+            if (lotes.isEmpty())
+                return 0;
+
+            // Cantidad necesaria por unidad del producto (convertida)
+            BigDecimal cantidadReceta = det.getCantidad();
+            UnidadMedida unidadReceta = det.getUnidadMedida();
+            UnidadMedida unidadStock = det.getInsumo().getUnidadMedida();
+
+            BigDecimal cantidadConvertida = cantidadReceta;
+            if (!unidadReceta.getId().equals(unidadStock.getId())) {
+                cantidadConvertida = conversionUnidadService.convertir(cantidadReceta, unidadReceta, unidadStock);
+            }
+
+            double totalDisponible = 0;
+
+            for (KardexLoteProjection lote : lotes) {
+                totalDisponible += lote.getCantidadDisponible();
+            }
+
+            double unidades = totalDisponible / cantidadConvertida.doubleValue();
+
+            minimo = Math.min(minimo, unidades);
+        }
+
+        return minimo == Double.MAX_VALUE ? 0 : minimo;
+    }
+
 }

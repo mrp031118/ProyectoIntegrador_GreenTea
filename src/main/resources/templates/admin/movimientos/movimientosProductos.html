@@ -57,10 +57,11 @@
                     <thead style="position: sticky; top: 0; background-color: rgba(0,0,0,0.6); z-index: 10;">
                         <!-- Encabezados principales -->
                         <tr class="text-white text-center">
-                            <th rowspan="2">ID Produccion</th>
+                            <th rowspan="2" style="max-width: 40px;">ID Prod.</th>
                             <th rowspan="2">Producto</th>
                             <th rowspan="2">Empleado</th>
                             <th rowspan="2">Fecha</th>
+                            <th rowspan="2">Observa.</th>
                             <th colspan="2">ENTRADA</th>
                             <th colspan="2">SALIDA</th>
                             <th colspan="2">SALDO</th>
@@ -89,6 +90,9 @@
 
                             <!-- Empleado -->
                             <td th:text="${mov.empleado.nombre}"></td>
+                            
+                            <!-- Observaciones -->
+                            <td th:text="${mov.observaciones}"></td>
 
                             <!-- Fecha -->
                             <td th:text="${#temporals.format(mov.fecha, 'dd/MM/yyyy HH:mm')}"></td>

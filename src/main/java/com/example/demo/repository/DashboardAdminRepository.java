@@ -17,15 +17,19 @@ import org.springframework.stereotype.Repository;
 public interface DashboardAdminRepository extends JpaRepository<Venta, Long> {
 
     // 1. Total ventas hoy
-    @Query(value = "SELECT COALESCE(SUM(total), 0) FROM ventas WHERE DATE(fecha) = CURDATE()", nativeQuery = true)
+    @Query(value = """
+                SELECT COALESCE(SUM(total), 0)
+                FROM ventas
+                WHERE DATE(CONVERT_TZ(fecha, '+00:00', '-05:00')) = CURDATE()
+            """, nativeQuery = true)
     Double getVentasHoy();
 
     // 2. Costo de ventas hoy (COGS)
     @Query(value = """
                 SELECT COALESCE(SUM(total), 0)
                 FROM movimientos
-                WHERE tipo_movimiento_id IN (2,4)
-                AND DATE(fecha) = CURDATE()
+                WHERE tipo_movimiento_id = 2
+                AND DATE(CONVERT_TZ(fecha, '+00:00', '-05:00')) = CURDATE()
             """, nativeQuery = true)
     Double getCostoVentasHoy();
 
@@ -42,7 +46,7 @@ public interface DashboardAdminRepository extends JpaRepository<Venta, Long> {
     @Query(value = """
                 SELECT p.nombre, SUM(d.cantidad) AS cantidad
                 FROM detalle_venta d
-                JOIN productos p ON d.producto_id = p.id  -- Corregido: p.id (de productos)
+                JOIN productos p ON d.producto_id = p.id  
                 JOIN ventas v ON v.id = d.venta_id
                 WHERE v.fecha >= (CURDATE() - INTERVAL 7 DAY)
                 GROUP BY p.nombre

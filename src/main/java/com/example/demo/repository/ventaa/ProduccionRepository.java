@@ -15,4 +15,8 @@ public interface ProduccionRepository extends JpaRepository<Produccion, Long> {
     // Suma de saldoActual por producto
     @Query("SELECT COALESCE(SUM(p.saldoActual), 0) FROM Produccion p WHERE p.producto.id = :productoId")
     Double sumSaldoActualByProducto(@Param("productoId") Long productoId);
+
+    @Query("SELECT COALESCE(SUM(p.saldoActual), 0) FROM Produccion p WHERE p.producto.id = :productoId")
+    Double sumSaldoActualByProductoId(@Param("productoId") Long productoId);
+
 }

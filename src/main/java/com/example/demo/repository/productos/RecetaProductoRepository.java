@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import com.example.demo.entity.productos.Producto;
 import com.example.demo.entity.productos.RecetaProducto;
 
 public interface RecetaProductoRepository extends JpaRepository<RecetaProducto, Long> {
@@ -19,5 +20,9 @@ public interface RecetaProductoRepository extends JpaRepository<RecetaProducto, 
             WHERE LOWER(p.nombre) LIKE LOWER(CONCAT('%', :nombreProducto, '%'))
             """, nativeQuery = true)
     List<RecetaProducto> buscarPorNombreProducto(@Param("nombreProducto") String nombreProducto);
+
+    boolean existsByProducto(Producto producto);
+
+    Optional<RecetaProducto> findByProducto(Producto producto);
 
 }
